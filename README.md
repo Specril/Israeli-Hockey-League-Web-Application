@@ -13,8 +13,8 @@ Welcome to the Israeli Hockey League Web Application repository! This project ai
 ## Technologies Used
 
 - Frontend: HTML, CSS, JavaScript, React.js
-- Backend: Node.js, Express.js, MongoDB
-- Additional Tools: Bootstrap, Redux (for state management), Socket.io (for real-time updates)
+- Backend: Node.js, PostgreSQL/ MySQL
+- Additional Tools: Bootstrap, Redux (for state management), Ant Design (React UI Library)
 
 ## Installation
 
