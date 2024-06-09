@@ -1,4 +1,6 @@
 import "./globals.css";
+import NavBar from "./NavBar";
+import Login from "./Login";
 
 export const metadata = {
   title: "GoalNet: Israeli Roller Hockey Portal",
@@ -11,46 +13,11 @@ export default function RootLayout({ children }) {
       <body>
         <header>
           <div className="logo-container">
-            <img src="tomerlogo.jpg" alt="לוגו גולנט" class="logo" />
+            <img src="tomerlogo.jpg" alt="לוגו גולנט" className="logo" />
           </div>
-          <nav>
-            <ul>
-              <li>
-                <a href="#introduction">הקדמה</a>
-              </li>
-              <li>
-                <a href="#upcoming-games">משחקים קרובים</a>
-              </li>
-              <li>
-                <a href="#recent-results">תוצאות אחרונות</a>
-              </li>
-              <li>
-                <a href="#league-information">מידע על הליגה</a>
-              </li>
-              <li>
-                <a href="#teams-overview">סקירת קבוצות</a>
-              </li>
-              <li>
-                <a href="#player-profiles">פרופילי שחקנים</a>
-              </li>
-              <li>
-                <a href="#match-highlights">תקצירי משחקים</a>
-              </li>
-              <li>
-                <a href="#fan-zone">אזור האוהדים</a>
-              </li>
-              <li>
-                <a href="#educational-resources">משאבים הדרכתיים</a>
-              </li>
-              <li>
-                <a href="#interactive-challenges">אתגרים אינטראקטיביים</a>
-              </li>
-              <li>
-                <a href="#contact-us">צור קשר</a>
-              </li>
-            </ul>
-          </nav>
+          <NavBar />
           <h1>גולנט: פורטל הוקי גלגליות ישראלי</h1>
+          <Login />
         </header>
         {children}
       </body>
