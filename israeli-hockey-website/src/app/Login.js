@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-
+import "./style.css";
 export function toggleLoginForm() {
   const loginForm = document.getElementById("login-form");
   if (loginForm) {

@@ -1,6 +1,7 @@
 import "./globals.css";
 import NavBar from "./NavBar";
 import Login from "./Login";
+import "./style.css";
 
 export const metadata = {
   title: "GoalNet: Israeli Roller Hockey Portal",

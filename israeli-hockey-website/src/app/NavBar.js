@@ -1,5 +1,6 @@
 "use client";
 
+import "./style.css";
 import { useState } from "react";
 import { toggleLoginForm } from "./Login";
 
