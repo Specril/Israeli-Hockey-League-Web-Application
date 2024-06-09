@@ -11,7 +11,7 @@ body {
 header {
   background-color: #002244;
   color: white;
-  padding: 10px 20px;
+  padding: 10px 5%;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   width: 100%;
   text-align: center;
@@ -26,7 +26,8 @@ header {
 }
 
 .logo {
-  width: 120px;
+  width: 12%;
+  max-width: 120px;
   height: auto;
   animation: logo-spin infinite 20s linear;
   border-radius: 50%; /* Makes the logo round */
@@ -165,11 +166,11 @@ nav ul li a.login-button:hover {
 }
 
 section {
-  margin: 20px;
-  padding: 20px;
+  margin: 5% 5%;
+  padding: 5%;
   background-color: white;
   border-radius: 8px;
-  box-shadow: 0px 0px 10px #ccc;
+  box-shadow: 0px 0px 2vw #ccc;
   text-align: right;
 }
 
@@ -178,7 +179,7 @@ section {
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 10px;
+  margin-top: 2%;
   text-align: right;
   transition: transform 0.2s; /* Smooth transition for hover effect */
 }
@@ -187,7 +188,7 @@ table,
 th,
 td {
   border: 1px solid #ddd;
-  padding: 8px;
+  padding: 1%;
 }
 
 th {
