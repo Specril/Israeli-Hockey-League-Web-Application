@@ -1,11 +1,20 @@
+
 ALTER VIEW Games_with_winner AS
 SELECT 
     g.Game_ID,
+    g.League_ID,
     ht.Team_ID As Home_Team_ID,
     ht.Team_Name AS Home_Team_Name,
     COALESCE(ht_goals.Goals_Scored, 0) AS Home_Team_Goals,
     at.Team_ID AS Away_Team_ID,
     at.Team_Name AS Away_Team_Name,
+    g.Day,
+    g.Date,
+    g.Start_Time,
+    g.Location,
+    g.Location_ID,
+    g.Referee_ID,
+    g.Second_Referee_ID,
     COALESCE(at_goals.Goals_Scored, 0) AS Away_Team_Goals,
     CASE 
         WHEN COALESCE(ht_goals.Goals_Scored, 0) > COALESCE(at_goals.Goals_Scored, 0) THEN Home_Team_ID
