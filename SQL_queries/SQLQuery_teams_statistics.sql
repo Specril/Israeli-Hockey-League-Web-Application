@@ -1,5 +1,5 @@
 
-
+-- This query refers to all teams, whithout considering their league
 
 SELECT T1.Team_ID, T1.Team_Name, COALESCE(T1.Total_Games,0) AS Total_games , (3*COALESCE(win_count,0)+COALESCE(tie_count,0)) AS Points, 
 COALESCE(win_count,0) as Total_Wins, COALESCE(tie_count,0) as Total_Ties, 
