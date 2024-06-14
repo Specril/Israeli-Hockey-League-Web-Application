@@ -2,24 +2,24 @@ import Button from "./Button";
 import "./style.css";
 import { fetchTeams } from "./api/fetchTeams";
 import Example from "./Example";
+import TeamsTable from "./TeamsTable";
 
 export default async function Home() {
   const fetchTeams = require("./api/fetchTeams");
-  let teamsData;
   async function dataFetchTeams() {
+    let teamsData;
     try {
       teamsData = await fetchTeams();
-      console.log("Teams fetched NOW:", teamsData);
-      // Optionally, perform assertions to validate the data structure or content
     } catch (error) {
       console.error("Error fetching teams:", error);
     }
+    return teamsData;
   }
-  dataFetchTeams();
-  console.log("TEAMS:" + teamsData);
+  const data = await dataFetchTeams();
+  console.log("TEAMS:" + JSON.stringify(data));
   return (
     <>
-      <Example></Example>
+      <TeamsTable teams={data} />
     </>
   );
 }

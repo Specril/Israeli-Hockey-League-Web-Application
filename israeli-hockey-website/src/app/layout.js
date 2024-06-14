@@ -22,6 +22,9 @@ export default function RootLayout({ children }) {
         </header>
         {children}
       </body>
+      <footer>
+        <p>הוכן על ידי: שחר בלס, אורי מצר, זיו זקליק, תומר כהן, ונעמה גרנר</p>
+      </footer>
     </html>
   );
 }

@@ -99,9 +99,6 @@ export default function Example() {
           </tbody>
         </table>
       </section>
-      <footer>
-        <p>הוכן על ידי: שחר בלס, אורי מצר, זיו זקליק, תומר כהן, ונעמה גרנר</p>
-      </footer>
     </>
   );
 }
