@@ -29,6 +29,9 @@ function fetchTeams() {
     // Create connection instance
     const connection = new Connection(config);
 
+    // Array to hold fetched teams
+    const teams = [];
+
     // Attempt to connect
     connection.on("connect", (err) => {
       if (err) {
@@ -42,7 +45,6 @@ function fetchTeams() {
 
     // Attempt to execute the query
     function executeStatement() {
-      const teams = [];
       const request = new Request("SELECT * FROM Teams", (err, rowCount) => {
         if (err) {
           console.error("Query execution failed:", err);
