@@ -12,7 +12,7 @@ export default function NavBar() {
           <a href="#introduction">הקדמה</a>
         </li>
         <li>
-          <a href="#upcoming-games">משחקים קרובים</a>
+          <a href="TestingZone">משחקים קרובים</a>
         </li>
         <li>
           <a href="#recent-results">תוצאות אחרונות</a>
