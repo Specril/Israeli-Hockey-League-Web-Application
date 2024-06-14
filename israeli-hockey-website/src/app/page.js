@@ -5,11 +5,11 @@ import Example from "./Example";
 import TeamsTable from "./TeamsTable";
 
 export default async function Home() {
-  const fetchTeams = require("./api/fetchTeams");
+  const fetchRows = require("./api/fetchRows");
   async function dataFetchTeams() {
     let teamsData;
     try {
-      teamsData = await fetchTeams();
+      teamsData = await fetchRows(() => "SELECT * FROM Teams WHERE Team_ID=3");
     } catch (error) {
       console.error("Error fetching teams:", error);
     }
