@@ -1,8 +1,23 @@
+import Button from "./Button";
 import "./style.css";
+import { fetchTeams } from "./api/fetchTeams";
+import TeamsTable from "./TeamsTable";
 
-export default function Home() {
+export default async function Home() {
+  async function handleFetchTeams() {
+    try {
+      const teams = await fetchTeams();
+      console.log("Teams fetched on button click:", teams);
+      setTeamsData(teams); // Update state with fetched data
+    } catch (error) {
+      console.error("Error fetching teams:", error);
+    }
+  }
+
+  handleFetchTeams();
   return (
     <>
+      <TeamsTable></TeamsTable>
       <section id="upcoming-games">
         <h2>משחקים קרובים</h2>
         <table>
