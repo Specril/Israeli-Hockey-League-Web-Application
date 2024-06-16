@@ -69,29 +69,31 @@ ORDER BY Points DESC;
 `;
 const query_upcoming_games = `SELECT * from Games WHERE Date>CURRENT_TIMESTAMP;`;
 
+async function dataFetchStatistics() {
+  let teamsData = [];
+  try {
+    teamsData = await fetchRows(() => query_team_statistics);
+  } catch (error) {
+    console.error("Error fetching teams:", error);
+  }
+  return teamsData;
+}
+
+async function dataFetchUpcoming() {
+  let teamsData = [];
+  try {
+    teamsData = await fetchRows(() => query_upcoming_games);
+  } catch (error) {
+    console.error("Error fetching teams:", error);
+  }
+  return teamsData;
+}
+
 export default async function Home() {
-  const fetchRows = require("./api/fetchRows");
-  async function dataFetchStatistics() {
-    let teamsData;
-    try {
-      teamsData = await fetchRows(() => query_team_statistics);
-    } catch (error) {
-      console.error("Error fetching teams:", error);
-    }
-    return teamsData;
-  }
-  async function dataFetchUpcoming() {
-    let teamsData;
-    try {
-      teamsData = await fetchRows(() => query_upcoming_games);
-    } catch (error) {
-      console.error("Error fetching teams:", error);
-    }
-    return teamsData;
-  }
+  // Fetch data on the server side
   const data_statistics = await dataFetchStatistics();
   const data_upcoming = await dataFetchUpcoming();
-  //console.log("UPCOMING:" + JSON.stringify(data_upcoming));
+
   return (
     <>
       <Table data={data_statistics} name={"סטטיסטיקות קבוצתיות"} />

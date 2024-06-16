@@ -21,10 +21,11 @@ export default function RootLayout({ children }) {
           <Login />
         </header>
         {children}
-      </body>
-      <footer>
+        <footer>
         <p>הוכן על ידי: שחר בלס, אורי מצר, זיו זקליק, תומר כהן, ונעמה גרנר</p>
       </footer>
+      </body>
+      
     </html>
   );
 }

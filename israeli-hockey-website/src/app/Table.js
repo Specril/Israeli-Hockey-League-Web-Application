@@ -7,12 +7,18 @@ export default function Table({ data, name }) {
       <section id="table">
         <h2>{name}</h2>
         <table>
-          <tr>אין מידע זמין</tr>
+          <tbody>
+            <tr>
+              <td>אין מידע זמין</td>
+            </tr>
+          </tbody>
         </table>
       </section>
     );
   }
+
   const columns = Object.keys(data[0]);
+
   return (
     <section id="table">
       <h2>{name}</h2>
@@ -27,16 +33,11 @@ export default function Table({ data, name }) {
         <tbody>
           {data.map((row, index) => (
             <tr key={index}>
-              {columns.map((col) => {
-                const cellValue = row[col];
-                return (
-                  <td key={col}>
-                    {cellValue instanceof Date
-                      ? cellValue.toISOString() // Convert Date to string
-                      : cellValue}
-                  </td>
-                );
-              })}
+              {columns.map((col) => (
+                <td key={col}>
+                  {row[col] instanceof Date ? row[col].toISOString() : row[col]}
+                </td>
+              ))}
             </tr>
           ))}
         </tbody>
