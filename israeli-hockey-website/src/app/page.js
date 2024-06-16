@@ -1,11 +1,10 @@
 import "./style.css";
 import Table from "./Table";
-import {fetchRows} from "./api/fetchRows"
 
-const query_team_statistics = `SELECT T1.Team_ID, T1.Team_Name, COALESCE(T1.Total_Games,0) AS Total_games , (3*COALESCE(win_count,0)+COALESCE(tie_count,0)) AS Points, 
-COALESCE(win_count,0) as Total_Wins, COALESCE(tie_count,0) as Total_Ties, 
-(COALESCE(T1.Total_Games,0) - COALESCE(win_count,0) - COALESCE(tie_count,0)) AS Total_losses,
-COALESCE(total_goals,0) AS Goals_Scored, COALESCE(rivals_goals,0) AS Rival_Goals, (COALESCE(total_goals,0)-COALESCE(rivals_goals,0)) AS Goals_Difference
+const query_team_statistics = `SELECT T1.Team_Name AS 'שם הקבוצה', COALESCE(T1.Total_Games,0) AS משחקים , (3*COALESCE(win_count,0)+COALESCE(tie_count,0)) AS נקודות, 
+COALESCE(win_count,0) as נצחונות, COALESCE(tie_count,0) as תיקו, 
+(COALESCE(T1.Total_Games,0) - COALESCE(win_count,0) - COALESCE(tie_count,0)) AS הפסדים,
+COALESCE(total_goals,0) AS 'שערי זכות', COALESCE(rivals_goals,0) AS 'שערי חובה', (COALESCE(total_goals,0)-COALESCE(rivals_goals,0)) AS הפרש
 FROM 
 -- amount of games played for each team:
 (SELECT 
@@ -62,9 +61,16 @@ LEFT join
 (SELECT home_team_id as Team_ID, SUM(away_team_goals) as rivals_goals from games_with_winner 
 GROUP BY home_team_id) AS T5 on T1.Team_ID = T5.Team_ID
 
-ORDER BY Points DESC;
+LEFT JOIN
+
+(SELECT League_ID, Team_ID From Teams)
+AS T6 on T1.Team_ID = T6.Team_ID
+
+ORDER BY נקודות DESC;
 `;
 const query_upcoming_games = `SELECT * from Games WHERE Date>CURRENT_TIMESTAMP;`;
+
+const fetchRows = require("./api/fetchRows");
 
 async function dataFetchStatistics() {
   let teamsData = [];
