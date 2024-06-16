@@ -1,8 +1,4 @@
-import Button from "./Button";
 import "./style.css";
-import { fetchTeams } from "./api/fetchTeams";
-import Example from "./Example";
-import TeamsTable from "./TeamsTable";
 import Table from "./Table";
 
 const query_team_statistics = `SELECT T1.Team_ID, T1.Team_Name, COALESCE(T1.Total_Games,0) AS Total_games , (3*COALESCE(win_count,0)+COALESCE(tie_count,0)) AS Points, 

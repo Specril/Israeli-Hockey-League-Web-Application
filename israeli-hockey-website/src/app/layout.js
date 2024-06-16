@@ -1,7 +1,7 @@
-import "./globals.css";
 import NavBar from "./NavBar";
 import Login from "./Login";
 import "./style.css";
+
 
 export const metadata = {
   title: "GoalNet: Israeli Roller Hockey Portal",
@@ -25,7 +25,6 @@ export default function RootLayout({ children }) {
         <p>הוכן על ידי: שחר בלס, אורי מצר, זיו זקליק, תומר כהן, ונעמה גרנר</p>
       </footer>
       </body>
-      
     </html>
   );
 }
