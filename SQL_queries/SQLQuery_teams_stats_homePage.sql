@@ -1,0 +1,1 @@
+select שם_הקבוצה,משחקים,נקודות,נצחונות,תיקו,הפסדים,שערי_זכות,שערי_חובה,הפרש from Teams_stats_all_leagues where League_ID=1;
