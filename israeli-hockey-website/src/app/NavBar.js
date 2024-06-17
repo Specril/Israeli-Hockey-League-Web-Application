@@ -9,25 +9,19 @@ export default function NavBar() {
     <nav>
       <ul>
         <li>
-          <a href="#introduction">הקדמה</a>
+          <a href="/">ראשי</a>
         </li>
         <li>
           <a href="TestingZone">משחקים קרובים</a>
         </li>
         <li>
-          <a href="#recent-results">תוצאות אחרונות</a>
+          <a href="goal_king">מלך השערים</a>
         </li>
         <li>
-          <a href="#league-information">מידע על הליגה</a>
+          <a href="league_information">מידע על הליגה</a>
         </li>
         <li>
           <a href="#teams-overview">סקירת קבוצות</a>
-        </li>
-        <li>
-          <a href="#player-profiles">פרופילי שחקנים</a>
-        </li>
-        <li>
-          <a href="#match-highlights">תקצירי משחקים</a>
         </li>
         <li>
           <a href="#fan-zone">אזור האוהדים</a>
