@@ -1,0 +1,52 @@
+תכנון דפים -
+דף ראשי: 
+משחקים קרובים: שאילתה לפי תאריך החל מאותו יום בוגרים בלבד (ליגה 1)
+-- Displaying the upcoming games (currently empty)
+
+SELECT Home_Team_Name AS "קבוצת בית", Away_Team_Name AS "קבוצת חוץ", Day AS "יום", Date AS "תאריך", Start_Time AS "זמן התחלה", Location AS "מיקום", First_referee AS "שופט 1", Users.Full_Name as "שופט 2"
+FROM
+(Select Home_Team_ID, Home_Team_Name, Away_Team_ID, Teams.Team_Name as Away_Team_Name, Day, Date, Start_Time, Location, Second_Referee_ID, Referee_ID,Users.Full_Name As First_referee From
+
+(SELECT Game_ID, Games.League_ID, Home_Team_ID, Team_Name As Home_Team_Name, Away_Team_ID, Day,Date,Start_Time,Location,Second_Referee_ID, Referee_ID from Games 
+INNER JOIN Teams ON Home_Team_ID = Team_ID
+WHERE Date>CURRENT_TIMESTAMP AND Games.League_ID = 1) AS T1
+INNER JOIN 
+Teams ON Away_Team_ID = Team_ID
+INNER JOIN Users 
+On Referee_ID=user_ID) AS outer_table
+inner JOIN Users
+ON Second_Referee_ID=User_ID;
+
+סטטיסטיקות קבוצות: ליגת בוגרים  (עם שימוש מקוצר ב-VIEW)
+select שם_הקבוצה,משחקים,נקודות,נצחונות,תיקו,הפסדים,שערי_זכות,שערי_חובה,הפרש from Teams_stats_all_leagues where League_ID=1;
+
+דף שני:
+מלך השערים
+-- Displaying how many goals each player scored
+
+SELECT Full_Name AS שם_השחקן, כמות_גולים from
+Users INNER JOIN
+(SELECT Goals.User_ID, count(*) as כמות_גולים
+from Goals
+group by User_ID) AS T1 on Users.User_ID=T1.User_ID
+order by כמות_גולים DESC;
+
+דף שלישי:
+סטטיססטיקות קבוצות: ליגות נוספות (בחירה מתוך dropdown) 
+שאילתה כמו בדף הראשי רק לשנות ID של ליגה לפי הבחירה
+לאחר שבחרנו ליגה, תיפתח טבלת הסטטיסטיקות שלה ו- dropdown נוסף לבחירת קבוצה ויוצגו השחקנים של הקבוצה ופרטיהם.
+-- Displaying teams' players: their name, position and shirt number
+SELECT  Teams.Team_Name AS "שם קבוצה",  Users.Full_Name AS "שם שחקן", PlayersInTeams.Position AS "תפקיד", PlayersInTeams.Shirt_Number AS "מספר חולצה"
+FROM Users inner join PlayersInTeams on PlayersInTeams.User_ID = Users.User_ID
+RIGHT join Teams on Teams.Team_ID=PlayersInTeams.Team_ID
+WHERE Teams.Team_ID=4; 
+-- לא עובד לפי שם קבוצה
+
+דף רביעי:
+משחקים קרובים לפי ליגה
+שאילתה כמו בדף הראשי רק לשנות ID של ליגה לפי הבחירה
+
+
+
+
+
