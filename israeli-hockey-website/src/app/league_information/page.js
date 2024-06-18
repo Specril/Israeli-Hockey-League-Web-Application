@@ -5,7 +5,7 @@ import Table from "../Table";
 const query_league_stats = `SELECT  Teams.Team_Name AS "שם קבוצה",  Users.Full_Name AS "שם שחקן", PlayersInTeams.Position AS "תפקיד", PlayersInTeams.Shirt_Number AS "מספר חולצה"
 FROM Users inner join PlayersInTeams on PlayersInTeams.User_ID = Users.User_ID
 RIGHT join Teams on Teams.Team_ID=PlayersInTeams.Team_ID
-WHERE Teams.Team_ID=4; 
+WHERE Teams.Team_ID=5; 
 `;
 const query_league_teams = `SELECT Team_Name FROM Teams;`
 
