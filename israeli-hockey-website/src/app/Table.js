@@ -19,6 +19,22 @@ export default function Table({ data, name }) {
 
   const columns = Object.keys(data[0]);
 
+  // Helper functions to format date and time
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
+
+  const formatTime = (timeString) => {
+    const time = new Date(timeString);
+    const hours = time.getUTCHours().toString().padStart(2, '0');
+    const minutes = time.getUTCMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+  };
+
   return (
     <section id="table">
       <h2>{name}</h2>
@@ -35,7 +51,11 @@ export default function Table({ data, name }) {
             <tr key={index}>
               {columns.map((col) => (
                 <td key={col}>
-                  {row[col] instanceof Date ? row[col].toISOString() : row[col]}
+                  {col === 'תאריך'
+                    ? formatDate(row[col])
+                    : col === 'זמן התחלה'
+                    ? formatTime(row[col])
+                    : row[col]}
                 </td>
               ))}
             </tr>
