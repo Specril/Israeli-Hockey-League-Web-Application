@@ -31,7 +31,6 @@ def makeConnection():
     server = 'hockey-il-server.database.windows.net'
     database = 'Hockey League DB v2'
     username = 'IsraeliHockeyLeague'
-    password = 'ZivCool69'
 
     # Create the connection string
     connection_string = f'DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}'
