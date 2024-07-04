@@ -36,6 +36,9 @@ export default function NavBar() {
           <a href="#contact-us">צור קשר</a>
         </li>
         <li>
+          <a href="form_sample">דוגמא</a>
+        </li>
+        <li>
           <a href="#login" className="login-button" onClick={toggleLoginForm}>
             התחברות
           </a>
