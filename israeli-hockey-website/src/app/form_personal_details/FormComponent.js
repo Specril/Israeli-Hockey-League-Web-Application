@@ -8,9 +8,9 @@ import "../style.css"; // Ensure you have the correct path for your CSS
 const { Title } = Typography;
 
 const initialFormState = {
-  field1: '',
+  fieldori: '',
   field2: '',
-  field3: '',
+  field3ziv: '',
   field4: '',
   field5: '',
   field6: '',
@@ -21,9 +21,9 @@ const initialFormState = {
 };
 
 const fieldLabels = {
-  field1: 'Field One',
-  field2: 'Field Two',
-  field3: 'Field Three Ziv',
+  fieldori: 'שם מלא',
+  field2: 'טלפון',
+  field3ziv: 'Field Three',
   field4: 'Field Four',
   field5: 'Field Five',
   field6: 'Field Six',
@@ -34,21 +34,23 @@ const fieldLabels = {
 };
 
 export default function FormComponent() {
-  const [formData, setFormData] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const savedFormData = localStorage.getItem('formData');
-      return savedFormData ? JSON.parse(savedFormData) : initialFormState;
-    }
-    return initialFormState;
-  });
-
+  const [formData, setFormData] = useState(initialFormState);
+  const [isClient, setIsClient] = useState(false);
   const [form] = Form.useForm();
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    setIsClient(true);
+    const savedFormData = localStorage.getItem('formData');
+    if (savedFormData) {
+      setFormData(JSON.parse(savedFormData));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isClient) {
       localStorage.setItem('formData', JSON.stringify(formData));
     }
-  }, [formData]);
+  }, [formData, isClient]);
 
   const handleChange = (changedValues) => {
     setFormData((prevData) => ({
@@ -58,14 +60,14 @@ export default function FormComponent() {
   };
 
   const handleSubmit = () => {
-    alert('Form Data JSON:', JSON.stringify(formData));
+    alert('Form Data JSON: ' + JSON.stringify(formData));
     console.log('Form Data JSON:', JSON.stringify(formData));
   };
 
   const handleClearAll = () => {
     form.resetFields();
     setFormData(initialFormState);
-    if (typeof window !== 'undefined') {
+    if (isClient) {
       localStorage.removeItem('formData');
     }
   };

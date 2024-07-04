@@ -39,6 +39,9 @@ export default function NavBar() {
           <a href="form_sample">דוגמא</a>
         </li>
         <li>
+          <a href="form_personal_details">פרטים אישיים</a>
+        </li>
+        <li>
           <a href="#login" className="login-button" onClick={toggleLoginForm}>
             התחברות
           </a>
