@@ -1,42 +1,74 @@
-"use client"
+"use client";
 import React from "react";
 import { Card, Table } from "antd";
 
-
-const data = [
-  { key: 1, pos: 1, club: "Arsenal", pl: 0, gd: 0, pts: 0, logo: 'base64-image-string' },
-  { key: 2, pos: 2, club: "Aston Villa", pl: 0, gd: 0, pts: 0, logo: 'base64-image-string' },
-  // Add the rest of the teams here
-];
-
 const columns = [
-  { title: "Pos", dataIndex: "pos", key: "pos" },
-  { title: "Club", dataIndex: "club", key: "club", render: (text, record) => (
-      <span>
-        <img src={record.logo} alt={text} style={{ width: 20, marginRight: 8 }} />
-        {text}
-      </span>
-    )
+  { 
+    title: "שם קבוצה", 
+    dataIndex: "שם הקבוצה", 
+    key: "שם הקבוצה", 
+    align: "right", // Align text to the right
+    render: (text) => <strong>{text}</strong> // Render team name in bold
   },
-  { title: "Pl", dataIndex: "pl", key: "pl" },
-  { title: "GD", dataIndex: "gd", key: "gd" },
-  { title: "Pts", dataIndex: "pts", key: "pts" },
+  { 
+    title: "משחקים", 
+    dataIndex: "משחקים", 
+    key: "משחקים", 
+    align: "right" // Align text to the right
+  },
+  { 
+    title: "הפרש", 
+    dataIndex: "הפרש", 
+    key: "הפרש", 
+    align: "right" // Align text to the right
+  },
+  { 
+    title: "נקודות", 
+    dataIndex: "נקודות", 
+    key: "נקודות", 
+    align: "right" // Align text to the right
+  },
+  {
+    title: "לוגו",
+    dataIndex: "Logo",
+    key: "Logo",
+    align: "center", // Center align the logo column
+    render: (text, record) => (
+      record.Logo ? (
+        isBase64Image(record.Logo) ? (
+          <img src={record.Logo} alt={record['שם הקבוצה']} style={{ width: 40 }} />
+        ) : (
+          <span>No Logo</span>
+        )
+      ) : (
+        <span>No Logo</span>
+      )
+    ),
+  },
 ];
 
-const PremierLeagueTable = () => {
+// Helper function to check if a string is a base64 image
+const isBase64Image = (str) => {
+  return typeof str === 'string' && str.startsWith("data:image/");
+};
+
+const PremierLeagueTable = ({ data, name }) => {
   return (
     <Card
-      title={<div style={{ textAlign: 'center', fontWeight: 'bold', color: '#ffffff', backgroundColor: '#1e90ff', borderRadius: '8px', padding: '8px' }}>Premier League</div>}
+      title={<div style={{ textAlign: 'center', fontWeight: 'bold', color: '#ffffff', backgroundColor: '#1e90ff', borderRadius: '8px', padding: '8px' }}>{name}</div>}
       bordered={false}
-      style={{ width: 300, borderRadius: '8px' }}
+      style={{ width: 800, borderRadius: '8px' }}
       headStyle={{ backgroundColor: '#1e90ff', borderRadius: '8px 8px 0 0' }}
     >
       <Table
         columns={columns}
         dataSource={data}
         pagination={false}
-        showHeader={false}
+        showHeader={true} // Show table header
         rowClassName="table-row"
+        rowKey={(record) => record['שם הקבוצה']}
+        bordered={false} // Remove table border
+        size="middle" // Adjust table size if needed
       />
     </Card>
   );

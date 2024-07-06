@@ -170,7 +170,7 @@ export default async function Home() {
         </div>
       </Carousel>
 
-      <PremierLeagueTable />
+      <PremierLeagueTable data={data_statistics} name={"סטטיסטיקות קבוצתיות"} />
       <Table data={data_statistics} name={"סטטיסטיקות קבוצתיות"} />
       <Table data={data_upcoming} name={"משחקים קרובים"} />
       <Table data={data_logo} name={"לוגו"} />
