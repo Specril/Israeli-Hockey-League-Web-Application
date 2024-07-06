@@ -8,29 +8,29 @@ import "../style.css"; // Ensure you have the correct path for your CSS
 const { Title } = Typography;
 
 const initialFormState = {
-  fieldori: '',
+  field1: 'אורי',  // a default should be taken from a JSON file based on the user's current data
   field2: '',
-  field3ziv: '',
+  field3: '',
   field4: '',
-  field5: '',
-  field6: '',
-  field7: '',
-  field8: '',
-  field9: '',
-  field10: '',
+  // field5: '',
+  // field6: '',
+  // field7: '',
+  // field8: '',
+  // field9: '',
+  // field10: '',
 };
 
 const fieldLabels = {
-  fieldori: 'שם מלא',
+  field1: 'שם מלא',
   field2: 'טלפון',
-  field3ziv: 'Field Three',
-  field4: 'Field Four',
-  field5: 'Field Five',
-  field6: 'Field Six',
-  field7: 'Field Seven',
-  field8: 'Field Eight',
-  field9: 'Field Nine',
-  field10: 'Field Ten',
+  field3: 'כתובת אימייל',
+  field4: 'תאריך לידה',
+  // field5: 'Field Five',
+  // field6: 'Field Six',
+  // field7: 'Field Seven',
+  // field8: 'Field Eight',
+  // field9: 'Field Nine',
+  // field10: 'Field Ten',
 };
 
 export default function FormComponent() {
@@ -78,7 +78,7 @@ export default function FormComponent() {
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-      <Title level={2}>Form Testing Zone</Title>
+      <Title level={3}>טופס לעדכון פרטים אישיים</Title>
       <Form
         form={form}
         layout="vertical"
