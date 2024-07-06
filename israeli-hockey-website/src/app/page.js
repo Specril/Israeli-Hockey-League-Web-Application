@@ -2,6 +2,7 @@ import React from "react";
 import { Card, Carousel, Table as AntTable } from "antd";
 import "./style.css";
 import Table from "./Table";
+import PremierLeagueTable from "./MainCard"
 
 const query_team_statistics = `SELECT T1.Team_Name AS 'שם הקבוצה', COALESCE(T1.Total_Games,0) AS משחקים , (3*COALESCE(win_count,0)+COALESCE(tie_count,0)) AS נקודות, 
 COALESCE(win_count,0) as נצחונות, COALESCE(tie_count,0) as תיקו, 
@@ -142,6 +143,7 @@ export default async function Home() {
         </div>
       </Carousel>
 
+      <PremierLeagueTable />
       <Table data={data_statistics} name={"סטטיסטיקות קבוצתיות"} />
       <Table data={data_upcoming} name={"משחקים קרובים"} />
       <Table data={data_logo} name={"לוגו"} />
