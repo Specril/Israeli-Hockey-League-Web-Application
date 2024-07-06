@@ -85,6 +85,8 @@ On Referee_ID=user_ID) AS T_with_first_referee
 LEFT JOIN Users on Second_Referee_ID = user_ID
 ;`;
 
+const query_logos= 'select Team_ID, Photo from TeamsLogos '
+
 const fetchRows = require("./api/fetchRows");
 
 async function dataFetchStatistics() {
@@ -107,10 +109,20 @@ async function dataFetchUpcoming() {
   return teamsData;
 }
 
+async function dataFetchLogos() {
+  let teamsData = [];
+  try {
+    teamsData = await fetchRows(() => query_logos);
+  } catch (error) {
+    console.error("Error fetching teams:", error);
+  }
+  return teamsData;
+}
 export default async function Home() {
   // Fetch data on the server side
   const data_statistics = await dataFetchStatistics();
   const data_upcoming = await dataFetchUpcoming();
+  const data_logo = await dataFetchLogos();
 
   return (
     <div style={{ padding: "20px" }}>
@@ -118,7 +130,7 @@ export default async function Home() {
         <p>Welcome to the official website of the Israeli Hockey League. Here, you will find the latest statistics, upcoming games, and much more about your favorite teams and players.</p>
       </Card>
 
-      <Carousel autoplay style={{ marginBottom: "20px" }}>
+      <Carousel autoplay style={{ marginBottom: "20px" }} dots={true} arrows={true}>
         <div>
           <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Argentin_player_during_2007_rink_hockey_world_championship.jpg/1280px-Argentin_player_during_2007_rink_hockey_world_championship.jpg' alt="League Image 1" style={{ width: "100%" }} />
         </div>
@@ -132,6 +144,7 @@ export default async function Home() {
 
       <Table data={data_statistics} name={"סטטיסטיקות קבוצתיות"} />
       <Table data={data_upcoming} name={"משחקים קרובים"} />
+      <Table data={data_logo} name={"לוגו"} />
     </div>
   );
 }
