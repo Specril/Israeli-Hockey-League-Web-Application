@@ -5,18 +5,19 @@ const CarouselComponent = () => {
   const carouselStyle = {
     marginBottom: '40px', // Increased marginBottom for more space
     width: '100%', // Adjust the width as needed
-    height: '400px', // Adjust the height as needed
+    height: '500px', // Adjust the height as needed
     margin: '0 auto', // Center the carousel
   };
 
   const imgStyle = {
-    width: '100%',
+    width: '50%',
     height: '100%',
     objectFit: 'cover', // Ensures the image covers the entire carousel area
+    objectPosition: 'center', // Centers the image within the carousel
   };
 
   return (
-    <Carousel autoplay style={carouselStyle} dots={true} arrows={true} adaptiveHeight={true}>
+    <Carousel autoplay style={carouselStyle} dots={true} arrows={true} >
       <div>
         <img
           src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Argentin_player_during_2007_rink_hockey_world_championship.jpg/1280px-Argentin_player_during_2007_rink_hockey_world_championship.jpg"
