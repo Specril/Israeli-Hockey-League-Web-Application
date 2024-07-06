@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import React from "react";
 import { Card, Table } from "antd";
 
@@ -53,6 +53,8 @@ const isBase64Image = (str) => {
 };
 
 const PremierLeagueTable = ({ data, name }) => {
+  const tableRowClassName = () => "table-row-no-hover"; // Custom class to remove row line
+
   return (
     <Card
       title={<div style={{ textAlign: 'center', fontWeight: 'bold', color: '#ffffff', backgroundColor: '#1e90ff', borderRadius: '8px', padding: '8px' }}>{name}</div>}
@@ -65,7 +67,7 @@ const PremierLeagueTable = ({ data, name }) => {
         dataSource={data}
         pagination={false}
         showHeader={true} // Show table header
-        rowClassName="table-row"
+        rowClassName={tableRowClassName} // Apply custom row class
         rowKey={(record) => record['שם הקבוצה']}
         bordered={false} // Remove table border
         size="middle" // Adjust table size if needed
