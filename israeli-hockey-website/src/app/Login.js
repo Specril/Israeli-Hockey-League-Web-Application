@@ -3,10 +3,12 @@
 import { useState } from "react";
 import "./style.css";
 export function toggleLoginForm() {
-  const loginForm = document.getElementById("login-form");
-  if (loginForm) {
-    loginForm.style.display =
-      loginForm.style.display === "none" ? "block" : "none";
+  if (typeof document !== "undefined") {
+    const loginForm = document.getElementById("login-form");
+    if (loginForm) {
+      loginForm.style.display =
+        loginForm.style.display === "none" ? "block" : "none";
+    }
   }
 }
 

@@ -17,7 +17,6 @@ const Register = () => {
     const { userLoggedIn, setCurrentUser } = useAuth();
 
     const onSubmit = async (e) => {
-        e.preventDefault();
         if (!isRegistering) {
             setIsRegistering(true);
             try {
