@@ -1,3 +1,5 @@
+import React from "react";
+import { Card, Carousel, Table as AntTable } from "antd";
 import "./style.css";
 import Table from "./Table";
 
@@ -68,6 +70,7 @@ AS T6 on T1.Team_ID = T6.Team_ID
 
 ORDER BY נקודות DESC;
 `;
+
 const query_upcoming_games = `select Home_Team_Name AS "קבוצת בית", Away_Team_Name AS "קבוצת חוץ", Day AS "יום", Date AS "תאריך", Start_Time AS "זמן התחלה", Location AS "מיקום", First_referee AS "שופט 1", Users.Full_Name as "שופט 2" from 
 
 (Select Home_Team_ID, Home_Team_Name, Away_Team_ID, Teams.Team_Name as Away_Team_Name, Day, Date, Start_Time, Location, Referee_ID,Users.Full_Name AS first_referee, Second_Referee_ID From
@@ -110,9 +113,25 @@ export default async function Home() {
   const data_upcoming = await dataFetchUpcoming();
 
   return (
-    <>
+    <div style={{ padding: "20px" }}>
+      <Card title="Welcome to the Israeli Hockey League" bordered={false} style={{ marginBottom: "20px" }}>
+        <p>Welcome to the official website of the Israeli Hockey League. Here, you will find the latest statistics, upcoming games, and much more about your favorite teams and players.</p>
+      </Card>
+
+      <Carousel autoplay style={{ marginBottom: "20px" }}>
+        <div>
+          <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Argentin_player_during_2007_rink_hockey_world_championship.jpg/1280px-Argentin_player_during_2007_rink_hockey_world_championship.jpg' alt="League Image 1" style={{ width: "100%" }} />
+        </div>
+        <div>
+          <img src="https://www.worldskate.org/images/medium/20180723_jw_g11_40.JPG" alt="League Image 2" style={{ width: "100%" }} />
+        </div>
+        <div>
+          <img src="https://www.worldskate.org/images/medium/20180723_jw_g11_40.JPG" alt="League Image 3" style={{ width: "100%" }} />
+        </div>
+      </Carousel>
+
       <Table data={data_statistics} name={"סטטיסטיקות קבוצתיות"} />
       <Table data={data_upcoming} name={"משחקים קרובים"} />
-    </>
+    </div>
   );
 }
