@@ -38,6 +38,7 @@ const fieldLabels = {
   // field10: 'Field Ten',
 };
 
+const field2Options = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
 const field4Options = ['אריות', 'קריית ביאליק', 'קריית ים','רמת ישי','חלוצים','סנדוויץ','הרקולס','קרנפים']; // Replace with actual options
 const field5Options = ['אריות', 'קריית ביאליק', 'קריית ים','רמת ישי','חלוצים','סנדוויץ','הרקולס','קרנפים']; // Replace with actual options
 
@@ -143,7 +144,19 @@ export default function FormComponent() {
                       </Option>
                     ))}
                   </Select>
-                ) : field === 'field5' ? (
+                ) 
+                : field === 'field2' ? (
+                  <Select
+                    value={formData[field]}
+                    onChange={(value) => handleSelectChange(value, field)}
+                  >
+                    {field2Options.map((option) => (
+                      <Option key={option} value={option}>
+                        {option}
+                      </Option>
+                    ))}
+                  </Select>
+                ): field === 'field5' ? (
                   <Select
                     value={formData[field]}
                     onChange={(value) => handleSelectChange(value, field)}

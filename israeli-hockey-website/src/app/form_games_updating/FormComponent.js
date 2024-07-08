@@ -13,6 +13,7 @@ const initialFormState = {
   field1: '',
   field2: '',
   field3: '',
+  field_league: '',
   field4: '',
   field5: '',
   field6: '',
@@ -26,6 +27,7 @@ const fieldLabels = {
   field1: 'תאריך',
   field2: 'יום',
   field3: 'שעה',
+  field_league: 'ליגה',
   field4: 'קבוצת בית',
   field5: 'קבוצת חוץ',
   field6: 'מיקום',
@@ -35,8 +37,10 @@ const fieldLabels = {
   // field10: 'Field Ten',
 };
 
-const field4Options = ['אריות', 'קריית ביאליק', 'קריית ים','רמת ישי','חלוצים','סנדוויץ','הרקולס','קרנפים']; // Replace with actual options
-const field5Options = ['אריות', 'קריית ביאליק', 'קריית ים','רמת ישי','חלוצים','סנדוויץ','הרקולס','קרנפים']; // Replace with actual options
+const field2Options = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+const field4Options = ['אריות', 'קריית ביאליק', 'קריית ים','רמת ישי','חלוצים','סנדוויץ','הרקולס','קרנפים']; 
+const field5Options = ['אריות', 'קריית ביאליק', 'קריית ים','רמת ישי','חלוצים','סנדוויץ','הרקולס','קרנפים']; 
+const field_league_options = ['צעירים','בוגרים'];
 
 export default function Page1() {
   const [formData, setFormData] = useState(initialFormState);
@@ -112,13 +116,13 @@ export default function Page1() {
       >
         <Row gutter={16}>
           {Object.keys(formData).map((field, index) => (
-            <Col span={12} key={index}>
+            <Col span={24} key={index}>
               <Form.Item
                 label={fieldLabels[field]}
                 name={field}
                 rules={[
                   {
-                    required: field === 'field1' || field === 'field2' || field === 'field3' || field === 'field4' || field === 'field5' || field === 'field6', // Set required fields
+                    required: field === 'field1' || field === 'field2' || field === 'field3' || field === 'field4' || field === 'field5' || field === 'field6' || field == 'field_league', // Set required fields
                     message: `${fieldLabels[field]} is required`,
                   },
                 ]}
@@ -151,7 +155,31 @@ export default function Page1() {
                       </Option>
                     ))}
                   </Select>
-                ) : (
+                ) : field === 'field2' ? (
+                  <Select
+                    value={formData[field]}
+                    onChange={(value) => handleSelectChange(value, field)}
+                  >
+                    {field2Options.map((option) => (
+                      <Option key={option} value={option}>
+                        {option}
+                      </Option>
+                    ))}
+                  </Select>
+                ) :
+                field === 'field_league' ? (
+                  <Select
+                    value={formData[field]}
+                    onChange={(value) => handleSelectChange(value, field)}
+                  >
+                    {field_league_options.map((option) => (
+                      <Option key={option} value={option}>
+                        {option}
+                      </Option>
+                    ))}
+                  </Select>
+                ) :
+                 (
                   <Input
                     name={field}
                     value={formData[field]}
