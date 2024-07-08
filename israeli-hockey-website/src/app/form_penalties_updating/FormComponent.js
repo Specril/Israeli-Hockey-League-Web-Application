@@ -10,42 +10,45 @@ const { Title } = Typography;
 const { Option } = Select;
 
 const initialFormState = {
+  game_ID: '',
   field1: '',
   field2: '',
   field3: '',
-  field4: '',
-  field5: '',
+  league_field: '',
   field6: '',
   field7: '',
+  field4: '',
+
   field8: '',
-  // field9: '',
+  field9: '',
   // field10: '',
 };
 
 const fieldLabels = {
+  game_ID: 'מזהה משחק',
   field1: 'תאריך',
   field2: 'יום',
   field3: 'שעה',
-  field4: 'קבוצת בית',
-  field5: 'קבוצת חוץ',
+  league_field: 'ליגה',
   field6: 'מיקום',
-  field7: 'שופט 1',
-  field8: 'שופט 2',
-  // field9: 'Field Nine',
+  field7: 'שופט',
+  field4: 'קבוצה',
+  field8: 'שם מלא',
+  field9: 'מספר חולצה',
   // field10: 'Field Ten',
 };
 
 const field4Options = ['אריות', 'קריית ביאליק', 'קריית ים','רמת ישי','חלוצים','סנדוויץ','הרקולס','קרנפים']; // Replace with actual options
 const field5Options = ['אריות', 'קריית ביאליק', 'קריית ים','רמת ישי','חלוצים','סנדוויץ','הרקולס','קרנפים']; // Replace with actual options
 
-export default function Page1() {
+export default function FormComponent() {
   const [formData, setFormData] = useState(initialFormState);
   const [isClient, setIsClient] = useState(false);
   const [form] = Form.useForm();
 
   useEffect(() => {
     setIsClient(true);
-    const savedFormData = localStorage.getItem('formDataGames');
+    const savedFormData = localStorage.getItem('formDataPenalties');
     if (savedFormData) {
       setFormData(JSON.parse(savedFormData));
     }
@@ -53,7 +56,7 @@ export default function Page1() {
 
   useEffect(() => {
     if (isClient) {
-      localStorage.setItem('formDataGames', JSON.stringify(formData));
+      localStorage.setItem('formDataPenalties', JSON.stringify(formData));
     }
   }, [formData, isClient]);
 
@@ -87,7 +90,7 @@ export default function Page1() {
     form.resetFields();
     setFormData(initialFormState);
     if (isClient) {
-      localStorage.removeItem('formDataGames');
+      localStorage.removeItem('formDataPenalties');
     }
   };
 
@@ -102,7 +105,7 @@ export default function Page1() {
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-      <Title level={3}>טופס העלאת פרטי משחק</Title>
+      <Title level={3}>טופס העלאת פרטי עבירה</Title>
       <Form
         form={form}
         layout="vertical"
@@ -118,7 +121,7 @@ export default function Page1() {
                 name={field}
                 rules={[
                   {
-                    required: field === 'field1' || field === 'field2' || field === 'field3' || field === 'field4' || field === 'field5' || field === 'field6', // Set required fields
+                    required: field === 'game_ID' || field === 'field1' || field == 'league_field' || field == 'field4' || field == "field8", // Set required fields
                     message: `${fieldLabels[field]} is required`,
                   },
                 ]}

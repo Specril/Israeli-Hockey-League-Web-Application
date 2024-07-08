@@ -39,7 +39,19 @@ export default function NavBar() {
           <a href="form_games_updating">הוספת משחק</a>
         </li>
         <li>
-          <a href="form_personal_details">פרטים אישיים</a>
+          <a href="form_personal_details">עדכון פרטים אישיים</a>
+        </li>
+        <li>
+          <a href="form_goals_updating">הוספת גול</a>
+        </li>
+        <li>
+          <a href="form_penalties_updating">הוספת עבירה</a>
+        </li>
+        <li>
+          <a href="form_add_player">הוספת שחקן</a>
+        </li>
+        <li>
+          <a href="form_add_team">הוספת קבוצה</a>
         </li>
         <li>
           <a href="#login" className="login-button" onClick={toggleLoginForm}>
