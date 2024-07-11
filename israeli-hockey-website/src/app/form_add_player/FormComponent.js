@@ -1,23 +1,18 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, Typography, Row, Col } from 'antd';
-import 'antd/dist/reset.css'; // Import Ant Design styles
-import "../style.css"; // Ensure you have the correct path for your CSS
+import { Form, Input, Button, Typography, Row, Col, Select, InputNumber } from 'antd';
+import 'antd/dist/reset.css';
+import "../style.css";
 
 const { Title } = Typography;
+const { Option } = Select;
 
 const initialFormState = {
   field1: '',
   field2: '',
   field3: '',
-  field4: '',
-  // field5: '',
-  // field6: '',
-  // field7: '',
-  // field8: '',
-  // field9: '',
-  // field10: '',
+  field4: null,
 };
 
 const fieldLabels = {
@@ -25,13 +20,9 @@ const fieldLabels = {
   field2: 'קבוצה',
   field3: 'תפקיד',
   field4: 'מספר חולצה',
-  // field5: 'Field Five',
-  // field6: 'Field Six',
-  // field7: 'Field Seven',
-  // field8: 'Field Eight',
-  // field9: 'Field Nine',
-  // field10: 'Field Ten',
 };
+
+const field2Options = ['Team A', 'Team B', 'Team C'];
 
 export default function FormComponent() {
   const [formData, setFormData] = useState(() => {
@@ -51,14 +42,24 @@ export default function FormComponent() {
   }, [formData]);
 
   const handleChange = (changedValues) => {
+    const updatedValues = { ...formData, ...changedValues };
+    // Convert empty string to null for field4
+    if (changedValues.field4 === '') {
+      updatedValues.field4 = null;
+    }
+    setFormData(updatedValues);
+    form.setFieldsValue(updatedValues);
+  };
+
+  const handleSelectChange = (value, field) => {
     setFormData((prevData) => ({
       ...prevData,
-      ...changedValues,
+      [field]: value,
     }));
   };
 
   const handleSubmit = () => {
-    alert('Form Data JSON:', JSON.stringify(formData));
+    alert('Form Data JSON: ' + JSON.stringify(formData));
     console.log('Form Data JSON:', JSON.stringify(formData));
   };
 
@@ -74,6 +75,14 @@ export default function FormComponent() {
     form.setFieldsValue(formData);
   }, [formData, form]);
 
+  useEffect(() => {
+    const formValues = { ...formData };
+    if (formValues.field4 === null) {
+      formValues.field4 = undefined; // Ant Design prefers undefined for empty number inputs
+    }
+    form.setFieldsValue(formValues);
+  }, [formData, form]);
+
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
       <Title level={3}>טופס הוספת שחקן לקבוצה</Title>
@@ -85,25 +94,66 @@ export default function FormComponent() {
         onFinish={handleSubmit}
       >
         <Row gutter={16}>
-          {Object.keys(formData).map((field, index) => (
-            <Col span={12} key={index}>
-              <Form.Item
-                label={fieldLabels[field]}
-                name={field}
-                rules={[
-                  {
-                    required: field === 'field2' || field === 'field1', // Set required fields
-                    message: `${fieldLabels[field]} is required`,
-                  },
-                ]}
-              >
-                <Input
-                  name={field}
-                  value={formData[field]}
-                />
-              </Form.Item>
-            </Col>
+        {Object.keys(formData).map((field, index) => (
+  <Col span={12} key={index}>
+    <Form.Item
+      label={fieldLabels[field]}
+      name={field}
+      rules={[
+        {
+          required: field === 'field1' || field === 'field2' || field === 'field4',
+          message: `${fieldLabels[field]} is required`,
+        },
+        field === 'field1' || field === 'field3' ? {
+          type: 'string',
+          max: 255,
+          message: `${fieldLabels[field]} must be a string of max length 255`,
+        } : {},
+        field === 'field4' ? [
+          {
+            type: 'number',
+            message: `${fieldLabels[field]} must be a number`,
+          },
+          {
+            validator: (_, value) => {
+              if (value === null || (Number.isInteger(value) && value >= 0)) {
+                return Promise.resolve();
+              }
+              return Promise.reject(`${fieldLabels[field]} must be a non-negative integer`);
+            },
+          },
+        ] : {},
+      ]}
+    >
+      {field === 'field2' ? (
+        <Select
+          value={formData[field]}
+          onChange={(value) => handleSelectChange(value, field)}
+        >
+          {field2Options.map((option) => (
+            <Option key={option} value={option}>
+              {option}
+            </Option>
           ))}
+        </Select>
+      ) : field === 'field4' ? (
+        <InputNumber
+          style={{ width: '100%' }}
+          min={0}
+          precision={0}
+          value={formData[field]}
+          onChange={(value) => handleChange({ [field]: value })}
+        />
+      ) : (
+        <Input
+          name={field}
+          value={formData[field]}
+          onChange={(e) => handleChange({ [field]: e.target.value })}
+        />
+      )}
+    </Form.Item>
+  </Col>
+))}
         </Row>
         <Row gutter={16}>
           <Col span={12}>

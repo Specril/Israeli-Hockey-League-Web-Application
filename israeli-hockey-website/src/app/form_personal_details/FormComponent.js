@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, Typography, Row, Col } from 'antd';
+import { Form, Input, Button, Typography, Row, Col, DatePicker } from 'antd';
 import 'antd/dist/reset.css'; // Import Ant Design styles
 import "../style.css"; // Ensure you have the correct path for your CSS
+import moment from 'moment';
 
 const { Title } = Typography;
 
@@ -59,6 +60,13 @@ export default function FormComponent() {
     }));
   };
 
+  const handleDateChange = (date, dateString) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      field4: dateString,
+    }));
+  };
+
   const handleSubmit = () => {
     alert('Form Data JSON: ' + JSON.stringify(formData));
     console.log('Form Data JSON:', JSON.stringify(formData));
@@ -73,7 +81,10 @@ export default function FormComponent() {
   };
 
   useEffect(() => {
-    form.setFieldsValue(formData);
+    form.setFieldsValue({
+      ...formData,
+      field4: formData.field4 ? moment(formData.field4) : null, // Set date value using moment
+    });
   }, [formData, form]);
 
   return (
@@ -92,11 +103,33 @@ export default function FormComponent() {
               <Form.Item
                 label={fieldLabels[field]}
                 name={field}
+                rules={[
+                  {
+                    required: true,
+                    message: `${fieldLabels[field]} is required`,
+                  },
+                  {
+                    type: field === 'field4' ? 'date' : 'string', // Type validation for date field
+                    message: `${fieldLabels[field]} must be a valid ${field === 'field4' ? 'date' : 'string'}`,
+                  },
+                  {
+                    max: 255,
+                    message: `${fieldLabels[field]} cannot be longer than 255 characters`,
+                  },
+                ]}
               >
-                <Input
-                  name={field}
-                  value={formData[field]}
-                />
+                {field === 'field4' ? (
+                  <DatePicker
+                    format="YYYY-MM-DD"
+                    value={formData[field] ? moment(formData[field]) : null}
+                    onChange={handleDateChange}
+                  />
+                ) : (
+                  <Input
+                    name={field}
+                    value={formData[field]}
+                  />
+                )}
               </Form.Item>
             </Col>
           ))}
