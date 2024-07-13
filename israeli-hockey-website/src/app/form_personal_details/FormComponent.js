@@ -8,33 +8,33 @@ import moment from 'moment';
 
 const { Title } = Typography;
 
-const initialFormState = {
-  field1: 'אורי',  // a default should be taken from a JSON file based on the user's current data
-  field2: '',
-  field3: '',
-  field4: '',
-  // field5: '',
-  // field6: '',
-  // field7: '',
-  // field8: '',
-  // field9: '',
-  // field10: '',
-};
+export default function FormComponent({ data }) {
+  const initialFormState = {
+    Full_Name: data[0]["Full_Name"],  // a default should be taken from a JSON file based on the user's current data
+    Phone: '',
+    Email: '',
+    Date_of_Birth: '',
+    // field5: '',
+    // field6: '',
+    // field7: '',
+    // field8: '',
+    // field9: '',
+    // field10: '',
+  };
 
-const fieldLabels = {
-  field1: 'שם מלא',
-  field2: 'טלפון',
-  field3: 'כתובת אימייל',
-  field4: 'תאריך לידה',
-  // field5: 'Field Five',
-  // field6: 'Field Six',
-  // field7: 'Field Seven',
-  // field8: 'Field Eight',
-  // field9: 'Field Nine',
-  // field10: 'Field Ten',
-};
+  const fieldLabels = {
+    Full_Name: 'שם מלא',
+    Phone: 'טלפון',
+    Email: 'כתובת אימייל',
+    Date_of_Birth: 'תאריך לידה',
+    // field5: 'Field Five',
+    // field6: 'Field Six',
+    // field7: 'Field Seven',
+    // field8: 'Field Eight',
+    // field9: 'Field Nine',
+    // field10: 'Field Ten',
+  };
 
-export default function FormComponent() {
   const [formData, setFormData] = useState(initialFormState);
   const [isClient, setIsClient] = useState(false);
   const [form] = Form.useForm();
@@ -63,13 +63,12 @@ export default function FormComponent() {
   const handleDateChange = (date, dateString) => {
     setFormData((prevData) => ({
       ...prevData,
-      field4: dateString,
+      Date_of_Birth: dateString,
     }));
   };
 
   const handleSubmit = () => {
-    alert('Form Data JSON: ' + JSON.stringify(formData));
-    console.log('Form Data JSON:', JSON.stringify(formData));
+    onFinish(formData);
   };
 
   const handleClearAll = () => {
@@ -83,7 +82,7 @@ export default function FormComponent() {
   useEffect(() => {
     form.setFieldsValue({
       ...formData,
-      field4: formData.field4 ? moment(formData.field4) : null, // Set date value using moment
+      Date_of_Birth: formData.Date_of_Birth ? moment(formData.Date_of_Birth) : null, // Set date value using moment
     });
   }, [formData, form]);
 
@@ -105,20 +104,17 @@ export default function FormComponent() {
                 name={field}
                 rules={[
                   {
-                    required: true,
+                    required: field === 'Full_Name' || field === 'Phone' || field === 'Email', // Set required fields
                     message: `${fieldLabels[field]} is required`,
                   },
-                  {
-                    type: field === 'field4' ? 'date' : 'string', // Type validation for date field
-                    message: `${fieldLabels[field]} must be a valid ${field === 'field4' ? 'date' : 'string'}`,
-                  },
-                  {
+                  (field === 'Full_Name' || field === 'Email') ? {
+                    type: 'string',
                     max: 255,
-                    message: `${fieldLabels[field]} cannot be longer than 255 characters`,
-                  },
+                    message: `${fieldLabels[field]} must be a string of max length 255`,
+                  } : {},
                 ]}
               >
-                {field === 'field4' ? (
+                {field === 'Date_of_Birth' ? (
                   <DatePicker
                     format="YYYY-MM-DD"
                     value={formData[field] ? moment(formData[field]) : null}
