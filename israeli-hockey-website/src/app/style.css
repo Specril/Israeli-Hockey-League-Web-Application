@@ -170,18 +170,18 @@ nav ul li a.login-button:hover {
 }
 /* Other existing styles */
 
+/* Existing styles... */
+
 table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: collapse; /* Remove border-collapse property */
   margin-top: 2%;
   text-align: right;
   transition: transform 0.2s; /* Smooth transition for hover effect */
 }
 
-table,
-th,
-td {
-  border: 1px solid #ddd;
+th, td {
+  border: none; /* Remove borders from table cells */
   padding: 1%;
 }
 
@@ -193,6 +193,9 @@ th {
 tr:nth-child(even) {
   background-color: #f2f2f2;
 }
+
+/* Other existing styles... */
+
 section {
   margin: 2%;
   padding: 2%;

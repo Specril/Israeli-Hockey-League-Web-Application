@@ -169,8 +169,8 @@ export default async function Home() {
 
   return (
     <div style={{ padding: "20px" }}>
-      <Card title="Welcome to the Israeli Hockey League" bordered={false} style={{ marginBottom: "20px" }}>
-        <p>Welcome to the official website of the Israeli Hockey League. Here, you will find the latest statistics, upcoming games, and much more about your favorite teams and players.</p>
+      <Card title="ברוכים הבאים לאתר נבחרת ישראל בהוקי גלגליות" bordered={false} style={{ marginBottom: "20px" }}>
+        <p>תוכלו למצוא כאן באתר מידע על המשחקים הקרובים, סטטיסטיקות קבוצתיות ותמונות מביכות של זיו נופל </p>
       </Card>
 
       <CarouselComponent style={{ marginBottom: "20px" }} />
