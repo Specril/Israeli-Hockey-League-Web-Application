@@ -169,11 +169,11 @@ export default async function Home() {
   const data_upcoming = await dataFetchUpcoming();
 
   return (
-    <div style={{ padding: "20px" }}>
-
-      <CarouselComponent style={{ marginBottom: "20px" }} />
-      <PremierLeagueTable data={data_statistics} name={"סטטיסטיקות קבוצתיות"} />
-      <MainCardUpcomingGames data={data_upcoming} name={"משחקים קרובים"} />
+    <div style={{ display: "flex", justifyContent: "space-between", padding: "0px" }}>
+      
+      <PremierLeagueTable data={data_statistics} name={"סטטיסטיקות קבוצתיות"} style={{ flex: "12", marginRight: "20px" }} /> {/* Adjust styles as needed */}
+      <CarouselComponent style={{ flex: "2", marginRight: "20px" }} /> {/* Adjust styles as needed */}
+      <MainCardUpcomingGames data={data_upcoming} name={"משחקים קרובים"} style={{ flex: "2" }} /> {/* Adjust styles as needed */}
     </div>
   );
 }

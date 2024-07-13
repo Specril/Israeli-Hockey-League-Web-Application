@@ -2,14 +2,26 @@
 import React from "react";
 import { Card, Table } from "antd";
 
-const MainCardUpcomingGames = ({ data, name }) => {
-  // Helper function to format date
+const MainCardUpcomingGames = ({ data, name, cardHeight }) => {
+  // Group data by date
+  const groupedData = {};
+  data.forEach((item) => {
+    const date = item['תאריך'];
+    if (!groupedData[date]) {
+      groupedData[date] = [];
+    }
+    groupedData[date].push(item);
+  });
+
+  // Helper function to format date with day
   const formatDate = (dateString) => {
+    const daysOfWeek = ['יום ראשון', 'יום שני', 'יום שלישי', 'יום רביעי', 'יום חמישי', 'יום שישי', 'יום שבת'];
     const date = new Date(dateString);
-    const day = date.getDate().toString().padStart(2, '0');
+    const day = daysOfWeek[date.getDay()]; // Get day of week
+    const dayOfMonth = date.getDate().toString().padStart(2, '0');
     const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
     const year = date.getFullYear();
-    return `${day}-${month}-${year}`;
+    return `${day}, ${dayOfMonth}-${month}-${year}`;
   };
 
   // Helper function to format time
@@ -20,16 +32,9 @@ const MainCardUpcomingGames = ({ data, name }) => {
     return `${hours}:${minutes}`;
   };
 
+  // Prepare columns
   const columns = [
     {
-      title: "קבוצת בית",
-      dataIndex: "קבוצת בית",
-      key: "קבוצת בית",
-      align: "right",
-      render: (text) => <strong>{text}</strong>
-    },
-    {
-      title: "לוגו קבוצת בית",
       dataIndex: "לוגו קבוצת בית",
       key: "לוגו קבוצת בית",
       align: "center",
@@ -42,13 +47,22 @@ const MainCardUpcomingGames = ({ data, name }) => {
       )
     },
     {
-      title: "קבוצת חוץ",
+      dataIndex: "קבוצת בית",
+      key: "קבוצת בית",
+      align: "right",
+    },
+    {
+      dataIndex: "זמן התחלה",
+      key: "זמן התחלה",
+      align: "right",
+      render: (text) => <span>{formatTime(text)}</span>
+    },
+    {
       dataIndex: "קבוצת חוץ",
       key: "קבוצת חוץ",
       align: "right"
     },
     {
-      title: "לוגו קבוצת חוץ",
       dataIndex: "לוגו קבוצת חוץ",
       key: "לוגו קבוצת חוץ",
       align: "center",
@@ -59,48 +73,41 @@ const MainCardUpcomingGames = ({ data, name }) => {
           <span>No Logo</span>
         )
       )
-    },
-    {
-      title: "יום",
-      dataIndex: "יום",
-      key: "יום",
-      align: "right",
-      render: (text) => <span>{text}</span> // Assuming text is already formatted
-    },
-    {
-      title: "תאריך",
-      dataIndex: "תאריך",
-      key: "תאריך",
-      align: "right",
-      render: (text) => <span>{formatDate(text)}</span>
-    },
-    {
-      title: "זמן התחלה",
-      dataIndex: "זמן התחלה",
-      key: "זמן התחלה",
-      align: "right",
-      render: (text) => <span>{formatTime(text)}</span>
     }
   ];
 
-  return (
+  // Render sections for each date
+  const dateSections = Object.keys(groupedData).map((date) => (
     <Card
-      title={<div style={{ textAlign: 'center', fontWeight: 'bold', color: '#ffffff', backgroundColor: '#1e90ff', borderRadius: '8px', padding: '8px' }}>{name}</div>}
+      key={date}
+      title={<div style={{ textAlign: 'center', fontWeight: 'bold' }}>{formatDate(date)}</div>}
       bordered={false}
-      style={{ width: 800, borderRadius: '8px', marginBottom: '20px' }}
-      headStyle={{ backgroundColor: '#1e90ff', borderRadius: '8px 8px 0 0' }}
+      style={{ marginBottom: '10px', height: cardHeight || 'auto', padding: 0 }}
     >
       <Table
         columns={columns}
-        dataSource={data}
+        dataSource={groupedData[date]}
         pagination={false}
-        showHeader={true}
+        showHeader={false}
         bordered={false}
         size="middle"
-        style={{ border: 'none' }}
+        style={{ border: 'none', padding: 0 }} // Adjust table padding
+        rowClassName={() => 'table-row-no-padding'} // Apply custom row class
       />
+    </Card>
+  ));
+
+  return (
+    <Card
+      title={<div style={{ textAlign: 'center', fontWeight: 'bold', color: '#ffffff', backgroundColor: '#1e90ff', borderRadius: '0px', padding: '0px' }}>{name}</div>}
+      bordered={false}
+      style={{ width: 350, borderRadius: '2px', marginBottom: '0px', padding: 0 }} // Adjusted padding
+      headStyle={{ backgroundColor: '#1e90ff', borderRadius: '8px 8px 0 0' }}
+    >
+      {dateSections}
     </Card>
   );
 };
 
 export default MainCardUpcomingGames;
+

@@ -1,13 +1,13 @@
 "use client"
 import React from "react";
-import { Card, Table } from "antd";
+import { Card, Table, Tooltip } from 'antd';
 
 const columns = [
   {
     title: "",
     dataIndex: "Logo",
     key: "Logo",
-    align: "center", // Center align the logo column
+    align: "center",
     render: (text, record) => (
       record.Logo ? (
         isBase64Image(record.Logo) ? (
@@ -24,30 +24,40 @@ const columns = [
     title: "שם קבוצה", 
     dataIndex: "שם הקבוצה", 
     key: "שם הקבוצה", 
-    align: "right", // Align text to the right
-    render: (text) => <strong>{text}</strong> // Render team name in bold
+    align: "right",
+    render: (text) => <strong>{text}</strong>
   },
   { 
-    title: "משחקים", 
+    title: (
+      <Tooltip title="משחקים">
+        מ
+      </Tooltip>
+    ), 
     dataIndex: "משחקים", 
     key: "משחקים", 
-    align: "right" // Align text to the right
+    align: "right"
   },
   { 
-    title: "הפרש", 
+    title: (
+      <Tooltip title="הפרש">
+        ה
+      </Tooltip>
+    ), 
     dataIndex: "הפרש", 
     key: "הפרש", 
-    align: "right" // Align text to the right
+    align: "right"
   },
   { 
-    title: "נקודות", 
+    title: (
+      <Tooltip title="נקודות">
+        נ
+      </Tooltip>
+    ), 
     dataIndex: "נקודות", 
     key: "נקודות", 
-    align: "right" // Align text to the right
+    align: "right"
   },
-  
 ];
-
 // Helper function to check if a string is a base64 image
 const isBase64Image = (str) => {
   return typeof str === 'string' && str.startsWith("data:image/");
