@@ -80,9 +80,10 @@ const MainCardUpcomingGames = ({ data, name, cardHeight }) => {
   const dateSections = Object.keys(groupedData).map((date) => (
     <Card
       key={date}
-      title={<div style={{ textAlign: 'center', fontWeight: 'bold' }}>{formatDate(date)}</div>}
+      title={<div style={{ textAlign: 'center', fontWeight: 'bold', margin: 0, padding: '10px 0' }}>{formatDate(date)}</div>}
       bordered={false}
-      style={{ marginBottom: '10px', height: cardHeight || 'auto', padding: 0 }}
+      style={{ margin: '0 0 10px 0', padding: 0, height: cardHeight || 'auto', overflowY: 'auto' }} // Set fixed height and enable overflowY for scrolling
+      bodyStyle={{ padding: 0 }} // Adjust body padding
     >
       <Table
         columns={columns}
@@ -91,18 +92,19 @@ const MainCardUpcomingGames = ({ data, name, cardHeight }) => {
         showHeader={false}
         bordered={false}
         size="middle"
-        style={{ border: 'none', padding: 0 }} // Adjust table padding
-        rowClassName={() => 'table-row-no-padding'} // Apply custom row class
+        style={{ border: 'none', margin: 0, padding: 0 }}
+        rowClassName={() => 'table-row-no-padding'}
       />
     </Card>
   ));
 
   return (
     <Card
-      title={<div style={{ textAlign: 'center', fontWeight: 'bold', color: '#ffffff', backgroundColor: '#1e90ff', borderRadius: '0px', padding: '0px' }}>{name}</div>}
+      title={<div style={{ textAlign: 'center', fontWeight: 'bold', color: '#ffffff', backgroundColor: '#1e90ff', padding: '10px 0' }}>{name}</div>}
       bordered={false}
-      style={{ width: 350, borderRadius: '2px', marginBottom: '0px', padding: 0 }} // Adjusted padding
-      headStyle={{ backgroundColor: '#1e90ff', borderRadius: '8px 8px 0 0' }}
+      style={{ width: 350, borderRadius: '2px', marginBottom: '10px', padding: 0 }}
+      headStyle={{ backgroundColor: '#1e90ff', borderRadius: '8px 8px 0 0', padding: 0 }}
+      bodyStyle={{ padding: 0 }} // Adjust body padding
     >
       {dateSections}
     </Card>
@@ -110,4 +112,3 @@ const MainCardUpcomingGames = ({ data, name, cardHeight }) => {
 };
 
 export default MainCardUpcomingGames;
-

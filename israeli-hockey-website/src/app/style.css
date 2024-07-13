@@ -255,3 +255,19 @@ footer {
   object-fit: cover; /* Adjust to "contain" if you want to see the full image */
 }
 
+.table-row-no-padding > td {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.ant-card-body {
+  padding: 0 !important;
+}
+
+.ant-card {
+  margin: 0 !important;
+}
+
+.ant-card-head {
+  padding: 0 !important;
+}

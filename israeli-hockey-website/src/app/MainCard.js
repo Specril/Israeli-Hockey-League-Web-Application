@@ -39,7 +39,7 @@ const columns = [
   },
   { 
     title: (
-      <Tooltip title="הפרש">
+      <Tooltip title="הפרש שערים">
         ה
       </Tooltip>
     ), 
@@ -58,6 +58,7 @@ const columns = [
     align: "right"
   },
 ];
+
 // Helper function to check if a string is a base64 image
 const isBase64Image = (str) => {
   return typeof str === 'string' && str.startsWith("data:image/");
@@ -70,7 +71,7 @@ const PremierLeagueTable = ({ data, name }) => {
     <Card
       title={<div style={{ textAlign: 'center', fontWeight: 'bold', color: '#ffffff', backgroundColor: '#1e90ff', borderRadius: '8px', padding: '8px' }}>{name}</div>}
       bordered={false}
-      style={{ width: 350, borderRadius: '8px', marginBottom: '20px' }} // Adjusted marginBottom for spacing
+      style={{ width: 350, borderRadius: '8px', marginBottom: '20px', maxHeight: '600px', overflowY: 'auto' }} // Adjusted marginBottom and added maxHeight and overflowY
       headStyle={{ backgroundColor: '#1e90ff', borderRadius: '8px 8px 0 0' }}
     >
       <Table
