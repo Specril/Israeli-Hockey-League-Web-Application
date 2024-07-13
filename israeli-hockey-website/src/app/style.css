@@ -240,3 +240,18 @@ footer {
   border-color: #0073e6;
   box-shadow: 0 0 5px rgba(0, 115, 230, 0.5);
 }
+
+/* Add this section for carousel */
+.carousel-container {
+  width: 100%;
+  max-width: 800px; /* Adjust max-width as needed */
+  margin: 0 auto;
+}
+
+.carousel-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0 auto;
+  object-fit: cover; /* Adjust to "contain" if you want to see the full image */
+}
