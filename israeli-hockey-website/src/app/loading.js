@@ -1,14 +1,16 @@
-import { Spin, Flex, Skeleton } from "antd";
 import React from "react";
 
-const loading = () => {
+const Loading = () => {
+  console.log("Loading component rendered");
   return (
-    <>
-      <Skeleton active></Skeleton>
-      <Spin size="large" />
-      <h1>adadadDADADADA</h1>
-    </>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    ></div>
   );
 };
 
-export default loading;
+export default Loading;
