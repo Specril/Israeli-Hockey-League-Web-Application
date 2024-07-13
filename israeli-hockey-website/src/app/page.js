@@ -4,6 +4,7 @@ import "./style.css";
 import Table from "./Table";
 import PremierLeagueTable from "./MainCard";
 import CarouselComponent from "./MainCarousel";
+import MainCardUpcomingGames from "./MainCardUpcomingGames"
 
 const query_team_statistics = `
 SELECT 
@@ -169,13 +170,10 @@ export default async function Home() {
 
   return (
     <div style={{ padding: "20px" }}>
-      <Card title="ברוכים הבאים לאתר נבחרת ישראל בהוקי גלגליות" bordered={false} style={{ marginBottom: "20px" }}>
-        <p>תוכלו למצוא כאן באתר מידע על המשחקים הקרובים, סטטיסטיקות קבוצתיות ותמונות מביכות של זיו נופל </p>
-      </Card>
 
       <CarouselComponent style={{ marginBottom: "20px" }} />
       <PremierLeagueTable data={data_statistics} name={"סטטיסטיקות קבוצתיות"} />
-      <Table data={data_upcoming} name={"משחקים קרובים"} />
+      <MainCardUpcomingGames data={data_upcoming} name={"משחקים קרובים"} />
     </div>
   );
 }
