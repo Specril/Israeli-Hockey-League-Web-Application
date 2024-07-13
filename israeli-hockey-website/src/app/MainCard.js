@@ -4,6 +4,13 @@ import { Card, Table, Tooltip } from 'antd';
 
 const columns = [
   {
+    title: "#",
+    dataIndex: "index", // New dataIndex for the index column
+    key: "index",
+    align: "center",
+    render: (text, record, index) => index + 1, // Display index starting from 1
+  },
+  {
     title: "",
     dataIndex: "Logo",
     key: "Logo",
@@ -67,6 +74,12 @@ const isBase64Image = (str) => {
 const PremierLeagueTable = ({ data, name }) => {
   const tableRowClassName = () => "table-row-no-hover"; // Custom class to remove row line
 
+  // Add an index field to each record
+  const indexedData = data.map((record, index) => ({
+    ...record,
+    index: index + 1, // Index starts from 1
+  }));
+
   return (
     <Card
       title={<div style={{ textAlign: 'center', fontWeight: 'bold', color: '#ffffff', backgroundColor: '#1e90ff', borderRadius: '8px', padding: '8px' }}>{name}</div>}
@@ -76,7 +89,7 @@ const PremierLeagueTable = ({ data, name }) => {
     >
       <Table
         columns={columns}
-        dataSource={data}
+        dataSource={indexedData}
         pagination={false}
         showHeader={true} // Show table header
         rowClassName={tableRowClassName} // Apply custom row class
