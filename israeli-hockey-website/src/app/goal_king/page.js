@@ -1,5 +1,6 @@
 import "../style.css";
 import Table from "../Table";
+import GoalKing from "./GoalKing";
 
 const query_goal_king = `
 SELECT Full_Name AS "שם השחקן", "כמות גולים" from
@@ -27,6 +28,7 @@ export default async function Home() {
 
   return (
     <>
+      <GoalKing data={data_goal_king} />
       <Table data={data_goal_king} name={"מלך השערים"} />
     </>
   );
