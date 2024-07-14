@@ -10,7 +10,7 @@ const { Title } = Typography;
 
 export default function FormComponent({ data }) {
   const initialFormState = {
-    Full_Name: data[0]["Full_Name"],  // a default should be taken from a JSON file based on the user's current data
+    Full_Name: '',  // a default should be taken from a JSON file based on the user's current data
     Phone: '',
     Email: '',
     Date_of_Birth: '',
@@ -41,7 +41,7 @@ export default function FormComponent({ data }) {
 
   useEffect(() => {
     setIsClient(true);
-    const savedFormData = localStorage.getItem('formDataPersonalDetails');
+    const savedFormData = localStorage.getItem('formDataPersonalDetails1');
     if (savedFormData) {
       setFormData(JSON.parse(savedFormData));
     }
@@ -49,7 +49,7 @@ export default function FormComponent({ data }) {
 
   useEffect(() => {
     if (isClient) {
-      localStorage.setItem('formDataPersonalDetails', JSON.stringify(formData));
+      localStorage.setItem('formDataPersonalDetails1', JSON.stringify(formData));
     }
   }, [formData, isClient]);
 
@@ -67,15 +67,57 @@ export default function FormComponent({ data }) {
     }));
   };
 
-  const handleSubmit = () => {
-    onFinish(formData);
+
+  // const onSubmit = async (values, { setSubmitting }) => {
+  //   try {
+  //     const response = await fetch('/api/users/register', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(values),
+  //     }).then((res) => res.json()).then((data) => {
+  //       if (data.error) {
+  //         setMessage(data.error);
+  //         setSubmitting(false);
+  //         toast.error(data.error);
+  //         return;
+  //       }
+  //       setFirstName(values.firstName);
+  //       setMessage(data.message);
+  //       setSubmitting(false);
+  //       toast.success('נרשמת בהצלחה!');
+  //     });
+  //   } catch (error) {
+  //     setMessage('Error registering user');
+  //     setSubmitting(false);
+  //   }
+    
+  // };
+
+
+  const handleSubmit = async () => {
+    alert('Form Data JSON: ' + JSON.stringify(formData));
+    // onFinish(formData);
+    try {
+      const response = await fetch('/api/form_personal_details', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+    } catch (error) {
+      console.alert('Error updating data');
+    }
+    
   };
 
   const handleClearAll = () => {
     form.resetFields();
     setFormData(initialFormState);
     if (isClient) {
-      localStorage.removeItem('formDataPersonalDetails');
+      localStorage.removeItem('formDataPersonalDetails1');
     }
   };
 
