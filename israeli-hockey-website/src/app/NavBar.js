@@ -36,7 +36,7 @@ export default function NavBar() {
           <a href="#contact-us">צור קשר</a>
         </li>
         <li>
-          <a href="form_games_updating">הוספת משחק</a>
+          <a href="form_add_game">הוספת משחק</a>
         </li>
         <li>
           <a href="form_personal_details">עדכון פרטים אישיים</a>

@@ -14,6 +14,7 @@ export default function FormComponent({ data }) {
     Phone: '',
     Email: '',
     Date_of_Birth: '',
+
     // field5: '',
     // field6: '',
     // field7: '',
@@ -97,7 +98,10 @@ export default function FormComponent({ data }) {
 
 
   const handleSubmit = async () => {
-    alert('Form Data JSON: ' + JSON.stringify(formData));
+    // setFormData({...formData, User_ID: data[0]['User_ID']})
+    const final_data = {...formData, User_ID: data[0]['User_ID']}
+  
+    alert('Form Data JSON: ' + JSON.stringify(final_data));
     // onFinish(formData);
     try {
       const response = await fetch('/api/form_personal_details', {
@@ -105,7 +109,7 @@ export default function FormComponent({ data }) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(final_data),
       })
     } catch (error) {
       console.alert('Error updating data');
