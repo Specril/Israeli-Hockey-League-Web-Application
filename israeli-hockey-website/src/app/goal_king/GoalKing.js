@@ -1,61 +1,58 @@
 "use client";
-import { Card, Row, Col, Table } from "antd";
+import { Card, List, Avatar } from "antd";
+import { CrownTwoTone, setTwoToneColor } from "@ant-design/icons";
 import React from "react";
 
-const gridStyle = {
-  width: "100%",
-};
-
 export default function GoalKing({ data }) {
-  const columns = [
-    {
-      title: "שם השחקן",
-      dataIndex: "name",
-      key: "name",
-    },
-    {
-      title: "כמות גולים",
-      dataIndex: "goals",
-      key: "goals",
-    },
-  ];
+  const top10 = data.slice(0, 10);
+  setTwoToneColor("#0059b3");
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Goals</h2>
-      <Row gutter={[16, 16]}>
-        <Col span={24}>
-          <Card
-            hoverable
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              padding: "20px",
-              marginBottom: "20px",
-              background: "#f0f2f5",
-              border: "2px solid #1890ff",
-            }}
-          >
-            <img
-              src="path-to-image" // Replace with the path to your image
-              alt={data[0].name}
-              style={{ height: "80px", marginBottom: "16px" }}
-            />
-            <h3>{data[0].name}</h3>
-            <p>{data[0].goals} Goals</p>
-          </Card>
-        </Col>
-      </Row>
-      <Row gutter={[16, 16]}>
-        <Col span={24}>
-          <Table
-            dataSource={data.slice(1)}
-            columns={columns}
-            pagination={false}
-            rowKey="name"
-          />
-        </Col>
-      </Row>
-    </div>
+    <>
+      <h1>מלך השערים</h1>
+      <List
+        style={{ maxWidth: 400, borderRadius: "10px", overflow: "hidden" }}
+        itemLayout="horizontal"
+        dataSource={top10}
+        renderItem={(item, index) => {
+          if (index === 0) {
+            return (
+              <List.Item style={{ backgroundColor: "blue" }}>
+                <List.Item.Meta
+                  avatar={<Avatar src={item["סמל קבוצה"]} />}
+                  title={
+                    <span
+                      style={{
+                        fontSize: "20px",
+                        color: "white",
+                      }}
+                    >
+                      {index + 1}. {item["שם השחקן"]}
+                    </span>
+                  }
+                />
+                <div style={{ fontSize: "20px", color: "white" }}>
+                  {item["כמות גולים"]}
+                </div>
+                <CrownTwoTone twoToneColor="yellow" />
+              </List.Item>
+            );
+          } else {
+            return (
+              <List.Item>
+                <List.Item.Meta
+                  avatar={<Avatar src={item["סמל קבוצה"]} />}
+                  title={
+                    <span>
+                      {index + 1}. {item["שם השחקן"]}
+                    </span>
+                  }
+                />
+                <div>{item["כמות גולים"]}</div>
+              </List.Item>
+            );
+          }
+        }}
+      />
+    </>
   );
 }
