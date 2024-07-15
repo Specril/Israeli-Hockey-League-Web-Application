@@ -1,6 +1,7 @@
 import "../style.css";
 import Table from "../Table";
 import GoalKing from "./GoalKing";
+import { Flex } from "antd";
 
 // const query_goal_king = `
 // SELECT Full_Name AS "שם השחקן", "כמות גולים" from
@@ -42,7 +43,14 @@ export default async function Home() {
 
   return (
     <>
-      <GoalKing data={data_goal_king} />
+      <Flex gap="large" align="start" justify="space-evenly">
+        <GoalKing data={data_goal_king} />
+        <GoalKing data={data_goal_king} />
+      </Flex>
+      <Flex gap="large" align="start" justify="space-evenly">
+        <GoalKing data={data_goal_king} />
+        <GoalKing data={data_goal_king} />
+      </Flex>
     </>
   );
 }

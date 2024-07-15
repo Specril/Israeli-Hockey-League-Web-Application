@@ -8,37 +8,42 @@ export default function GoalKing({ data }) {
   setTwoToneColor("#0059b3");
   return (
     <>
-      <h1>מלך השערים</h1>
       <List
-        style={{ maxWidth: 400, borderRadius: "10px", overflow: "hidden" }}
+        header={<h1>מלך השערים</h1>}
+        style={{ width: 400, borderRadius: "10px", overflow: "hidden" }}
         itemLayout="horizontal"
         dataSource={top10}
         renderItem={(item, index) => {
           if (index === 0) {
             return (
-              <List.Item style={{ backgroundColor: "blue" }}>
+              <List.Item style={{ backgroundColor: "blue", padding: "10px" }}>
                 <List.Item.Meta
                   avatar={<Avatar src={item["סמל קבוצה"]} />}
                   title={
-                    <span
-                      style={{
-                        fontSize: "20px",
-                        color: "white",
-                      }}
-                    >
-                      {index + 1}. {item["שם השחקן"]}
-                    </span>
+                    <div>
+                      <span
+                        style={{
+                          fontSize: "25px",
+                          color: "white",
+                        }}
+                      >
+                        {index + 1}. {item["שם השחקן"]}
+                      </span>
+                      <CrownTwoTone
+                        twoToneColor="yellow"
+                        style={{ marginRight: "5px" }}
+                      />
+                    </div>
                   }
                 />
-                <div style={{ fontSize: "20px", color: "white" }}>
+                <div style={{ fontSize: "25px", color: "white" }}>
                   {item["כמות גולים"]}
                 </div>
-                <CrownTwoTone twoToneColor="yellow" />
               </List.Item>
             );
           } else {
             return (
-              <List.Item>
+              <List.Item style={{ padding: "10px" }}>
                 <List.Item.Meta
                   avatar={<Avatar src={item["סמל קבוצה"]} />}
                   title={
