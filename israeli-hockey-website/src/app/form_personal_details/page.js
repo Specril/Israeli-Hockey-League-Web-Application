@@ -16,7 +16,7 @@ async function dataFetch() {
   try {
     teamsData = await fetchRows(() => query_example);
   } catch (error) {
-    console.error("Error fetching teams:", error);
+    console.error("Error fetching Users:", error);
   }
   return teamsData;
 }

@@ -1,40 +1,33 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, Typography, Row, Col, DatePicker } from 'antd';
+import { Form, Input, Button, Typography, Row, Col, DatePicker, Select, TimePicker } from 'antd';
 import 'antd/dist/reset.css'; // Import Ant Design styles
 import "../style.css"; // Ensure you have the correct path for your CSS
 import moment from 'moment';
 
 const { Title } = Typography;
+const { Option } = Select;
+
 
 export default function FormComponent({ data }) {
-  const initialFormState = {
-    Full_Name: '',  // a default should be taken from a JSON file based on the user's current data
-    Phone: '',
-    Email: '',
-    Date_of_Birth: '',
+const initialFormState = {
+  Date_of_Birth: data[0]['Date_of_Birth'], 
+  Full_Name: data[0]['Full_Name'],
+  Phone: '',
+  Email: '',
 
-    // field5: '',
-    // field6: '',
-    // field7: '',
-    // field8: '',
-    // field9: '',
-    // field10: '',
-  };
+};
 
-  const fieldLabels = {
-    Full_Name: 'שם מלא',
-    Phone: 'טלפון',
-    Email: 'כתובת אימייל',
-    Date_of_Birth: 'תאריך לידה',
-    // field5: 'Field Five',
-    // field6: 'Field Six',
-    // field7: 'Field Seven',
-    // field8: 'Field Eight',
-    // field9: 'Field Nine',
-    // field10: 'Field Ten',
-  };
+const fieldLabels = {
+  Date_of_Birth: 'תאריך',
+  Full_Name: 'שם מלא',
+  Phone: 'טלפון',
+  Email: 'מייל',
+
+};
+
+
 
   const [formData, setFormData] = useState(initialFormState);
   const [isClient, setIsClient] = useState(false);
@@ -42,7 +35,7 @@ export default function FormComponent({ data }) {
 
   useEffect(() => {
     setIsClient(true);
-    const savedFormData = localStorage.getItem('formDataPersonalDetails1');
+    const savedFormData = localStorage.getItem('formDataPersonal');
     if (savedFormData) {
       setFormData(JSON.parse(savedFormData));
     }
@@ -50,7 +43,7 @@ export default function FormComponent({ data }) {
 
   useEffect(() => {
     if (isClient) {
-      localStorage.setItem('formDataPersonalDetails1', JSON.stringify(formData));
+      localStorage.setItem('formDataPersonal', JSON.stringify(formData));
     }
   }, [formData, isClient]);
 
@@ -64,77 +57,44 @@ export default function FormComponent({ data }) {
   const handleDateChange = (date, dateString) => {
     setFormData((prevData) => ({
       ...prevData,
-      Date_of_Birth: dateString,
+      Date_of_Birth: date ? dateString : null,
     }));
   };
 
 
-  // const onSubmit = async (values, { setSubmitting }) => {
-  //   try {
-  //     const response = await fetch('/api/users/register', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify(values),
-  //     }).then((res) => res.json()).then((data) => {
-  //       if (data.error) {
-  //         setMessage(data.error);
-  //         setSubmitting(false);
-  //         toast.error(data.error);
-  //         return;
-  //       }
-  //       setFirstName(values.firstName);
-  //       setMessage(data.message);
-  //       setSubmitting(false);
-  //       toast.success('נרשמת בהצלחה!');
-  //     });
-  //   } catch (error) {
-  //     setMessage('Error registering user');
-  //     setSubmitting(false);
-  //   }
-    
-  // };
 
+  const handleSelectChange = (value, field) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: value,
+    }));
+  };
 
-  const handleSubmit = async () => {
-    // setFormData({...formData, User_ID: data[0]['User_ID']})
-    const final_data = {...formData, User_ID: data[0]['User_ID']}
-  
-    alert('Form Data JSON: ' + JSON.stringify(final_data));
-    // onFinish(formData);
-    try {
-      const response = await fetch('/api/form_personal_details', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(final_data),
-      })
-    } catch (error) {
-      console.alert('Error updating data');
-    }
-    
+  const handleSubmit = () => {
+    alert('Form Data JSON: ' + JSON.stringify(formData));
+    console.log('Form Data JSON:', JSON.stringify(formData));
   };
 
   const handleClearAll = () => {
     form.resetFields();
     setFormData(initialFormState);
     if (isClient) {
-      localStorage.removeItem('formDataPersonalDetails1');
+      localStorage.removeItem('formDataPersonal');
     }
   };
 
   useEffect(() => {
-    form.setFieldsValue({
-      ...formData,
-      Date_of_Birth: formData.Date_of_Birth ? moment(formData.Date_of_Birth) : null, // Set date value using moment
-    });
-  }, [formData, form]);
+    if (isClient) {
+      form.setFieldsValue({
+        ...formData,
+        Date_of_Birth: formData.Date_of_Birth ? moment(formData.Date_of_Birth) : null, // Set date value using moment
+      });
+    }
+  }, [formData, form, isClient]);
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-      <Title level={3}>טופס לעדכון פרטים אישיים</Title>
+      <Title level={3}>טופסססס פרטים אישיים בדיקה</Title>
       <Form
         form={form}
         layout="vertical"
@@ -143,38 +103,83 @@ export default function FormComponent({ data }) {
         onFinish={handleSubmit}
       >
         <Row gutter={16}>
-          {Object.keys(formData).map((field, index) => (
-            <Col span={12} key={index}>
-              <Form.Item
-                label={fieldLabels[field]}
-                name={field}
-                rules={[
-                  {
-                    required: field === 'Full_Name' || field === 'Phone' || field === 'Email', // Set required fields
-                    message: `${fieldLabels[field]} is required`,
-                  },
-                  (field === 'Full_Name' || field === 'Email') ? {
-                    type: 'string',
-                    max: 255,
-                    message: `${fieldLabels[field]} must be a string of max length 255`,
-                  } : {},
-                ]}
-              >
-                {field === 'Date_of_Birth' ? (
-                  <DatePicker
-                    format="YYYY-MM-DD"
-                    value={formData[field] ? moment(formData[field]) : null}
-                    onChange={handleDateChange}
-                  />
-                ) : (
-                  <Input
-                    name={field}
-                    value={formData[field]}
-                  />
-                )}
-              </Form.Item>
-            </Col>
-          ))}
+          <Col span={24}>
+            <Form.Item
+              label={fieldLabels['Full_Name']}
+              name="Full_Name"
+              rules={[
+                {
+                  required: true,
+                  message: `${fieldLabels['Full_Name']} is required`,
+                },
+              ]}
+            >
+              <Input
+                name="Full_Name"
+                value={formData['Full_Name']}
+                onChange={(e) => handleChange({ Full_Name: e.target.value })}
+              />
+            </Form.Item>
+          </Col>
+          
+          <Col span={24}>
+            <Form.Item
+              label={fieldLabels['Phone']}
+              name="Phone"
+              rules={[
+                {
+                  required: true,
+                  message: `${fieldLabels['Phone']} is required`,
+                },
+              ]}
+            >
+              <Input
+                name="Phone"
+                value={formData['Phone']}
+                onChange={(e) => handleChange({ Phone: e.target.value })}
+              />
+            </Form.Item>
+          </Col>
+
+          <Col span={24}>
+            <Form.Item
+              label={fieldLabels['Email']}
+              name="Email"
+              rules={[
+                {
+                  required: true,
+                  message: `${fieldLabels['Email']} is required`,
+                },
+              ]}
+            >
+              <Input
+                name="Email"
+                value={formData['Email']}
+                onChange={(e) => handleChange({ Email: e.target.value })}
+              />
+            </Form.Item>
+          </Col>
+              
+          <Col span={24}>
+            <Form.Item
+              label={fieldLabels['Date_of_Birth']}
+              name="Date_of_Birth"
+              rules={[
+                {
+                  required: true,
+                  message: `${fieldLabels['Date_of_Birth']} is required`,
+                },
+              ]}
+            >
+              <DatePicker
+                format="YYYY-MM-DD"
+                value={formData['Date_of_Birth'] ? moment(formData['Date_of_Birth']) : null}
+                onChange={handleDateChange}
+              />
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+          </Col>
         </Row>
         <Row gutter={16}>
           <Col span={12}>
