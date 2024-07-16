@@ -131,7 +131,7 @@ export default function UploadGameResultForm({ data }) {
               >
                 {games.map((game) => (
                   <Option key={game.key} value={game.key}>
-                    {`משחק ${game.key}: ${moment(game.value[2]).format('YYYY-MM-DD')} - קבוצות ${game.value[0]} מול ${game.value[1]}`}
+                    {`משחק ${game.key}: ${moment(game.value[2]).format('YYYY-MM-DD')} - קבוצות: ${game.value[0]} מול ${game.value[1]}`}
                   </Option>
                 ))}
               </Select>
@@ -141,7 +141,7 @@ export default function UploadGameResultForm({ data }) {
         {selectedGame && (
           <Row gutter={16}>
             <Col span={12}>
-              <Title level={4}>{`קבוצה: ${selectedGame.value[0]}`}</Title>
+              <Title level={5}>{`קבוצה: ${selectedGame.value[0]}`}</Title>
               {formData.teamAGoals.map((goal, index) => (
                 <Row gutter={8} key={index}>
                   <Col span={16}>
@@ -169,7 +169,7 @@ export default function UploadGameResultForm({ data }) {
               </Button>
             </Col>
             <Col span={12}>
-              <Title level={4}>{`קבוצה: ${selectedGame.value[1]}`}</Title>
+              <Title level={5}>{`קבוצה: ${selectedGame.value[1]}`}</Title>
               {formData.teamBGoals.map((goal, index) => (
                 <Row gutter={8} key={index}>
                   <Col span={16}>

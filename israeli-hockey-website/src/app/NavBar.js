@@ -52,6 +52,12 @@ export default function NavBar() {
           <a href="form_results_updating">העלאת תוצאות משחק</a>
         </li>
         <li>
+          <a href="form_delete_player">מחיקת שחקן</a>
+        </li>
+        <li>
+          <a href="form_delete_team">מחיקת קבוצה</a>
+        </li>
+        <li>
           <a href="#login" className="login-button" onClick={toggleLoginForm}>
             התחברות
           </a>
