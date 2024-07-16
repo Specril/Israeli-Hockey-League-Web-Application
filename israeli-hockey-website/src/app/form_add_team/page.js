@@ -1,13 +1,56 @@
-"use client";
+
 
 import React from 'react';
 import FormComponent from './FormComponent';
 import 'antd/dist/reset.css'; // Import Ant Design CSS reset
+const fetchRows = require("../api/fetchRows");
 
-export default function Page() {
+
+
+const query_league = 'select * from League;'
+const query_locations = 'select * from Locations'
+
+async function dataFetchLeagues() {
+  let leagueData = [];
+  try {
+    leagueData = await fetchRows(() => query_league);
+  } catch (error) {
+    console.error("Error fetching leagues:", error);
+  }
+
+  const options_league = leagueData.map(leauge => ({ key: leauge.Leauge_ID, value: leauge.Leauge_Name }));;
+ 
+  return options_league
+}
+
+
+async function dataFetchLocations() {
+  let locationsData = [];
+  try {
+    locationsData = await fetchRows(() => query_locations);
+  } catch (error) {
+    console.error("Error fetching locations:", error);
+  }
+
+  const options_locations = locationsData.map(loc => ({ key: loc.Location_ID, value: loc.Location_Name }));;
+
+  return options_locations
+}
+
+export default async function Page() {
+
+  const leaguesData = await dataFetchLeagues();
+  const locationsData = await dataFetchLocations();
+  const all_data = [leaguesData,locationsData]
+  // console.log(all_data[1])
+
+
+
+
   return (
     <>
-      <FormComponent />
+      <FormComponent data = {all_data} />
+      
     </>
   );
 }

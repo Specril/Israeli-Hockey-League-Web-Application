@@ -41,12 +41,7 @@ export default function NavBar() {
         <li>
           <a href="form_personal_details">עדכון פרטים אישיים</a>
         </li>
-        <li>
-          <a href="form_goals_updating">הוספת גול</a>
-        </li>
-        <li>
-          <a href="form_penalties_updating">הוספת עבירה</a>
-        </li>
+
         <li>
           <a href="form_add_player">הוספת שחקן</a>
         </li>

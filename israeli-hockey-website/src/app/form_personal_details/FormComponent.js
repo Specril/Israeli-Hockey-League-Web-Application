@@ -75,6 +75,29 @@ const fieldLabels = {
     console.log('Form Data JSON:', JSON.stringify(formData));
   };
 
+
+  // const handleSubmit = async () => {
+  //   // setFormData({...formData, User_ID: data[0]['User_ID']})
+  //   const final_data = {...formData, User_ID: data[0]['User_ID']}
+
+  //   alert('Form Data JSON: ' + JSON.stringify(final_data));
+  //   // onFinish(formData);
+  //   try {
+  //     const response = await fetch('/api/form_personal_details', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(final_data),
+  //     })
+  //   } catch (error) {
+  //     console.alert('Error updating data');
+  //   }
+    
+  // };
+
+
+
   const handleClearAll = () => {
     form.resetFields();
     setFormData(initialFormState);

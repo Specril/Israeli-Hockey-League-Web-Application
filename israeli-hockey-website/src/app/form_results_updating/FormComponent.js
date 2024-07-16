@@ -1,44 +1,47 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, Typography, Row, Col, Select } from 'antd';
+import { Form, Input, Button, Typography, Row, Col, Select, TimePicker } from 'antd';
 import 'antd/dist/reset.css'; // Import Ant Design styles
-import "../style.css"; // Ensure you have the correct path for your CSS
+import "../style.css";
+import moment from 'moment';
 
 const { Title } = Typography;
 const { Option } = Select;
 
-const initialFormState = {
-  selectedGameId: '',
-  teamAGoals: [],
-  teamBGoals: [],
-};
+export default function UploadGameResultForm({ data }) {
+  const initialFormState = {
+    selectedGameId: '',
+    teamAGoals: [],
+    teamBGoals: [],
+  };
 
-const fieldLabels = {
-  selectedGameId: 'בחר משחק',
-  teamA: 'קבוצה א',
-  teamB: 'קבוצה ב',
-};
+  const fieldLabels = {
+    selectedGameId: 'בחר משחק',
+    teamA: 'קבוצה א',
+    teamB: 'קבוצה ב',
+  };
 
-const games = [
-  { id: '1', date: '2024-07-01', teams: 'Team A vs Team B', hour: '18:00', teamA: 'Team A', teamB: 'Team B' },
-  { id: '2', date: '2024-07-02', teams: 'Team C vs Team D', hour: '20:00', teamA: 'Team C', teamB: 'Team D' },
-  { id: '3', date: '2024-07-03', teams: 'Team E vs Team F', hour: '19:00', teamA: 'Team E', teamB: 'Team F' },
-];
+  const games = data;  // Assuming data is passed correctly
 
-const players = {
-  'Team A': ['Player A1', 'Player A2', 'Player A3'],
-  'Team B': ['Player B1', 'Player B2', 'Player B3'],
-  'Team C': ['Player C1', 'Player C2', 'Player C3'],
-  'Team D': ['Player D1', 'Player D2', 'Player D3'],
-  'Team E': ['Player E1', 'Player E2', 'Player E3'],
-  'Team F': ['Player F1', 'Player F2', 'Player F3'],
-};
-
-export default function UploadGameResultForm() {
   const [formData, setFormData] = useState(initialFormState);
   const [selectedGame, setSelectedGame] = useState(null);
+  const [isClient, setIsClient] = useState(false);
   const [form] = Form.useForm();
+
+  useEffect(() => {
+    setIsClient(true);
+    const savedFormData = localStorage.getItem('formGameResult');
+    if (savedFormData) {
+      setFormData(JSON.parse(savedFormData));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isClient) {
+      localStorage.setItem('formGameResult', JSON.stringify(formData));
+    }
+  }, [formData, isClient]);
 
   const handleChange = (changedValues) => {
     setFormData((prevData) => ({
@@ -47,13 +50,13 @@ export default function UploadGameResultForm() {
     }));
 
     if (changedValues.selectedGameId) {
-      const game = games.find(game => game.id === changedValues.selectedGameId);
+      const game = games.find(game => game.key === changedValues.selectedGameId);
       setSelectedGame(game);
     }
   };
 
   const handleAddGoal = (team) => {
-    const goal = { player: '', time: '' };
+    const goal = { player: '', time: null };
     setFormData((prevData) => ({
       ...prevData,
       [team]: [...prevData[team], goal],
@@ -69,6 +72,15 @@ export default function UploadGameResultForm() {
     }));
   };
 
+  const handleTimeChange = (team, index, time, timeString) => {
+    const newGoals = [...formData[team]];
+    newGoals[index].time = timeString;
+    setFormData((prevData) => ({
+      ...prevData,
+      [team]: newGoals,
+    }));
+  };
+
   const handleSubmit = () => {
     alert('Form Data JSON: ' + JSON.stringify(formData));
     console.log('Form Data JSON:', JSON.stringify(formData));
@@ -78,6 +90,9 @@ export default function UploadGameResultForm() {
     form.resetFields();
     setFormData(initialFormState);
     setSelectedGame(null);
+    if (isClient) {
+      localStorage.removeItem('formGameResult');
+    }
   };
 
   useEffect(() => {
@@ -86,12 +101,12 @@ export default function UploadGameResultForm() {
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-      <Title level={3}>טופס העלאת תוצאה למשחק</Title>
+      <Title level={3}>טופס העלאת תוצאות למשחק</Title>
       <Form
         form={form}
         layout="vertical"
         initialValues={formData}
-        onValuesChange={handleChange}
+        onValuesChange={(changedValues, allValues) => handleChange(allValues)}
         onFinish={handleSubmit}
       >
         <Row gutter={16}>
@@ -107,12 +122,16 @@ export default function UploadGameResultForm() {
               ]}
             >
               <Select
-                value={formData.selectedGameId}
-                onChange={(value) => handleChange({ selectedGameId: value })}
+                showSearch
+                placeholder="Select a game"
+                optionFilterProp="children"
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
                 {games.map((game) => (
-                  <Option key={game.id} value={game.id}>
-                    {`${game.date} - ${game.teams} - ${game.hour}`}
+                  <Option key={game.key} value={game.key}>
+                    {`משחק ${game.key}: ${moment(game.value[2]).format('YYYY-MM-DD')} - קבוצות ${game.value[0]} מול ${game.value[1]}`}
                   </Option>
                 ))}
               </Select>
@@ -122,31 +141,24 @@ export default function UploadGameResultForm() {
         {selectedGame && (
           <Row gutter={16}>
             <Col span={12}>
-              <Title level={4}>{selectedGame.teamA}</Title>
+              <Title level={4}>{`קבוצה: ${selectedGame.value[0]}`}</Title>
               {formData.teamAGoals.map((goal, index) => (
                 <Row gutter={8} key={index}>
                   <Col span={16}>
                     <Form.Item>
-                      <Select
+                      <Input
+                        placeholder="שחקן"
                         value={goal.player}
-                        onChange={(value) => handleGoalChange('teamAGoals', index, 'player', value)}
-                        placeholder="בחר שחקן"
-                      >
-                        {players[selectedGame.teamA].map((player) => (
-                          <Option key={player} value={player}>
-                            {player}
-                          </Option>
-                        ))}
-                      </Select>
+                        onChange={(e) => handleGoalChange('teamAGoals', index, 'player', e.target.value)}
+                      />
                     </Form.Item>
                   </Col>
                   <Col span={8}>
                     <Form.Item>
-                      <Input
-                        type="number"
-                        placeholder="זמן (דקות)"
-                        value={goal.time}
-                        onChange={(e) => handleGoalChange('teamAGoals', index, 'time', e.target.value)}
+                      <TimePicker
+                        format="HH:mm"
+                        value={goal.time ? moment(goal.time, "HH:mm") : null}
+                        onChange={(time, timeString) => handleTimeChange('teamAGoals', index, time, timeString)}
                       />
                     </Form.Item>
                   </Col>
@@ -157,31 +169,24 @@ export default function UploadGameResultForm() {
               </Button>
             </Col>
             <Col span={12}>
-              <Title level={4}>{selectedGame.teamB}</Title>
+              <Title level={4}>{`קבוצה: ${selectedGame.value[1]}`}</Title>
               {formData.teamBGoals.map((goal, index) => (
                 <Row gutter={8} key={index}>
                   <Col span={16}>
                     <Form.Item>
-                      <Select
+                      <Input
+                        placeholder="שחקן"
                         value={goal.player}
-                        onChange={(value) => handleGoalChange('teamBGoals', index, 'player', value)}
-                        placeholder="בחר שחקן"
-                      >
-                        {players[selectedGame.teamB].map((player) => (
-                          <Option key={player} value={player}>
-                            {player}
-                          </Option>
-                        ))}
-                      </Select>
+                        onChange={(e) => handleGoalChange('teamBGoals', index, 'player', e.target.value)}
+                      />
                     </Form.Item>
                   </Col>
                   <Col span={8}>
                     <Form.Item>
-                      <Input
-                        type="number"
-                        placeholder="זמן (דקות)"
-                        value={goal.time}
-                        onChange={(e) => handleGoalChange('teamBGoals', index, 'time', e.target.value)}
+                      <TimePicker
+                        format="HH:mm"
+                        value={goal.time ? moment(goal.time, "HH:mm") : null}
+                        onChange={(time, timeString) => handleTimeChange('teamBGoals', index, time, timeString)}
                       />
                     </Form.Item>
                   </Col>

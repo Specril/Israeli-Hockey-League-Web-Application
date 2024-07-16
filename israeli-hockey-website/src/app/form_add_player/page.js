@@ -17,6 +17,7 @@ async function dataFetch() {
     console.error("Error fetching teams:", error);
   }
   const options = teamsData.map(team => ({ key: team.Team_ID, value: team.Team_Name }));;
+  // console.log(options)
   return options
 }
 

@@ -1,54 +1,56 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, Typography, Row, Col, Select } from 'antd';
-import 'antd/dist/reset.css'; // Import Ant Design styles
-import "../style.css"; // Ensure you have the correct path for your CSS
+import { Form, Input, Button, Typography, Row, Col, Select, InputNumber } from 'antd';
+import 'antd/dist/reset.css';
+import "../style.css";
 
 const { Title } = Typography;
+const { Option } = Select;
 
-const initialFormState = {
-  field1: '',
-  field2: '',
-  field3: '',
-  field4: '',
-  // field5: '',
-  // field6: '',
-  // field7: '',
-  // field8: '',
-  // field9: '',
-  // field10: '',
-};
 
-const fieldLabels = {
-  field1: 'שם קבוצה',
-  field2: 'ליגה',
-  field3: 'מיקום',
-  field4: 'דירוג',
-  // field5: 'Field Five',
-  // field6: 'Field Six',
-  // field7: 'Field Seven',
-  // field8: 'Field Eight',
-  // field9: 'Field Nine',
-  // field10: 'Field Ten',
-};
+export default function FormComponent({data}) {
 
-export default function FormComponent() {
-  const [formData, setFormData] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const savedFormData = localStorage.getItem('formDataPlayer');
-      return savedFormData ? JSON.parse(savedFormData) : initialFormState;
-    }
-    return initialFormState;
-  });
 
+  const initialFormState = {
+    Team_Name: '',
+    League_ID: '',
+    Location: '',
+    Rank: null,
+  };
+  
+  const fieldLabels = {
+    Team_Name: 'שם קבוצה',
+    League_ID: 'ליגה',
+    Location: 'מיקום',
+    Rank: 'דירוג',
+  };
+  
+
+    // const League_IDOptions = data[0]
+    const LocationsOptions = data[1]
+    console.log("inside form component")
+    console.log(LocationsOptions)
+
+
+
+  const [formData, setFormData] = useState(initialFormState);
+  const [isClient, setIsClient] = useState(false);
   const [form] = Form.useForm();
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('formDataPlayer', JSON.stringify(formData));
+    setIsClient(true);
+    const savedFormData = localStorage.getItem('formAddTeam');
+    if (savedFormData) {
+      setFormData(JSON.parse(savedFormData));
     }
-  }, [formData]);
+  }, []);
+
+  useEffect(() => {
+    if (isClient) {
+      localStorage.setItem('formAddTeam', JSON.stringify(formData));
+    }
+  }, [formData, isClient]);
 
   const handleChange = (changedValues) => {
     setFormData((prevData) => ({
@@ -57,22 +59,68 @@ export default function FormComponent() {
     }));
   };
 
-  const handleSubmit = () => {
-    alert('Form Data JSON:', JSON.stringify(formData));
-    console.log('Form Data JSON:', JSON.stringify(formData));
+  const handleDateChange = (date, dateString) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      Date_of_Birth: date ? dateString : null,
+    }));
   };
+
+
+
+  const handleSelectChange = (value, field) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: value,
+    }));
+  };
+
+
+  // This version of handleSubmit is good for debugging frontend without connecting to the db
+
+  // const handleSubmit = () => {
+  //   alert('Form Data JSON: ' + JSON.stringify(formData));
+  //   console.log('Form Data JSON:', JSON.stringify(formData));
+  // };
+
+  const handleSubmit = async () => {
+
+    const final_data = {...formData}
+
+    alert('Form Data JSON: ' + JSON.stringify(final_data));
+
+    try {
+      const response = await fetch('/api/form_add_team', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(final_data),
+      })
+    } catch (error) {
+      console.alert('Error updating data');
+    }
+    
+  };
+
+
 
   const handleClearAll = () => {
     form.resetFields();
     setFormData(initialFormState);
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('formDataPlayer');
+    if (isClient) {
+      localStorage.removeItem('formAddTeam');
     }
   };
 
   useEffect(() => {
-    form.setFieldsValue(formData);
-  }, [formData, form]);
+    if (isClient) {
+      form.setFieldsValue({
+        ...formData,
+        Date_of_Birth: formData.Date_of_Birth ? moment(formData.Date_of_Birth) : null, // Set date value using moment
+      });
+    }
+  }, [formData, form, isClient]);
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
@@ -85,25 +133,107 @@ export default function FormComponent() {
         onFinish={handleSubmit}
       >
         <Row gutter={16}>
-          {Object.keys(formData).map((field, index) => (
-            <Col span={12} key={index}>
-              <Form.Item
-                label={fieldLabels[field]}
-                name={field}
-                rules={[
-                  {
-                    required: field === 'field1' || field === 'field2', // Set required fields
-                    message: `${fieldLabels[field]} is required`,
-                  },
-                ]}
+          <Col span={12}>
+            <Form.Item
+              label={fieldLabels['Team_Name']}
+              name="Team_Name"
+              rules={[
+                {
+                  required: true,
+                  message: `${fieldLabels['Team_Name']} is required`,
+                },
+              ]}
+            >
+              <Input
+                name="Team_Name"
+                value={formData['Team_Name']}
+                onChange={(e) => handleChange({ Team_Name: e.target.value })}
+              />
+            </Form.Item>
+          </Col>
+
+          {/* <Col span={12}>   
+          <Form.Item
+              label={fieldLabels['League_ID']}
+              name="League_ID"
+              rules={[
+                {
+                  required: true,
+                  message: `${fieldLabels['League_ID']} is required`,
+                },
+              ]}
+            >
+             <Select
+      value={formData['League_ID']}
+      onChange={(value) => handleSelectChange(value, 'League_ID')}
+    >
+      {League_IDOptions.map((option) => (
+        <Option key={option.key} value={option.key}>
+          {option.value}
+        </Option>
+      ))}
+    </Select>
+            </Form.Item>
+            </Col>  */}
+          
+          <Col span={12}>
+            <Form.Item
+              label={fieldLabels['Location']}
+              name="Location"
+              rules={[
+                {
+                  required: true,
+                  message: `${fieldLabels['Location']} is required`,
+                },
+              ]}
+            >
+              <Select
+                showSearch
+                value={formData['Location']}
+                onChange={(value) => handleSelectChange(value, 'Location')}
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
-                <Input
-                  name={field}
-                  value={formData[field]}
-                />
-              </Form.Item>
-            </Col>
-          ))}
+                {LocationsOptions.map((option) => (
+                  <Option key={option.key} value={option.key}>
+                    {option.value}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
+
+          <Col span={12}>
+          <Form.Item
+              label={fieldLabels['Rank']}
+              name="Rank"
+              rules={[
+                {
+                  type: 'number',
+                  message: `${fieldLabels['Rank']} must be a number`,
+                },
+                {
+                  validator: (_, value) => {
+                    if (value === null || (Number.isInteger(value) && value >= 0)) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(`${fieldLabels['Rank']} must be a non-negative integer`);
+                  },
+                },]}
+            >
+              <InputNumber
+          style={{ width: '100%' }}
+          min={0}
+          precision={0}
+          value={formData['Rank']}
+          onChange={(value) => handleChange({ ['Rank']: value })}
+        />
+            </Form.Item>
+          </Col>
+
+          <Col span={12}>
+          </Col>
         </Row>
         <Row gutter={16}>
           <Col span={12}>
@@ -121,3 +251,9 @@ export default function FormComponent() {
     </div>
   );
 }
+
+
+
+
+
+
