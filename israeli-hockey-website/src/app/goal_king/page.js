@@ -11,9 +11,11 @@ import { Flex } from "antd";
 // group by User_ID) AS T1 on Users.User_ID=T1.User_ID
 // order by "כמות גולים" DESC;`;
 const query_goal_king = `
-SELECT Users.Full_Name AS "שם השחקן", 
-       T1."כמות גולים", 
-       TeamsLogos.Photo AS "סמל קבוצה"
+SELECT 
+    ROW_NUMBER() OVER (ORDER BY T1."כמות גולים" DESC) AS "מקום",
+    Users.Full_Name AS "שם השחקן", 
+    T1."כמות גולים", 
+    TeamsLogos.Photo AS "סמל קבוצה"
 FROM Users 
 INNER JOIN (
     SELECT Goals.User_ID, COUNT(*) AS "כמות גולים"

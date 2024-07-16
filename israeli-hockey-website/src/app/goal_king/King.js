@@ -1,25 +1,25 @@
 "use client";
 import { Card, List, Avatar } from "antd";
 import { CrownTwoTone, setTwoToneColor } from "@ant-design/icons";
-import React, { useState } from "react";
+import React from "react";
 
-export default function GoalKing({ data }) {
+export default function GoalKing({ data, header, firstPlaceColor }) {
   return (
     <>
       <List
-        header={<h1>מלך השערים</h1>}
-        pagination={{
-          defaultPageSize: 10,
-          showSizeChanger: false,
-          align: "center",
-        }}
+        header={<h1>{header}</h1>}
         style={{ width: 400, borderRadius: "10px", overflow: "hidden" }}
         itemLayout="horizontal"
         dataSource={data}
         renderItem={(item, index) => {
-          if (item["מקום"] == 1) {
+          if (index === 0) {
             return (
-              <List.Item style={{ backgroundColor: "blue", padding: "10px" }}>
+              <List.Item
+                style={{
+                  backgroundColor: { firstPlaceColor },
+                  padding: "10px",
+                }}
+              >
                 <List.Item.Meta
                   avatar={<Avatar src={item["סמל קבוצה"]} />}
                   title={
@@ -30,7 +30,7 @@ export default function GoalKing({ data }) {
                           color: "white",
                         }}
                       >
-                        {item["מקום"]}. {item["שם השחקן"]}
+                        {index + 1}. {item["שם השחקן"]}
                       </span>
                       <CrownTwoTone
                         twoToneColor="yellow"
@@ -51,7 +51,7 @@ export default function GoalKing({ data }) {
                   avatar={<Avatar src={item["סמל קבוצה"]} />}
                   title={
                     <span>
-                      {item["מקום"]}. {item["שם השחקן"]}
+                      {index + 1}. {item["שם השחקן"]}
                     </span>
                   }
                 />
