@@ -12,14 +12,16 @@ const { Option } = Select;
 export default function UploadGameResultForm({ data }) {
   const initialFormState = {
     selectedGameId: '',
-    teamAGoals: [],
-    teamBGoals: [],
+    homeTeamGoals: [],
+    awayTeamGoals: [],
+    homeTeamPenalties: [],
+    awayTeamPenalties: [],
   };
 
   const fieldLabels = {
     selectedGameId: 'בחר משחק',
-    teamA: 'קבוצה א',
-    teamB: 'קבוצה ב',
+    homeTeam: 'קבוצה א',
+    awayTeam: 'קבוצה ב',
   };
 
   // const games = data[0].map(game => ({ key: game.Game_ID, value: [game.Home_Team_Name, game.Away_Team_Name, game.Date] }));
@@ -69,7 +71,7 @@ export default function UploadGameResultForm({ data }) {
   };
 
   const handleAddGoal = (team) => {
-    const goal = { player: '', time: null };
+    const goal = { User_ID: '', Time_Stamp: null };
     setFormData((prevData) => ({
       ...prevData,
       [team]: [...prevData[team], goal],
@@ -85,12 +87,31 @@ export default function UploadGameResultForm({ data }) {
     }));
   };
 
-  const handleTimeChange = (team, index, time, timeString) => {
-    const newGoals = [...formData[team]];
-    newGoals[index].time = timeString;
+
+  const handleAddPenalty = (team) => {
+    const penalty = { User_ID: '', Time_Stamp: null };
     setFormData((prevData) => ({
       ...prevData,
-      [team]: newGoals,
+      [team]: [...prevData[team], penalty],
+    }));
+  };
+
+  const handlePenaltyChange = (team, index, key, value) => {
+    const newPenalty = [...formData[team]];
+    newPenalty[index][key] = value;
+    setFormData((prevData) => ({
+      ...prevData,
+      [team]: newPenalty,
+    }));
+  };
+
+
+  const handleTimeChange = (team, index, time, timeString) => {
+    const newData = [...formData[team]];
+    newData[index].Time_Stamp = timeString;
+    setFormData((prevData) => ({
+      ...prevData,
+      [team]: newData,
     }));
   };
 
@@ -160,19 +181,19 @@ export default function UploadGameResultForm({ data }) {
           <Row gutter={16}>
             <Col span={12}>
               <Title level={4}>{`קבוצה: ${selectedGame.value['Home_Team_Name']}`}</Title>
-              {formData.teamAGoals.map((goal, index) => (
+              {formData.homeTeamGoals.map((goal, index) => (
                 <Row gutter={8} key={index}>
                   <Col span={16}>
                     <Form.Item>
                       <Select
                         placeholder="שחקן"
-                        value={goal.player}
-                        onChange={(value) => handleGoalChange('teamAGoals', index, 'player', value)}
+                        value={goal.User_ID}
+                        onChange={(value) => handleGoalChange('homeTeamGoals', index, 'User_ID', value)}
                         style={{ width: '100%' }} // Make the Input box take full width
                       >
-                        {getTeamPlayers(selectedGame.value['Home_Team_ID']).map(player => (
-                          <Option key={player.user_id} value={player.Full_Name}>
-                            {player.Full_Name}
+                        {getTeamPlayers(selectedGame.value['Home_Team_ID']).map(User_ID => (
+                          <Option key={User_ID.user_id} value={User_ID.user_id}>
+                            {User_ID.Full_Name}
                           </Option>
                         ))}
                       </Select>
@@ -182,33 +203,33 @@ export default function UploadGameResultForm({ data }) {
                     <Form.Item>
                       <TimePicker
                         format="HH:mm"
-                        value={goal.time ? moment(goal.time, "HH:mm") : null}
-                        onChange={(time, timeString) => handleTimeChange('teamAGoals', index, time, timeString)}
+                        value={goal.Time_Stamp ? moment(goal.Time_Stamp, "HH:mm") : null}
+                        onChange={(time, timeString) => handleTimeChange('homeTeamGoals', index, time, timeString)}
                         style={{ width: '100%' }} // Make the TimePicker take full width
                       />
                     </Form.Item>
                   </Col>
                 </Row>
               ))}
-              <Button onClick={() => handleAddGoal('teamAGoals')} block>
+              <Button onClick={() => handleAddGoal('homeTeamGoals')} block>
                 הוסף גול
               </Button>
             </Col>
             <Col span={12}>
               <Title level={4}>{`קבוצה: ${selectedGame.value['Away_Team_Name']}`}</Title>
-              {formData.teamBGoals.map((goal, index) => (
+              {formData.awayTeamGoals.map((goal, index) => (
                 <Row gutter={8} key={index}>
                   <Col span={16}>
                     <Form.Item>
                       <Select
                         placeholder="שחקן"
-                        value={goal.player}
-                        onChange={(value) => handleGoalChange('teamBGoals', index, 'player', value)}
+                        value={goal.User_ID}
+                        onChange={(value) => handleGoalChange('awayTeamGoals', index, 'User_ID', value)}
                         style={{ width: '100%' }} // Make the Input box take full width
                       >
-                        {getTeamPlayers(selectedGame.value['Away_Team_ID']).map(player => (
-                          <Option key={player.user_id} value={player.Full_Name}>
-                            {player.Full_Name}
+                        {getTeamPlayers(selectedGame.value['Away_Team_ID']).map(User_ID => (
+                          <Option key={User_ID.user_id} value={User_ID.user_id}>
+                            {User_ID.Full_Name}
                           </Option>
                         ))}
                       </Select>
@@ -218,20 +239,105 @@ export default function UploadGameResultForm({ data }) {
                     <Form.Item>
                       <TimePicker
                         format="HH:mm"
-                        value={goal.time ? moment(goal.time, "HH:mm") : null}
-                        onChange={(time, timeString) => handleTimeChange('teamBGoals', index, time, timeString)}
+                        value={goal.Time_Stamp ? moment(goal.Time_Stamp, "HH:mm") : null}
+                        onChange={(time, timeString) => handleTimeChange('awayTeamGoals', index, time, timeString)}
                         style={{ width: '100%' }} // Make the TimePicker take full width
                       />
                     </Form.Item>
                   </Col>
                 </Row>
               ))}
-              <Button onClick={() => handleAddGoal('teamBGoals')} block>
+              <Button onClick={() => handleAddGoal('awayTeamGoals')} block>
                 הוסף גול
               </Button>
             </Col>
+
+
+            {/* Penalties */}
+
+            <Col span={12}>
+            <Title level={4}>רישום עבירות</Title>
+              {formData.homeTeamPenalties.map((penalty, index) => (
+                <Row gutter={8} key={index}>
+                  <Col span={16}>
+                    <Form.Item>
+                      <Select
+                        placeholder="שחקן"
+                        value={penalty.User_ID}
+                        onChange={(value) => handlePenaltyChange('homeTeamPenalties', index, 'User_ID', value)}
+                        style={{ width: '100%' }} // Make the Input box take full width
+                      >
+                        {getTeamPlayers(selectedGame.value['Home_Team_ID']).map(User_ID => (
+                          <Option key={User_ID.user_id} value={User_ID.user_id}>
+                            {User_ID.Full_Name}
+                          </Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                  <Col span={8}>
+                    <Form.Item>
+                      <TimePicker
+                        format="HH:mm"
+                        value={penalty.Time_Stamp ? moment(penalty.Time_Stamp, "HH:mm") : null}
+                        onChange={(time, timeString) => handleTimeChange('homeTeamPenalties', index, time, timeString)}
+                        style={{ width: '100%' }} // Make the TimePicker take full width
+                      />
+                    </Form.Item>
+                  </Col>
+
+                </Row>
+              ))}
+              <Button onClick={() => handleAddPenalty('homeTeamPenalties')} block>
+                הוסף עבירה
+              </Button>
+            </Col>
+
+
+            <Col span={12}>
+              <Title level={4}>{`רישום עבירות`}</Title>
+              {formData.awayTeamPenalties.map((penalty, index) => (
+                <Row gutter={8} key={index}>
+                  <Col span={16}>
+                    <Form.Item>
+                      <Select
+                        placeholder="שחקן"
+                        value={penalty.User_ID}
+                        onChange={(value) => handlePenaltyChange('awayTeamPenalties', index, 'User_ID', value)}
+                        style={{ width: '100%' }} // Make the Input box take full width
+                      >
+                        {getTeamPlayers(selectedGame.value['Away_Team_ID']).map(User_ID => (
+                          <Option key={User_ID.user_id} value={User_ID.user_id}>
+                            {User_ID.Full_Name}
+                          </Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                  <Col span={8}>
+                    <Form.Item>
+                      <TimePicker
+                        format="HH:mm"
+                        value={penalty.Time_Stamp ? moment(penalty.Time_Stamp, "HH:mm") : null}
+                        onChange={(time, timeString) => handleTimeChange('awayTeamPenalties', index, time, timeString)}
+                        style={{ width: '100%' }} // Make the TimePicker take full width
+                      />
+                    </Form.Item>
+                  </Col>
+
+                </Row>
+              ))}
+              <Button onClick={() => handleAddPenalty('awayTeamPenalties')} block>
+                הוסף עבירה
+              </Button>
+            </Col>
+
           </Row>
         )}
+
+
+
+        
         <Row gutter={16} style={{ marginTop: '20px' }}>
           <Col span={12}>
             <Button type="primary" htmlType="submit" block>
@@ -245,6 +351,10 @@ export default function UploadGameResultForm({ data }) {
           </Col>
         </Row>
       </Form>
+
+
+
+
     </div>
   );
 }
