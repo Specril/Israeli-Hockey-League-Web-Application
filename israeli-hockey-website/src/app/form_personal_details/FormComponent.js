@@ -12,7 +12,7 @@ const { Option } = Select;
 
 export default function FormComponent({ data }) {
 const initialFormState = {
-  Date_of_Birth: data[0]['Date_of_Birth'], 
+  Date_of_Birth: '', 
   Full_Name: data[0]['Full_Name'],
   Phone: '',
   Email: '',

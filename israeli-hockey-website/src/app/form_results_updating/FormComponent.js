@@ -22,7 +22,19 @@ export default function UploadGameResultForm({ data }) {
     teamB: 'קבוצה ב',
   };
 
-  const games = data;  // Assuming data is passed correctly
+  // const games = data[0].map(game => ({ key: game.Game_ID, value: [game.Home_Team_Name, game.Away_Team_Name, game.Date] }));
+  const games = data[0].map(game => ({
+    key: game.Game_ID,
+    value: {
+      Home_Team_ID: game.Home_Team_ID,
+      Home_Team_Name: game.Home_Team_Name,
+      Away_Team_ID: game.Away_Team_ID,
+      Away_Team_Name: game.Away_Team_Name,
+      Day: game.Day,
+      Date: game.Date
+    }
+  }));
+  const players = data[1]; // Assuming players are mapped correctly
 
   const [formData, setFormData] = useState(initialFormState);
   const [selectedGame, setSelectedGame] = useState(null);
@@ -52,6 +64,7 @@ export default function UploadGameResultForm({ data }) {
     if (changedValues.selectedGameId) {
       const game = games.find(game => game.key === changedValues.selectedGameId);
       setSelectedGame(game);
+      alert(`Selected Game Data: ${JSON.stringify(game)}`);
     }
   };
 
@@ -99,6 +112,10 @@ export default function UploadGameResultForm({ data }) {
     form.setFieldsValue(formData);
   }, [formData, form]);
 
+  const getTeamPlayers = (teamID) => {
+    return players.filter(player => player.Team_ID === teamID);
+  };
+
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
       <Title level={3}>טופס העלאת תוצאות למשחק</Title>
@@ -128,10 +145,11 @@ export default function UploadGameResultForm({ data }) {
                 filterOption={(input, option) =>
                   option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                 }
+                style={{ width: '100%' }} // Make the Select box take full width
               >
                 {games.map((game) => (
                   <Option key={game.key} value={game.key}>
-                    {`משחק ${game.key}: ${moment(game.value[2]).format('YYYY-MM-DD')} - קבוצות: ${game.value[0]} מול ${game.value[1]}`}
+                    {`משחק ${game.key}: ${moment(game.value['Date']).format('YYYY-MM-DD')} - קבוצות ${game.value['Home_Team_Name']} מול ${game.value['Away_Team_Name']}`}
                   </Option>
                 ))}
               </Select>
@@ -141,16 +159,23 @@ export default function UploadGameResultForm({ data }) {
         {selectedGame && (
           <Row gutter={16}>
             <Col span={12}>
-              <Title level={5}>{`קבוצה: ${selectedGame.value[0]}`}</Title>
+              <Title level={4}>{`קבוצה: ${selectedGame.value['Home_Team_Name']}`}</Title>
               {formData.teamAGoals.map((goal, index) => (
                 <Row gutter={8} key={index}>
                   <Col span={16}>
                     <Form.Item>
-                      <Input
+                      <Select
                         placeholder="שחקן"
                         value={goal.player}
-                        onChange={(e) => handleGoalChange('teamAGoals', index, 'player', e.target.value)}
-                      />
+                        onChange={(value) => handleGoalChange('teamAGoals', index, 'player', value)}
+                        style={{ width: '100%' }} // Make the Input box take full width
+                      >
+                        {getTeamPlayers(selectedGame.value['Home_Team_ID']).map(player => (
+                          <Option key={player.user_id} value={player.Full_Name}>
+                            {player.Full_Name}
+                          </Option>
+                        ))}
+                      </Select>
                     </Form.Item>
                   </Col>
                   <Col span={8}>
@@ -159,6 +184,7 @@ export default function UploadGameResultForm({ data }) {
                         format="HH:mm"
                         value={goal.time ? moment(goal.time, "HH:mm") : null}
                         onChange={(time, timeString) => handleTimeChange('teamAGoals', index, time, timeString)}
+                        style={{ width: '100%' }} // Make the TimePicker take full width
                       />
                     </Form.Item>
                   </Col>
@@ -169,16 +195,23 @@ export default function UploadGameResultForm({ data }) {
               </Button>
             </Col>
             <Col span={12}>
-              <Title level={5}>{`קבוצה: ${selectedGame.value[1]}`}</Title>
+              <Title level={4}>{`קבוצה: ${selectedGame.value['Away_Team_Name']}`}</Title>
               {formData.teamBGoals.map((goal, index) => (
                 <Row gutter={8} key={index}>
                   <Col span={16}>
                     <Form.Item>
-                      <Input
+                      <Select
                         placeholder="שחקן"
                         value={goal.player}
-                        onChange={(e) => handleGoalChange('teamBGoals', index, 'player', e.target.value)}
-                      />
+                        onChange={(value) => handleGoalChange('teamBGoals', index, 'player', value)}
+                        style={{ width: '100%' }} // Make the Input box take full width
+                      >
+                        {getTeamPlayers(selectedGame.value['Away_Team_ID']).map(player => (
+                          <Option key={player.user_id} value={player.Full_Name}>
+                            {player.Full_Name}
+                          </Option>
+                        ))}
+                      </Select>
                     </Form.Item>
                   </Col>
                   <Col span={8}>
@@ -187,6 +220,7 @@ export default function UploadGameResultForm({ data }) {
                         format="HH:mm"
                         value={goal.time ? moment(goal.time, "HH:mm") : null}
                         onChange={(time, timeString) => handleTimeChange('teamBGoals', index, time, timeString)}
+                        style={{ width: '100%' }} // Make the TimePicker take full width
                       />
                     </Form.Item>
                   </Col>
