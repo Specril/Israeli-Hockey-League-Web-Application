@@ -1,33 +1,27 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, Typography, Row, Col, DatePicker, Select, TimePicker } from 'antd';
+import { Form, Input, Button, Typography, Row, Col, DatePicker } from 'antd';
 import 'antd/dist/reset.css'; // Import Ant Design styles
-import "../style.css"; // Ensure you have the correct path for your CSS
-import moment from 'moment';
+import "../style.css";
+import dayjs from 'dayjs';
 
 const { Title } = Typography;
-const { Option } = Select;
-
 
 export default function FormComponent({ data }) {
-const initialFormState = {
-  Date_of_Birth: '', 
-  Full_Name: data[0]['Full_Name'],
-  Phone: '',
-  Email: '',
+  const initialFormState = {
+    Date_of_Birth: null, // Changed this to null initially
+    Full_Name: '',
+    Phone: '',
+    Email: '',
+  };
 
-};
-
-const fieldLabels = {
-  Date_of_Birth: 'תאריך',
-  Full_Name: 'שם מלא',
-  Phone: 'טלפון',
-  Email: 'מייל',
-
-};
-
-
+  const fieldLabels = {
+    Date_of_Birth: 'תאריך',
+    Full_Name: 'שם מלא',
+    Phone: 'טלפון',
+    Email: 'מייל',
+  };
 
   const [formData, setFormData] = useState(initialFormState);
   const [isClient, setIsClient] = useState(false);
@@ -38,8 +32,18 @@ const fieldLabels = {
     const savedFormData = localStorage.getItem('formDataPersonal');
     if (savedFormData) {
       setFormData(JSON.parse(savedFormData));
+    } else {
+      // Initial load from props
+      if (data && data.length > 0) {
+        setFormData({
+          Date_of_Birth: data[0].Date_of_Birth ? dayjs(data[0].Date_of_Birth).format('YYYY-MM-DD') : null,
+          Full_Name: data[0].Full_Name || '',
+          Phone: data[0].Phone || '',
+          Email: data[0].Email || '',
+        });
+      }
     }
-  }, []);
+  }, [data]);
 
   useEffect(() => {
     if (isClient) {
@@ -55,18 +59,12 @@ const fieldLabels = {
   };
 
   const handleDateChange = (date, dateString) => {
+    console.log("handleDateChange - date: ", date);
+    console.log("handleDateChange - dateString: ", dateString);
+
     setFormData((prevData) => ({
       ...prevData,
       Date_of_Birth: date ? dateString : null,
-    }));
-  };
-
-
-
-  const handleSelectChange = (value, field) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [field]: value,
     }));
   };
 
@@ -75,8 +73,7 @@ const fieldLabels = {
     console.log('Form Data JSON:', JSON.stringify(formData));
   };
 
-
-  // const handleSubmit = async () => {
+   // const handleSubmit = async () => {
   //   // setFormData({...formData, User_ID: data[0]['User_ID']})
   //   const final_data = {...formData, User_ID: data[0]['User_ID']}
 
@@ -97,7 +94,6 @@ const fieldLabels = {
   // };
 
 
-
   const handleClearAll = () => {
     form.resetFields();
     setFormData(initialFormState);
@@ -110,14 +106,14 @@ const fieldLabels = {
     if (isClient) {
       form.setFieldsValue({
         ...formData,
-        Date_of_Birth: formData.Date_of_Birth ? moment(formData.Date_of_Birth) : null, // Set date value using moment
+        Date_of_Birth: formData.Date_of_Birth ? dayjs(formData.Date_of_Birth, 'YYYY-MM-DD') : null,
       });
     }
   }, [formData, form, isClient]);
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-      <Title level={3}>טופסססס פרטים אישיים בדיקה</Title>
+      <Title level={3}>טופס פרטים אישיים בדיקה</Title>
       <Form
         form={form}
         layout="vertical"
@@ -144,7 +140,7 @@ const fieldLabels = {
               />
             </Form.Item>
           </Col>
-          
+
           <Col span={24}>
             <Form.Item
               label={fieldLabels['Phone']}
@@ -182,7 +178,7 @@ const fieldLabels = {
               />
             </Form.Item>
           </Col>
-              
+
           <Col span={24}>
             <Form.Item
               label={fieldLabels['Date_of_Birth']}
@@ -196,7 +192,7 @@ const fieldLabels = {
             >
               <DatePicker
                 format="YYYY-MM-DD"
-                value={formData['Date_of_Birth'] ? moment(formData['Date_of_Birth']) : null}
+                value={formData['Date_of_Birth'] ? dayjs(formData['Date_of_Birth'], 'YYYY-MM-DD') : null}
                 onChange={handleDateChange}
               />
             </Form.Item>

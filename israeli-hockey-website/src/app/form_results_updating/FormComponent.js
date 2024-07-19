@@ -66,7 +66,7 @@ export default function UploadGameResultForm({ data }) {
     if (changedValues.selectedGameId) {
       const game = games.find(game => game.key === changedValues.selectedGameId);
       setSelectedGame(game);
-      alert(`Selected Game Data: ${JSON.stringify(game)}`);
+      // alert(`Selected Game Data: ${JSON.stringify(game)}`);
     }
   };
 
@@ -139,7 +139,7 @@ export default function UploadGameResultForm({ data }) {
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-      <Title level={3}>טופס העלאת תוצאות למשחק</Title>
+      <Title level={2}>טופס העלאת תוצאות למשחק</Title>
       <Form
         form={form}
         layout="vertical"
@@ -180,7 +180,8 @@ export default function UploadGameResultForm({ data }) {
         {selectedGame && (
           <Row gutter={16}>
             <Col span={12}>
-              <Title level={4}>{`קבוצה: ${selectedGame.value['Home_Team_Name']}`}</Title>
+              <Title level={3}>{`קבוצה: ${selectedGame.value['Home_Team_Name']}`}</Title>
+              <Title level={5}>{`רישום גולים`}</Title>
               {formData.homeTeamGoals.map((goal, index) => (
                 <Row gutter={8} key={index}>
                   <Col span={16}>
@@ -216,7 +217,8 @@ export default function UploadGameResultForm({ data }) {
               </Button>
             </Col>
             <Col span={12}>
-              <Title level={4}>{`קבוצה: ${selectedGame.value['Away_Team_Name']}`}</Title>
+              <Title level={3}>{`קבוצה: ${selectedGame.value['Away_Team_Name']}`}</Title>
+              <Title level={5}>{`רישום גולים`}</Title>
               {formData.awayTeamGoals.map((goal, index) => (
                 <Row gutter={8} key={index}>
                   <Col span={16}>
@@ -256,7 +258,7 @@ export default function UploadGameResultForm({ data }) {
             {/* Penalties */}
 
             <Col span={12}>
-            <Title level={4}>רישום עבירות</Title>
+            <Title level={5}>רישום עבירות</Title>
               {formData.homeTeamPenalties.map((penalty, index) => (
                 <Row gutter={8} key={index}>
                   <Col span={16}>
@@ -295,7 +297,7 @@ export default function UploadGameResultForm({ data }) {
 
 
             <Col span={12}>
-              <Title level={4}>{`רישום עבירות`}</Title>
+              <Title level={5}>{`רישום עבירות`}</Title>
               {formData.awayTeamPenalties.map((penalty, index) => (
                 <Row gutter={8} key={index}>
                   <Col span={16}>

@@ -9,7 +9,7 @@ const updateData = require("../api/updateRows")
 const fetchRows = require("../api/fetchRows");
 
 
-const query_example = 'select * from Users where User_ID=1;'
+const query_example = 'select * from Users where User_ID=10;'
 
 async function dataFetch() {
   let teamsData = [];
