@@ -6,6 +6,7 @@ import PremierLeagueTable from "./MainCard";
 import CarouselComponent from "./MainCarousel";
 import MainCardUpcomingGames from "./MainCardUpcomingGames"
 
+
 const query_team_statistics = `
 SELECT 
     T1.Team_Name AS 'שם הקבוצה', 
