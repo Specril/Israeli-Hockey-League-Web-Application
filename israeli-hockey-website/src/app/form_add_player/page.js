@@ -19,9 +19,9 @@ async function dataFetchTeams() {
   } catch (error) {
     console.error("Error fetching teams:", error);
   }
-  // const options = teamsData.map(team => ({ key: team.Team_ID, value: team.Team_Name }));;
-  // console.log(teamsData)
-  return teamsData
+  const options = teamsData.map(team => ({ key: team.Team_ID, value: [team.Team_Name+ " "+ team.League_Name] }));;
+  // console.log(options)
+  return options
 }
 
 async function dataFetchUsers() {
@@ -32,7 +32,7 @@ async function dataFetchUsers() {
     console.error("Error fetching teams:", error);
   }
   const options = usersData.map(user => ({ key: user.User_ID, value: user.Full_Name }));;
-  console.log(options)
+  // console.log(options)
   return options
 }
 

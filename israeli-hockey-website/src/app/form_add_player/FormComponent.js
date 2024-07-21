@@ -24,6 +24,7 @@ export default function FormComponent({ data }) {
   };
 
   const Team_IDOptions = data[0];
+  console.log('teams data is:')
   console.log(Team_IDOptions);
 
   const users_options = data[1]
@@ -54,11 +55,11 @@ export default function FormComponent({ data }) {
   };
 
   const handleSelectChange = (value, field) => {
-    const selectedOption = Team_IDOptions.find(option => option.Team_ID === value);
-    const concatenatedValue = selectedOption ? `${value}-${selectedOption.League_Name}` : value;
+    // const selectedOption = Team_IDOptions.find(option => option.Team_ID === value);
+    // const concatenatedValue = selectedOption ? `${value}-${selectedOption.League_Name}` : value;
     setFormData((prevData) => ({
       ...prevData,
-      [field]: concatenatedValue,
+      [field]: value,
     }));
   };
 
@@ -161,9 +162,9 @@ export default function FormComponent({ data }) {
                 style={{ width: '100%' }}
               >
                 {Team_IDOptions.map((option) => (
-                  <Option key={option.Team_ID} value={option.Team_ID}>
-                    {`${option.Team_Name} - ${option.League_Name}`}
-                  </Option>
+                  <Option key={option.key} value={option.key}>
+                  {option.value}
+                </Option>
                 ))}
               </Select>
             </Form.Item>

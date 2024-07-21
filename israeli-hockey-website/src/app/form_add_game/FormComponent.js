@@ -95,10 +95,11 @@ export default function Page1() {
   const handleSubmit = () => {
     alert('Form Data JSON: ' + JSON.stringify(formData));
     console.log('Form Data JSON:', JSON.stringify(formData));
+    // form.resetFields();
   };
 
   const handleClearAll = () => {
-    form.resetFields();
+    // form.resetFields();
     setFormData(initialFormState);
     if (isClient) {
       localStorage.removeItem('formDataGames');

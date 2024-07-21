@@ -71,6 +71,7 @@ export default function FormComponent({ data }) {
   const handleSubmit = () => {
     alert('Form Data JSON: ' + JSON.stringify(formData));
     console.log('Form Data JSON:', JSON.stringify(formData));
+    setFormData(initialFormState);
   };
 
    // const handleSubmit = async () => {
@@ -95,7 +96,7 @@ export default function FormComponent({ data }) {
 
 
   const handleClearAll = () => {
-    form.resetFields();
+    // form.resetFields();
     setFormData(initialFormState);
     if (isClient) {
       localStorage.removeItem('formDataPersonal');
