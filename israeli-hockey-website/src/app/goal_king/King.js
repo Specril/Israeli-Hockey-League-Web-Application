@@ -1,27 +1,36 @@
 "use client";
-import { Card, List, Avatar } from "antd";
-import { CrownTwoTone, setTwoToneColor } from "@ant-design/icons";
-import React from "react";
+import { List, Avatar, Tooltip } from "antd";
+import { CrownFilled } from "@ant-design/icons";
+import React, { useState } from "react";
 
-export default function GoalKing({ data, header, firstPlaceColor }) {
+export default function King({ data, header, backgroundColorFirst }) {
   return (
     <>
       <List
         header={<h1>{header}</h1>}
+        pagination={{
+          defaultPageSize: 10,
+          showSizeChanger: false,
+          align: "center",
+        }}
         style={{ width: 400, borderRadius: "10px", overflow: "hidden" }}
         itemLayout="horizontal"
         dataSource={data}
         renderItem={(item, index) => {
-          if (index === 0) {
+          if (item["מקום"] == 1) {
             return (
               <List.Item
                 style={{
-                  backgroundColor: { firstPlaceColor },
+                  backgroundColor: backgroundColorFirst,
                   padding: "10px",
                 }}
               >
                 <List.Item.Meta
-                  avatar={<Avatar src={item["סמל קבוצה"]} />}
+                  avatar={
+                    <Tooltip title={item["שם הקבוצה"]}>
+                      <Avatar src={item["סמל קבוצה"]} />
+                    </Tooltip>
+                  }
                   title={
                     <div>
                       <span
@@ -30,11 +39,10 @@ export default function GoalKing({ data, header, firstPlaceColor }) {
                           color: "white",
                         }}
                       >
-                        {index + 1}. {item["שם השחקן"]}
+                        {item["מקום"]}. {item["שם השחקן"]}
                       </span>
-                      <CrownTwoTone
-                        twoToneColor="yellow"
-                        style={{ marginRight: "5px" }}
+                      <CrownFilled
+                        style={{ color: "yellow", marginRight: "5px" }}
                       />
                     </div>
                   }
@@ -48,10 +56,14 @@ export default function GoalKing({ data, header, firstPlaceColor }) {
             return (
               <List.Item style={{ padding: "10px" }}>
                 <List.Item.Meta
-                  avatar={<Avatar src={item["סמל קבוצה"]} />}
+                  avatar={
+                    <Tooltip title={item["שם הקבוצה"]}>
+                      <Avatar src={item["סמל קבוצה"]} />
+                    </Tooltip>
+                  }
                   title={
                     <span>
-                      {index + 1}. {item["שם השחקן"]}
+                      {item["מקום"]}. {item["שם השחקן"]}
                     </span>
                   }
                 />

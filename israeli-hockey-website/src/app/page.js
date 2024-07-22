@@ -114,7 +114,6 @@ export default async function Home() {
     <>
       <Table data={data_statistics} name={"סטטיסטיקות קבוצתיות"} />
       <Table data={data_upcoming} name={"משחקים קרובים"} />
-      <Spin size="large" spinning={true} />
     </>
   );
 }
