@@ -9,43 +9,45 @@ import moment from 'moment';
 const { Title } = Typography;
 const { Option } = Select;
 
-const initialFormState = {
-  field1: '',
-  field2: '',
-  field3: '',
-  field_league: '',
-  field4: '',
-  field5: '',
-  field6: '',
-  field7: '',
-  field8: '',
-  // field9: '',
-  // field10: '',
-};
 
-const fieldLabels = {
-  field1: 'תאריך',
-  field2: 'יום',
-  field3: 'שעה',
-  field_league: 'ליגה',
-  field4: 'קבוצת בית',
-  field5: 'קבוצת חוץ',
-  field6: 'מיקום',
-  field7: 'שופט 1',
-  field8: 'שופט 2',
-  // field9: 'Field Nine',
-  // field10: 'Field Ten',
-};
 
-const field2Options = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
-const field4Options = ['אריות', 'קריית ביאליק', 'קריית ים', 'רמת ישי', 'חלוצים', 'סנדוויץ', 'הרקולס', 'קרנפים'];
-const field5Options = ['אריות', 'קריית ביאליק', 'קריית ים', 'רמת ישי', 'חלוצים', 'סנדוויץ', 'הרקולס', 'קרנפים'];
-const field6Options = ['מגרש 1', 'מגרש 2', 'מגרש 3', 'מגרש 4'];
-const field_league_options = ['צעירים', 'בוגרים'];
-const field7Options = ['שופט א', 'שופט ב', 'שופט ג'];
-const field8Options = ['שופט א', 'שופט ב', 'שופט ג'];
+export default function AddGameForm({ data }) {
 
-export default function Page1() {
+
+  const initialFormState = {
+    Date: '',
+    Day: '',
+    Start_Time: '',
+    League_ID: '',
+    Home_Team_ID: '',
+    Away_Team_ID: '',
+    Location_ID: '',
+    Referee_ID: '',
+    Second_Referee_ID: '',
+
+  };
+  
+  const fieldLabels = {
+    Date: 'תאריך',
+    Day: 'יום',
+    Start_Time: 'שעה',
+    League_ID: 'ליגה',
+    Home_Team_ID: 'קבוצת בית',
+    Away_Team_ID: 'קבוצת חוץ',
+    Location_ID: 'מיקום',
+    Referee_ID: 'שופט 1',
+    Second_Referee_ID: 'שופט 2',
+
+  };
+  
+  const DayOptions = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
+  const Home_Team_IDOptions = ['אריות', 'קריית ביאליק', 'קריית ים', 'רמת ישי', 'חלוצים', 'סנדוויץ', 'הרקולס', 'קרנפים'];
+  const Away_Team_IDOptions = ['אריות', 'קריית ביאליק', 'קריית ים', 'רמת ישי', 'חלוצים', 'סנדוויץ', 'הרקולס', 'קרנפים'];
+  const field6Options = ['מגרש 1', 'מגרש 2', 'מגרש 3', 'מגרש 4'];
+  const League_ID_options = data[1];
+  const Referee_IDOptions = ['שופט א', 'שופט ב', 'שופט ג'];
+  const field8Options = ['שופט א', 'שופט ב', 'שופט ג'];
+
   const [formData, setFormData] = useState(initialFormState);
   const [isClient, setIsClient] = useState(false);
   const [form] = Form.useForm();
@@ -74,14 +76,14 @@ export default function Page1() {
   const handleDateChange = (date, dateString) => {
     setFormData((prevData) => ({
       ...prevData,
-      field1: dateString,
+      Date: dateString,
     }));
   };
 
   const handleTimeChange = (time, timeString) => {
     setFormData((prevData) => ({
       ...prevData,
-      field3: timeString,
+      Start_Time: timeString,
     }));
   };
 
@@ -110,8 +112,8 @@ export default function Page1() {
     if (isClient) {
       form.setFieldsValue({
         ...formData,
-        field1: formData.field1 ? moment(formData.field1) : null, // Set date value using moment
-        field3: formData.field3 ? moment(formData.field3, 'HH:mm') : null, // Set time value using moment
+        Date: formData.Date ? moment(formData.Date) : null, // Set date value using moment
+        Start_Time: formData.Start_Time ? moment(formData.Start_Time, 'HH:mm') : null, // Set time value using moment
       });
     }
   }, [formData, form, isClient]);
@@ -134,18 +136,18 @@ export default function Page1() {
                 name={field}
                 rules={[
                   {
-                    required: field === 'field1' || field === 'field2' || field === 'field3' || field === 'field4' || field === 'field5' || field === 'field6' || field == 'field_league', // Set required fields
+                    required: field === 'Date' || field === 'Day' || field === 'Start_Time' || field === 'Home_Team_ID' || field === 'Away_Team_ID' || field === 'Location_ID' || field == 'League_ID', // Set required fields
                     message: `${fieldLabels[field]} is required`,
                   },
                 ]}
               >
-                {field === 'field1' ? (
+                {field === 'Date' ? (
                   <DatePicker
                     format="YYYY-MM-DD"
                     value={formData[field] ? moment(formData[field]) : null}
                     onChange={handleDateChange}
                   />
-                ) : field === 'field3' ? (
+                ) : field === 'Start_Time' ? (
                   <TimePicker
                     format="HH:mm"
                     value={formData[field] ? moment(formData[field], 'HH:mm') : null}
@@ -160,31 +162,31 @@ export default function Page1() {
                       option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                     }
                   >
-                    {field === 'field2' ? field2Options.map((option) => (
+                    {field === 'Day' ? DayOptions.map((option) => (
                       <Option key={option} value={option}>
                         {option}
                       </Option>
-                    )) : field === 'field4' ? field4Options.map((option) => (
+                    )) : field === 'Home_Team_ID' ? Home_Team_IDOptions.map((option) => (
                       <Option key={option} value={option}>
                         {option}
                       </Option>
-                    )) : field === 'field5' ? field5Options.map((option) => (
+                    )) : field === 'Away_Team_ID' ? Away_Team_IDOptions.map((option) => (
                       <Option key={option} value={option}>
                         {option}
                       </Option>
-                    )) : field === 'field6' ? field6Options.map((option) => (
+                    )) : field === 'Location_ID' ? field6Options.map((option) => (
                       <Option key={option} value={option}>
                         {option}
                       </Option>
-                    )) : field === 'field_league' ? field_league_options.map((option) => (
+                    )) : field === 'League_ID' ? League_ID_options.map((option) => (
                       <Option key={option} value={option}>
                         {option}
                       </Option>
-                    )) : field === 'field7' ? field7Options.map((option) => (
+                    )) : field === 'Referee_ID' ? Referee_IDOptions.map((option) => (
                       <Option key={option} value={option}>
                         {option}
                       </Option>
-                    )) : field === 'field8' ? field8Options.map((option) => (
+                    )) : field === 'Second_Referee_ID' ? field8Options.map((option) => (
                       <Option key={option} value={option}>
                         {option}
                       </Option>

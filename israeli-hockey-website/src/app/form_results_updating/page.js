@@ -8,7 +8,7 @@ const fetchRows = require("../api/fetchRows");
 
 
 
-const queryGames = `select Game_ID, T_with_first_referee.League_ID, League_Name ,Home_Team_ID, Home_Team_Name, Away_Team_ID, Away_Team_Name, Day, Date, Start_Time from 
+const queryGames = `select Game_ID, T_with_first_referee.League_ID, Age ,Home_Team_ID, Home_Team_Name, Away_Team_ID, Away_Team_Name, Day, Date, Start_Time from 
 
 (Select Game_ID, T1.League_ID, Home_Team_ID, Home_Team_Name, Away_Team_ID, Teams.Team_Name as Away_Team_Name, Day, Date, Start_Time, Location, Referee_ID,Users.Full_Name AS first_referee, Second_Referee_ID From
 

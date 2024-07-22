@@ -28,7 +28,7 @@ export default function UploadGameResultForm({ data }) {
   const games = data[0].map(game => ({
     key: game.Game_ID,
     value: {
-      League_Name: game.League_Name,
+      Age: game.Age,
       Home_Team_ID: game.Home_Team_ID,
       Home_Team_Name: game.Home_Team_Name,
       Away_Team_ID: game.Away_Team_ID,
@@ -171,7 +171,7 @@ export default function UploadGameResultForm({ data }) {
               >
                 {games.map((game) => (
                   <Option key={game.key} value={game.key}>
-                    {`משחק ${game.key}: ${moment(game.value['Date']).format('YYYY-MM-DD')} - קבוצות ${game.value['Home_Team_Name']} מול ${game.value['Away_Team_Name']} ליגת ${game.value['League_Name']}`}
+                    {`משחק ${game.key}: ${moment(game.value['Date']).format('YYYY-MM-DD')} - קבוצות ${game.value['Home_Team_Name']} מול ${game.value['Away_Team_Name']} ליגת ${game.value['Age']}`}
                   </Option>
                 ))}
               </Select>
@@ -181,7 +181,7 @@ export default function UploadGameResultForm({ data }) {
         {selectedGame && (
           <Row gutter={16}>
             <Col span={12}>
-              <Title level={3}>{`קבוצה: ${selectedGame.value['Home_Team_Name']} ${selectedGame.value['League_Name']}`}</Title>
+              <Title level={3}>{`קבוצה: ${selectedGame.value['Home_Team_Name']} ${selectedGame.value['Age']}`}</Title>
               <Title level={5}>{`רישום גולים`}</Title>
               {formData.homeTeamGoals.map((goal, index) => (
                 <Row gutter={8} key={index}>
@@ -218,7 +218,7 @@ export default function UploadGameResultForm({ data }) {
               </Button>
             </Col>
             <Col span={12}>
-              <Title level={3}>{`קבוצה: ${selectedGame.value['Away_Team_Name']} ${selectedGame.value['League_Name']}`}</Title>
+              <Title level={3}>{`קבוצה: ${selectedGame.value['Away_Team_Name']} ${selectedGame.value['Age']}`}</Title>
               <Title level={5}>{`רישום גולים`}</Title>
               {formData.awayTeamGoals.map((goal, index) => (
                 <Row gutter={8} key={index}>
