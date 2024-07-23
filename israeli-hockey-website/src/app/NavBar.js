@@ -21,7 +21,7 @@ export default function NavBar() {
           <a href="league_information">מידע על הליגה</a>
         </li>
         <li>
-          <a href="#teams-overview">סקירת קבוצות</a>
+          <a href="browse_teams">סקירת קבוצות</a>
         </li>
         <li>
           <a href="#fan-zone">אזור האוהדים</a>
