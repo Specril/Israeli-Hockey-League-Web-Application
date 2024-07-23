@@ -1,6 +1,8 @@
 import DropdownTable from "../DropdownTable";
 import "../style.css";
 import Table from "../Table";
+import ProtectedPage from "../ProtectedPage";
+import { AuthProvider } from '../authentication/contexts/authContext';
 
 const query_team_statistics = `SELECT T1.Team_Name AS 'שם הקבוצה', COALESCE(T1.Total_Games,0) AS משחקים , (3*COALESCE(win_count,0)+COALESCE(tie_count,0)) AS נקודות, 
 COALESCE(win_count,0) as נצחונות, COALESCE(tie_count,0) as תיקו, 
@@ -124,7 +126,8 @@ export default async function Home() {
   const teamNames = jsonArray.map(team => team.Team_Name);
 
   const data_statistics = await dataFetchStatistics();
-  return (
+  
+  const content = (
     <>
       <DropdownTable
         options={leagueOptions}
@@ -137,5 +140,11 @@ export default async function Home() {
       />
       <Table data={data_league} name={"נתוני ליגה: בוגרים"} />
     </>
+  );
+  
+  return (
+    <AuthProvider>
+      <ProtectedPage content={content} />
+    </AuthProvider>
   );
 }

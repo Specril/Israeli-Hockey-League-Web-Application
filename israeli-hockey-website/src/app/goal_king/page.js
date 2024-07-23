@@ -1,5 +1,6 @@
 import "../style.css";
 import Table from "../Table";
+import ProtectedPage from "../ProtectedPage";
 
 const query_goal_king = `
 SELECT Full_Name AS "שם השחקן", "כמות גולים" from
@@ -27,7 +28,7 @@ export default async function Home() {
 
   return (
     <>
-      <Table data={data_goal_king} name={"מלך השערים"} />
+        <ProtectedPage content={<Table data={data_goal_king} name={"מלך השערים"} />} />
     </>
   );
 }

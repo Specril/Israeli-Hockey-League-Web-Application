@@ -22,7 +22,6 @@ const Register = () => {
   const { userLoggedIn, setCurrentUser } = useAuth();
 
   const onSubmit = async (e) => {
-    e.preventDefault();
     setErrorMessage('');
     if (!isRegistering) {
       setIsRegistering(true);
@@ -39,13 +38,14 @@ const Register = () => {
         setErrorMessage(error.message);
         setIsRegistering(false);
       }
+      
     }
   };
 
   return (
-    <Layout style={{ minHeight: '100vh', padding: 0, margin: 0 }}>
+    <Layout>
       <Content style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 0, margin: 0 }}>
-        <Row justify="center" align="middle" style={{ minHeight: '100vh', width: '100%', margin: 0 }}>
+        <Row justify="center" align="middle" style={{ minHeight: '60vh', width: '100%', margin: 0 }}>
           <Col xs={24} sm={16} md={12} lg={8} xl={6}>
             <div style={{ padding: '24px', backgroundColor: 'white', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)', borderRadius: '8px' }}>
               <div className="text-center mb-4">

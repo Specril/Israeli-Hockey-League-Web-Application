@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import { React, useState, useEffect } from 'react';
 import { BrowserRouter, useRoutes } from 'react-router-dom';
 import Login from './components/auth/login';
 import Register from './components/auth/register';
@@ -9,28 +9,19 @@ import Home from './components/home';
 import { AuthProvider } from './contexts/authContext';
 import 'antd/dist/reset.css'; // Import Ant Design styles
 
+
+
+
 function AppRoutes() {
-  const routesArray = [
-    {
-      path: '*',
-      element: <Login />,
-    },
-    {
-      path: '/login',
-      element: <Login />,
-    },
-    {
-      path: '/register',
-      element: <Register />,
-    },
-    {
-      path: '/home',
-      element: <Home />,
-    },
+  const routes = [
+    { path : '/', element: <Login />},
+    { path: '*', element: <Login /> },
+    { path: '/login', element: <Login /> },
+    { path: '/register', element: <Register /> },
+    { path: '/home', element: <Home /> },
   ];
 
-  let routesElement = useRoutes(routesArray);
-  return <div style={{ padding: 0, margin: 0 }}>{routesElement}</div>;
+  return useRoutes(routes);
 }
 
 function App() {
@@ -43,6 +34,18 @@ function App() {
 }
 
 function Root() {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    // Set isClient to true after component mounts to ensure client-side rendering
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    // Optionally, render a loading indicator or null while waiting for client-side rendering
+    return null;
+  }
+
   return (
     <BrowserRouter>
       <App />
