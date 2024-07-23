@@ -3,14 +3,21 @@ import { getConnection } from "@/app/lib/db";
 import sql from 'mssql';
 
 export async function POST(req, res) {
-    const {Photo} = await req.json();
+    const {Photo, Photo_Name} = await req.json();
     try {
         const pool = await getConnection();
+        let checkName = await pool.request()
+            .input('Photo_Name', sql.VarChar, Photo_Name)
+            .query('SELECT COUNT(*) as count FROM Photos WHERE Photo_Name = @Photo_Name');
+
+        if (checkName.recordset[0].count > 0){
+            return NextResponse.json({error: 'Photo_Name already in data'});
+        }
+        console.log('after checkName')
         let getMaxPhotoID = await pool.request()
             .query('SELECT MAX(Photo_ID) AS max_Photo_ID FROM Photos');
         let maxPhotoID = getMaxPhotoID.recordset[0].max_Photo_ID;
         let Photo_ID = maxPhotoID + 1;
-        console.log(maxPhotoID)
         if (!maxPhotoID){
             Photo_ID = 1;
         }
@@ -18,7 +25,8 @@ export async function POST(req, res) {
         await pool.request()
             .input('Photo_ID',sql.Int, Photo_ID)
             .input('Photo', sql.Text, Photo)
-            .query('INSERT INTO Photos (Photo_ID, Photo) VALUES (@Photo_ID, @Photo)')
+            .input('Photo_Name', sql.NVarChar, Photo_Name)
+            .query('INSERT INTO Photos (Photo_ID, Photo, Photo_Name) VALUES (@Photo_ID, @Photo, @Photo_Name)')
         return NextResponse.json({ success: true});
         
     } catch (error) {

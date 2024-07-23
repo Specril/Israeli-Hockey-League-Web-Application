@@ -3,7 +3,7 @@ import { getConnection } from "@/app/lib/db";
 import sql from 'mssql';
 
 export async function POST(req, res) {
-    let {User_ID, Full_Name, Email, Phone, Date_of_Birth} = await req.json();
+    let {User_ID, Full_Name, Email, Phone, Date_of_Birth, UID} = await req.json();
     try {
       if (Date_of_Birth){
         Date_of_Birth = new Date(Date_of_Birth);
@@ -33,7 +33,8 @@ export async function POST(req, res) {
            .input('Email', sql.NVarChar, Email)
            .input('Phone', sql.NVarChar, Phone)
            .input('Date_of_Birth',sql.Date, Date_of_Birth)
-           .query('INSERT INTO Users (User_ID, Full_Name, Date_of_Birth, Phone, Email) VALUES (@User_ID, @Full_Name, @Date_of_Birth, @Phone, @Email)')
+           .input('UID',sql.VarChar, UID)
+           .query('INSERT INTO Users (User_ID, Full_Name, Date_of_Birth, Phone, Email, UID) VALUES (@User_ID, @Full_Name, @Date_of_Birth, @Phone, @Email, @UID)')
          return NextResponse.json({ success: true});
       }
       
