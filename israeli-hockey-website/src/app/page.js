@@ -79,7 +79,7 @@ LEFT JOIN
     ) AS T5 on T1.Team_ID = T5.Team_ID
 LEFT JOIN
     (SELECT 
-        League_ID, 
+        Age, 
         Team_ID 
     FROM 
         Teams
