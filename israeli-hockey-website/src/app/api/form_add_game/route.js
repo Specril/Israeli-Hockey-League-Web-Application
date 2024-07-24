@@ -28,6 +28,9 @@ export async function POST(req, res) {
                 .query('SELECT MAX(Game_ID) AS max_Game_ID FROM Games');
             let maxGameID = getMaxGameID.recordset[0].max_Game_ID;
             let newGameId = maxGameID + 1;
+            if (!maxGameID){
+                newGameId = 1;
+            }
             // insert new game to Games table
             await pool.request()
                 .input('Game_ID',sql.Int, newGameId)

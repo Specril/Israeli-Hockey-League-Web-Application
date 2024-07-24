@@ -12,6 +12,9 @@ export async function POST(req, res) {
             .query('SELECT MAX(Goal_ID) AS max_Goal_ID FROM Goals');
         let maxGoalID = getMaxGoalID.recordset[0].max_Goal_ID;
         let newGoalId = maxGoalID + 1;
+        if (!maxGoalID){
+          newGoalId = 1;
+        }
         await pool.request()
             .input('Goal_ID',sql.Int, newGoalId)
             .input('Game_ID',sql.Int, Game_ID)
@@ -26,6 +29,9 @@ export async function POST(req, res) {
             .query('SELECT MAX(Penalty_ID) AS max_Penalty_ID FROM Penalties');
         let maxPenaltyID = getMaxPenaltyID.recordset[0].max_Penalty_ID;
         let newPenaltyId = maxPenaltyID + 1;
+        if (!maxPenaltyID){
+          newPenaltyId = 1;
+        }
         await pool.request()
             .input('Penalty_ID',sql.Int, newPenaltyId)
             .input('Game_ID',sql.Int, Game_ID)
@@ -40,6 +46,9 @@ export async function POST(req, res) {
         .query('SELECT MAX(Card_ID) AS max_Card_ID FROM Cards');
         let maxCardID = getMaxCardID.recordset[0].max_Card_ID;
         let newCardId = maxCardID + 1;
+        if (!maxCardID){
+          newCardId = 1;
+        }
           await pool.request()
             .input('Card_ID',sql.Int, newCardId)
             .input('Game_ID',sql.Int, Game_ID)
@@ -50,7 +59,7 @@ export async function POST(req, res) {
             .query('INSERT INTO Cards (Card_ID, Game_ID, User_ID, Time_Stamp, Team_ID, Card_Type) VALUES (@Card_ID, @Game_ID, @User_ID, @Time_Stamp, @Team_ID, @Card_Type)')
     }
       return NextResponse.json({ success: true});
-      
+
 
     } catch (error) {
       console.error('Database operation failed: ', error);

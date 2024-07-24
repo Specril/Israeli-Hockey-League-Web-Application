@@ -34,3 +34,19 @@ export async function POST(req, res) {
       return NextResponse.json({ success: false});
     }
 }
+
+export async function DELETE(req, res) {
+    const { User_ID , Team_ID } = await req.json();
+    try {
+        const pool = await getConnection();
+        await pool.request()
+            .input('User_ID', sql.Int, User_ID)
+            .input('Team_ID', sql.Int, Team_ID)
+            .query('DELETE FROM PlayersInTeams WHERE User_ID = @User_ID and Team_ID = @Team_ID;');
+        return NextResponse.json({ success: true });
+
+    } catch (error) {
+        console.error('Database operation failed: ', error);
+        return NextResponse.json({ success: false });
+    }
+}

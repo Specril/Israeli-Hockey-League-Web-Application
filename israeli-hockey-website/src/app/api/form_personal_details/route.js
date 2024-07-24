@@ -27,6 +27,9 @@ export async function POST(req, res) {
             .query('SELECT MAX(User_ID) AS max_User_ID FROM Users');
         let maxUserID = getMaxUserID.recordset[0].max_User_ID;
         let newUserId = maxUserID + 1;
+        if (!maxUserID){
+          newUserId = 1;
+        }
          await pool.request()
            .input('User_ID',sql.Int, newUserId)
            .input('Full_Name', sql.NVarChar, Full_Name)
