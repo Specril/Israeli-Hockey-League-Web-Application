@@ -16,6 +16,9 @@ export default function UploadGameResultForm({ data }) {
     awayTeamGoals: [],
     homeTeamPenalties: [],
     awayTeamPenalties: [],
+    homeTeamCards: [],
+    awayTeamCards: [],
+
   };
 
   const fieldLabels = {
@@ -116,9 +119,27 @@ export default function UploadGameResultForm({ data }) {
     }));
   };
 
-  const handleSubmit = () => {
-    alert('Form Data JSON: ' + JSON.stringify(formData));
-    console.log('Form Data JSON:', JSON.stringify(formData));
+  // const handleSubmit = () => {
+  //   alert('Form Data JSON: ' + JSON.stringify(formData));
+  //   console.log('Form Data JSON:', JSON.stringify(formData));
+  // };
+
+
+  const handleSubmit = async () => {
+    const final_data = { ...formData };
+    alert('Form Data JSON: ' + JSON.stringify(final_data));
+
+    try {
+      const response = await fetch('/api/form_results_updating', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(final_data),
+      });
+    } catch (error) {
+      console.alert('Error updating data');
+    }
   };
 
   const handleClearAll = () => {
@@ -334,12 +355,13 @@ export default function UploadGameResultForm({ data }) {
                 הוסף עבירה
               </Button>
             </Col>
+    {/* Cards */}  
 
           </Row>
-        )}
+  
 
-
-
+        )}        
+      
         
         <Row gutter={16} style={{ marginTop: '20px' }}>
           <Col span={12}>
