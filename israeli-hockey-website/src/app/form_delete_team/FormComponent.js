@@ -1,31 +1,32 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, Typography, Row, Col, Select, InputNumber } from 'antd';
+import { Form, Input, Button, Typography, Row, Col, Select } from 'antd';
 import 'antd/dist/reset.css';
 import "../style.css";
 
 const { Title } = Typography;
 const { Option } = Select;
 
-
-export default function FormComponent({data}) {
-
-
+export default function FormComponent({ data }) {
   const initialFormState = {
+    Age: '',
     Team_ID: '',
-
   };
-  
+
   const fieldLabels = {
+    Age: 'ליגה-גיל',
     Team_ID: 'קבוצה',
-
   };
-  
-  // const field2Options = ['Team A', 'Team B', 'Team C']; 
-    const Team_IDOptions = data
 
-
+  const Team_IDOptions = data[0].map(team => ({
+    key: team.Team_ID,
+    value: {
+      Age: team.Age,
+      Team_Name: team.Team_Name,
+    }
+  }));
+  const Age_options = data[1];
 
   const [formData, setFormData] = useState(initialFormState);
   const [isClient, setIsClient] = useState(false);
@@ -52,15 +53,6 @@ export default function FormComponent({data}) {
     }));
   };
 
-  const handleDateChange = (date, dateString) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      Date_of_Birth: date ? dateString : null,
-    }));
-  };
-
-
-
   const handleSelectChange = (value, field) => {
     setFormData((prevData) => ({
       ...prevData,
@@ -68,18 +60,8 @@ export default function FormComponent({data}) {
     }));
   };
 
-
-  // This version of handleSubmit is good for debugging frontend without connecting to the db
-
-  // const handleSubmit = () => {
-  //   alert('Form Data JSON: ' + JSON.stringify(formData));
-  //   console.log('Form Data JSON:', JSON.stringify(formData));
-  // };
-
   const handleSubmit = async () => {
-
-    const final_data = {...formData}
-
+    const final_data = { ...formData };
     alert('Form Data JSON: ' + JSON.stringify(final_data));
 
     try {
@@ -89,14 +71,11 @@ export default function FormComponent({data}) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(final_data),
-      })
+      });
     } catch (error) {
       console.alert('Error updating data');
     }
-    
   };
-
-
 
   const handleClearAll = () => {
     form.resetFields();
@@ -110,14 +89,17 @@ export default function FormComponent({data}) {
     if (isClient) {
       form.setFieldsValue({
         ...formData,
-        Date_of_Birth: formData.Date_of_Birth ? moment(formData.Date_of_Birth) : null, // Set date value using moment
       });
     }
   }, [formData, form, isClient]);
 
+  const filteredTeams = formData.Age
+    ? Team_IDOptions.filter(option => option.value.Age === formData.Age)
+    : Team_IDOptions;
+
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-      <Title level={3}>טופס מחיקת קבוצה</Title>
+      <Title level={3}>טופס מחיקת קבוצת גיל</Title>
       <Form
         form={form}
         layout="vertical"
@@ -126,9 +108,32 @@ export default function FormComponent({data}) {
         onFinish={handleSubmit}
       >
         <Row gutter={16}>
+          <Col span={24}>
+            <Form.Item
+              label={fieldLabels['Age']}
+              name="Age"
+              rules={[
+                {
+                  required: true,
+                  message: `${fieldLabels['Age']} is required`,
+                },
+              ]}
+            >
+              <Select
+                value={formData['Age']}
+                onChange={(value) => handleSelectChange(value, 'Age')}
+              >
+                {Age_options.map((option) => (
+                  <Option key={option} value={option}>
+                    {option}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
 
-          <Col span={24}>   
-          <Form.Item
+          <Col span={24}>
+            <Form.Item
               label={fieldLabels['Team_ID']}
               name="Team_ID"
               rules={[
@@ -138,19 +143,18 @@ export default function FormComponent({data}) {
                 },
               ]}
             >
-             <Select
-      value={formData['Team_ID']}
-      onChange={(value) => handleSelectChange(value, 'Team_ID')}
-    >
-      {Team_IDOptions.map((option) => (
-        <Option key={option.key} value={option.key}>
-          {option.value}
-        </Option>
-      ))}
-    </Select>
+              <Select
+                value={formData['Team_ID']}
+                onChange={(value) => handleSelectChange(value, 'Team_ID')}
+              >
+                {filteredTeams.map((option) => (
+                  <Option key={option.key} value={option.key}>
+                    {option.value.Team_Name}
+                  </Option>
+                ))}
+              </Select>
             </Form.Item>
-            </Col> 
-          
+          </Col>
         </Row>
         <Row gutter={16}>
           <Col span={12}>
@@ -168,84 +172,3 @@ export default function FormComponent({data}) {
     </div>
   );
 }
-
-
-
-
-
-
-    {/* <Form.Item
-      label={fieldLabels[field]}
-      name={field}
-      rules={[
-        {
-          required: field === 'Full_Name' || field === 'field2' || field === 'Shirt_Number',
-          message: `${fieldLabels[field]} is required`,
-        },
-        field === 'Full_Name' || field === 'Position' ? {
-          type: 'string',
-          max: 255,
-          message: `${fieldLabels[field]} must be a string of max length 255`,
-        } : {},
-        field === 'Shirt_Number' ? [
-          {
-            type: 'number',
-            message: `${fieldLabels[field]} must be a number`,
-          },
-          {
-            validator: (_, value) => {
-              if (value === null || (Number.isInteger(value) && value >= 0)) {
-                return Promise.resolve();
-              }
-              return Promise.reject(`${fieldLabels[field]} must be a non-negative integer`);
-            },
-          },
-        ] : {},
-      ]}
-    >
-      {field === 'field2' ? (
-        <Select
-          value={formData[field]}
-          onChange={(value) => handleSelectChange(value, field)}
-        >
-          {field2Options.map((option) => (
-            <Option key={option} value={option}>
-              {option}
-            </Option>
-          ))}
-        </Select>
-      ) : field === 'Shirt_Number' ? (
-        <InputNumber
-          style={{ width: '100%' }}
-          min={0}
-          precision={0}
-          value={formData[field]}
-          onChange={(value) => handleChange({ [field]: value })}
-        />
-      ) : (
-        <Input
-          name={field}
-          value={formData[field]}
-          onChange={(e) => handleChange({ [field]: e.target.value })}
-        />
-      )}
-    </Form.Item> */}
-  {/* </Col>
-))}
-        </Row>
-        <Row gutter={16}>
-          <Col span={12}>
-            <Button type="primary" htmlType="submit" block>
-              Send
-            </Button>
-          </Col>
-          <Col span={12}>
-            <Button type="default" onClick={handleClearAll} block>
-              Clear All
-            </Button>
-          </Col>
-        </Row>
-      </Form>
-    </div>
-  );
-} */}

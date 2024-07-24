@@ -123,7 +123,7 @@ export default function FormComponent({ data }) {
         onFinish={handleSubmit}
       >
         <Row gutter={16}>
-          <Col span={24}>
+          <Col span={12}>
             <Form.Item
               label={fieldLabels['Full_Name']}
               name="Full_Name"
@@ -142,7 +142,7 @@ export default function FormComponent({ data }) {
             </Form.Item>
           </Col>
 
-          <Col span={24}>
+          <Col span={12}>
             <Form.Item
               label={fieldLabels['Phone']}
               name="Phone"
@@ -161,7 +161,7 @@ export default function FormComponent({ data }) {
             </Form.Item>
           </Col>
 
-          <Col span={24}>
+          <Col span={12}>
             <Form.Item
               label={fieldLabels['Email']}
               name="Email"
@@ -180,7 +180,7 @@ export default function FormComponent({ data }) {
             </Form.Item>
           </Col>
 
-          <Col span={24}>
+          <Col span={12}>
             <Form.Item
               label={fieldLabels['Date_of_Birth']}
               name="Date_of_Birth"

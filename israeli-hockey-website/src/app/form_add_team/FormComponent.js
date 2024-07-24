@@ -8,35 +8,32 @@ import "../style.css";
 const { Title } = Typography;
 const { Option } = Select;
 
-
-export default function FormComponent({data}) {
-
-
+export default function FormComponent({ data }) {
   const initialFormState = {
     Team_Name: '',
-    League_ID: '',
-    Location: '',
+    Age: '',
+    Location_ID: '',
     Rank: null,
+    New_Location: '', // For new location name
   };
-  
+
   const fieldLabels = {
     Team_Name: 'שם קבוצה',
-    League_ID: 'ליגה',
-    Location: 'מיקום',
+    Age: 'ליגה-גיל',
+    Location_ID: 'מיקום',
     Rank: 'דירוג',
+    New_Location: 'מיקום חדש', // Label for new location
   };
-  
 
-    // const League_IDOptions = data[0]
-    const LocationsOptions = data[1]
-    console.log("inside form component")
-    console.log(LocationsOptions)
-
-
+  const AgeOptions = data[0];
+  const LocationsOptions = data[1];
+  console.log("inside form component");
+  console.log(LocationsOptions);
 
   const [formData, setFormData] = useState(initialFormState);
   const [isClient, setIsClient] = useState(false);
   const [form] = Form.useForm();
+  const [isOtherLocation, setIsOtherLocation] = useState(false); // State for other location
 
   useEffect(() => {
     setIsClient(true);
@@ -66,26 +63,24 @@ export default function FormComponent({data}) {
     }));
   };
 
-
-
   const handleSelectChange = (value, field) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [field]: value,
-    }));
+    if (value === "other") {
+      setIsOtherLocation(true);
+    } else {
+      setIsOtherLocation(false);
+      setFormData((prevData) => ({
+        ...prevData,
+        [field]: value,
+        New_Location: '',
+      }));
+    }
   };
 
-
-  // This version of handleSubmit is good for debugging frontend without connecting to the db
-
-  // const handleSubmit = () => {
-  //   alert('Form Data JSON: ' + JSON.stringify(formData));
-  //   console.log('Form Data JSON:', JSON.stringify(formData));
-  // };
-
   const handleSubmit = async () => {
-
-    const final_data = {...formData}
+    const final_data = {
+      ...formData,
+      Location_ID: isOtherLocation ? formData.New_Location : formData.Location_ID,
+    };
 
     alert('Form Data JSON: ' + JSON.stringify(final_data));
 
@@ -96,18 +91,16 @@ export default function FormComponent({data}) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(final_data),
-      })
+      });
     } catch (error) {
       console.alert('Error updating data');
     }
-    
   };
-
-
 
   const handleClearAll = () => {
     form.resetFields();
     setFormData(initialFormState);
+    setIsOtherLocation(false);
     if (isClient) {
       localStorage.removeItem('formAddTeam');
     }
@@ -117,14 +110,13 @@ export default function FormComponent({data}) {
     if (isClient) {
       form.setFieldsValue({
         ...formData,
-        Date_of_Birth: formData.Date_of_Birth ? moment(formData.Date_of_Birth) : null, // Set date value using moment
       });
     }
   }, [formData, form, isClient]);
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-      <Title level={3}>טופס הוספת קבוצה</Title>
+      <Title level={3}>טופס הוספת קבוצה חדשה</Title>
       <Form
         form={form}
         layout="vertical"
@@ -152,45 +144,45 @@ export default function FormComponent({data}) {
             </Form.Item>
           </Col>
 
-          {/* <Col span={12}>   
-          <Form.Item
-              label={fieldLabels['League_ID']}
-              name="League_ID"
+          <Col span={12}>
+            <Form.Item
+              label={fieldLabels['Age']}
+              name="Age"
               rules={[
                 {
                   required: true,
-                  message: `${fieldLabels['League_ID']} is required`,
+                  message: `${fieldLabels['Age']} is required`,
                 },
               ]}
             >
-             <Select
-      value={formData['League_ID']}
-      onChange={(value) => handleSelectChange(value, 'League_ID')}
-    >
-      {League_IDOptions.map((option) => (
-        <Option key={option.key} value={option.key}>
-          {option.value}
-        </Option>
-      ))}
-    </Select>
+              <Select
+                value={formData['Age']}
+                onChange={(value) => handleSelectChange(value, 'Age')}
+              >
+                {AgeOptions.map((option) => (
+                  <Option key={option} value={option}>
+                    {option}
+                  </Option>
+                ))}
+              </Select>
             </Form.Item>
-            </Col>  */}
-          
+          </Col>
+
           <Col span={12}>
             <Form.Item
-              label={fieldLabels['Location']}
-              name="Location"
+              label={fieldLabels['Location_ID']}
+              name="Location_ID"
               rules={[
                 {
                   required: true,
-                  message: `${fieldLabels['Location']} is required`,
+                  message: `${fieldLabels['Location_ID']} is required`,
                 },
               ]}
             >
               <Select
                 showSearch
-                value={formData['Location']}
-                onChange={(value) => handleSelectChange(value, 'Location')}
+                value={formData['Location_ID']}
+                onChange={(value) => handleSelectChange(value, 'Location_ID')}
                 filterOption={(input, option) =>
                   option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                 }
@@ -200,12 +192,36 @@ export default function FormComponent({data}) {
                     {option.value}
                   </Option>
                 ))}
+                <Option key="other" value="other">
+                  Other
+                </Option>
               </Select>
             </Form.Item>
           </Col>
 
+          {isOtherLocation && (
+            <Col span={12}>
+              <Form.Item
+                label={fieldLabels['New_Location']}
+                name="New_Location"
+                rules={[
+                  {
+                    required: true,
+                    message: `${fieldLabels['New_Location']} is required`,
+                  },
+                ]}
+              >
+                <Input
+                  name="New_Location"
+                  value={formData['New_Location']}
+                  onChange={(e) => handleChange({ New_Location: e.target.value })}
+                />
+              </Form.Item>
+            </Col>
+          )}
+
           <Col span={12}>
-          <Form.Item
+            <Form.Item
               label={fieldLabels['Rank']}
               name="Rank"
               rules={[
@@ -220,20 +236,20 @@ export default function FormComponent({data}) {
                     }
                     return Promise.reject(`${fieldLabels['Rank']} must be a non-negative integer`);
                   },
-                },]}
+                },
+              ]}
             >
               <InputNumber
-          style={{ width: '100%' }}
-          min={0}
-          precision={0}
-          value={formData['Rank']}
-          onChange={(value) => handleChange({ ['Rank']: value })}
-        />
+                style={{ width: '100%' }}
+                min={0}
+                precision={0}
+                value={formData['Rank']}
+                onChange={(value) => handleChange({ Rank: value })}
+              />
             </Form.Item>
           </Col>
 
-          <Col span={12}>
-          </Col>
+          <Col span={12}></Col>
         </Row>
         <Row gutter={16}>
           <Col span={12}>
@@ -251,9 +267,3 @@ export default function FormComponent({data}) {
     </div>
   );
 }
-
-
-
-
-
-

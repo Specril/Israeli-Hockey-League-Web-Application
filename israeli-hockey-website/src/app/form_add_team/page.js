@@ -7,7 +7,7 @@ const fetchRows = require("../api/fetchRows");
 
 
 
-const query_league = 'select * from League;'
+const query_league = 'SELECT DISTINCT Age from League;'
 const query_locations = 'select * from Locations'
 
 async function dataFetchLeagues() {
@@ -18,9 +18,10 @@ async function dataFetchLeagues() {
     console.error("Error fetching leagues:", error);
   }
 
-  const options_league = leagueData.map(leauge => ({ key: leauge.Leauge_ID, value: leauge.Leauge_Name }));;
- 
-  return options_league
+  // const options_league = leagueData.map(leauge => ({ key: leauge.Leauge_ID, value: leauge.Leauge_Name }));;
+  const ageArray = leagueData.map(obj => obj.Age);
+  console.log(ageArray)
+  return ageArray
 }
 
 

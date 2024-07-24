@@ -7,7 +7,7 @@ const fetchRows = require("../api/fetchRows");
 
 
 
-const query_teams = `select DISTINCT teams.Team_ID, teams.Team_Name, league.League_Name from teams inner JOIN teamsInLeagues on teams.Team_ID=teamsInLeagues.Team_ID 
+const query_teams = `select DISTINCT teams.Team_ID, teams.Team_Name, league.Age from teams inner JOIN teamsInLeagues on teams.Team_ID=teamsInLeagues.Team_ID 
 left join league on teamsInLeagues.league_id=league.league_id;`
 
 const query_users =  ' select * from Users;'
@@ -19,7 +19,7 @@ async function dataFetchTeams() {
   } catch (error) {
     console.error("Error fetching teams:", error);
   }
-  const options = teamsData.map(team => ({ key: team.Team_ID, value: [team.Team_Name+ " "+ team.League_Name] }));;
+  const options = teamsData.map(team => ({ key: team.Team_ID, value: [team.Team_Name+ " "+ team.Age] }));;
   // console.log(options)
   return options
 }
