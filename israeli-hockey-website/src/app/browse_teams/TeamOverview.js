@@ -13,14 +13,11 @@ export default function TeamOverview({ details, players }) {
                 padding: 4,
               }}
             >
-              <Avatar
-                icon={<img src={team["Team Logo"]}/>}
-              />
-              <div>{team["Team Name"]}</div>
+              <div><h2>{team["Team Name"]}</h2></div>
             </div>
           ),
         value: team["Team ID"],
-        icon: <img style={{maxWidth: "100px", maxHeight: "100px"}} src={team["Team Logo"]}/>
+        icon: <img style={{width: "100px", height: "100px"}} src={team["Team Logo"]}/>
     }));
 
     const [selectedTeamId, setSelectedTeamId] = useState(null);
