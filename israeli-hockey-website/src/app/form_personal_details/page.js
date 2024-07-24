@@ -5,7 +5,6 @@ import FormComponent from './FormComponent';
 import 'antd/dist/reset.css'; // Import Ant Design CSS reset
 
 
-const updateData = require("../api/updateRows")
 const fetchRows = require("../api/fetchRows");
 
 
