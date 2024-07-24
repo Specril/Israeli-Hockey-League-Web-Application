@@ -21,7 +21,7 @@ export default function NavBar() {
           <a href="league_information">מידע על הליגה</a>
         </li>
         <li>
-          <a href="#teams-overview">סקירת קבוצות</a>
+          <a href="browse_teams">סקירת קבוצות</a>
         </li>
         <li>
           <a href="#fan-zone">אזור האוהדים</a>
@@ -34,6 +34,28 @@ export default function NavBar() {
         </li>
         <li>
           <a href="#contact-us">צור קשר</a>
+        </li>
+        <li>
+          <a href="form_add_game">הוספת משחק</a>
+        </li>
+        <li>
+          <a href="form_personal_details">עדכון פרטים אישיים</a>
+        </li>
+
+        <li>
+          <a href="form_add_player">הוספת שחקן</a>
+        </li>
+        <li>
+          <a href="form_add_team">הוספת קבוצה</a>
+        </li>
+        <li>
+          <a href="form_results_updating">העלאת תוצאות משחק</a>
+        </li>
+        <li>
+          <a href="form_delete_player">מחיקת שחקן</a>
+        </li>
+        <li>
+          <a href="form_delete_team">מחיקת קבוצה</a>
         </li>
         <li>
           <a href="#login" className="login-button" onClick={toggleLoginForm}>
