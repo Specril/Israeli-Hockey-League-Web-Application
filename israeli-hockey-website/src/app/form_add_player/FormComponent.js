@@ -106,7 +106,7 @@ export default function FormComponent({ data }) {
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-      <Title level={3}>טופס הוספת שחקן</Title>
+      <Title level={3}>טופס הוספת שחקן לקבוצה</Title>
       <Form
         form={form}
         layout="vertical"

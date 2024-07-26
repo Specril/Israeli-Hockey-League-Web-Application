@@ -13,19 +13,26 @@ export default function FormComponent({data}) {
 
 
   const initialFormState = {
-    Full_Name: '',
+    User_ID: '',
     Team_ID: '',
 
   };
   
   const fieldLabels = {
-    Full_Name: 'שם מלא',
+    User_ID: 'שם מלא',
     Team_ID: 'קבוצה',
 
   };
   
   // const field2Options = ['Team A', 'Team B', 'Team C']; 
-    const Team_IDOptions = data
+    const Team_IDOptions = data[0]
+    const users_options = data[1].map(user =>  ({
+      key: user.User_ID,
+      value: {
+        Full_Name: user.Full_Name,
+        Team_ID: user.Team_ID,
+      }
+    }));
 
 
 
@@ -117,9 +124,13 @@ export default function FormComponent({data}) {
     }
   }, [formData, form, isClient]);
 
+  const filteredPlayers = formData.Team_ID 
+    ? users_options.filter(option => option.value.Team_ID === formData.Team_ID)
+    : Team_IDOptions;
+
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-      <Title level={3}>טופס מחיקת שחקן</Title>
+      <Title level={3}>טופס מחיקת שחקן מקבוצה</Title>
       <Form
         form={form}
         layout="vertical"
@@ -155,20 +166,25 @@ export default function FormComponent({data}) {
 
             <Col span={24}>
             <Form.Item
-              label={fieldLabels['Full_Name']}
-              name="Full_Name"
+              label={fieldLabels['User_ID']}
+              name="User_ID"
               rules={[
                 {
                   required: true,
-                  message: `${fieldLabels['Full_Name']} is required`,
+                  message: `${fieldLabels['User_ID']} is required`,
                 },
               ]}
             >
-              <Input
-                name="Full_Name"
-                value={formData['Full_Name']}
-                onChange={(e) => handleChange({ Full_Name: e.target.value })}
-              />
+              <Select
+                value={formData['User_ID']}
+                onChange={(value) => handleSelectChange(value, 'User_ID')}
+              >
+                {filteredPlayers.map((option) => (
+                  <Option key={option.key} value={option.key}>
+                    {option.value.Full_Name}
+                  </Option>
+                ))}
+              </Select>
             </Form.Item>
           </Col>
           
