@@ -180,16 +180,17 @@ async function dataFetchStatistics() {
     console.log("Fetched Photos Data:", data_photos);
   
     return (
-      <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", padding: "0px", height: "100vh" }}>
-        <div style={{ flex: 4, marginRight: "20px", overflow: "auto" }}>
-          <PremierLeagueTable data={data_statistics} name={"סטטיסטיקות קבוצתיות"} />
+        <div style={{ display: 'flex', flexDirection: 'row', padding: '0px', width: '100%' }}>
+          <div style={{ flex: '3', marginRight: '20px' }}>
+            <PremierLeagueTable data={data_statistics} name={"סטטיסטיקות קבוצתיות"} />
+          </div>
+          <div style={{ flex: '2', marginRight: '20px' }}>
+            <CarouselComponent data={data_photos} style={{ height: '100%' }} />
+          </div>
+          <div style={{ flex: '2' }}>
+            <MainCardUpcomingGames data={data_upcoming} name={"משחקים קרובים"} />
+          </div>
         </div>
-        <div style={{ flex: 2, marginRight: "20px", maxHeight: "100%", overflow: "auto" }}>
-          <CarouselComponent data={data_photos} />
-        </div>
-        <div style={{ flex: 2, maxHeight: "100%", overflow: "auto" }}>
-          <MainCardUpcomingGames data={data_upcoming} name={"משחקים קרובים"} />
-        </div>
-      </div>
-    );
-  }
+      );
+    };
+      

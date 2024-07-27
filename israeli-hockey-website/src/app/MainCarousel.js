@@ -2,17 +2,18 @@ import React from 'react';
 import { Carousel } from 'antd';
 
 const CarouselComponent = ({ data = [] }) => {
+  // Container style for the carousel
   const carouselStyle = {
-    marginBottom: '20px',
-    width: '100%',
-    height: '300px', // Adjust height based on your design
+    width: '800px', // Ensure the carousel takes the full width of the parent container
+    height: '600px', // Adjust height based on your design
     margin: '0 auto',
   };
 
+  // Style for images inside the carousel
   const imgStyle = {
-    width: '100%',
-    height: '100%', // Ensure it fits the carousel container
-    objectFit: 'cover',
+    width: '800px', // Ensure image takes the full width of the carousel container
+    height: '600px', // Ensure image takes the full height of the carousel container
+    objectFit: 'cover', // Maintain aspect ratio
   };
 
   // Function to validate if the image data is correctly formatted
@@ -24,7 +25,7 @@ const CarouselComponent = ({ data = [] }) => {
   };
 
   return (
-    <div className="carousel-container">
+    <div className="carousel-container" style={{ width: '100%' }}>
       <Carousel autoplay style={carouselStyle} dots={true} arrows={true}>
         {data.length > 0 ? (
           data.map((item, index) => {

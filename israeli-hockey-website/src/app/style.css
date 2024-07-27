@@ -240,11 +240,11 @@ footer {
   box-shadow: 0 0 5px rgba(0, 115, 230, 0.5);
 }
 
-/* Add this section for carousel */
 .carousel-container {
   width: 100%;
-  max-width: 800px; /* Adjust max-width as needed */
-  margin: 0 auto;
+  max-width: 100%; /* Ensure it can stretch to full width */
+  margin: 0 auto; /* Center the carousel horizontally */
+  overflow: hidden; /* Ensure no overflow beyond the container */
 }
 
 .carousel-image {
