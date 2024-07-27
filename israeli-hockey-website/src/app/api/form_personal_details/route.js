@@ -3,7 +3,7 @@ import { getConnection } from "@/app/lib/db";
 import sql from 'mssql';
 
 export async function POST(req, res) {
-    let {User_ID, Full_Name, Email, Phone, Date_of_Birth} = await req.json();
+    let {User_ID, Full_Name, Email, Phone, Date_of_Birth, UID} = await req.json();
     try {
       if (Date_of_Birth){
         Date_of_Birth = new Date(Date_of_Birth);
@@ -27,13 +27,17 @@ export async function POST(req, res) {
             .query('SELECT MAX(User_ID) AS max_User_ID FROM Users');
         let maxUserID = getMaxUserID.recordset[0].max_User_ID;
         let newUserId = maxUserID + 1;
+        if (!maxUserID){
+          newUserId = 1;
+        }
          await pool.request()
            .input('User_ID',sql.Int, newUserId)
            .input('Full_Name', sql.NVarChar, Full_Name)
            .input('Email', sql.NVarChar, Email)
            .input('Phone', sql.NVarChar, Phone)
            .input('Date_of_Birth',sql.Date, Date_of_Birth)
-           .query('INSERT INTO Users (User_ID, Full_Name, Date_of_Birth, Phone, Email) VALUES (@User_ID, @Full_Name, @Date_of_Birth, @Phone, @Email)')
+           .input('UID',sql.VarChar, UID)
+           .query('INSERT INTO Users (User_ID, Full_Name, Date_of_Birth, Phone, Email, UID) VALUES (@User_ID, @Full_Name, @Date_of_Birth, @Phone, @Email, @UID)')
          return NextResponse.json({ success: true});
       }
       

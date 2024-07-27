@@ -36,6 +36,11 @@ export default function Table({ data, name }) {
     return `${hours}:${minutes}`;
   };
 
+  // Helper function to check if a string is a base64 image
+  const isBase64Image = (str) => {
+    return typeof str === 'string' && str.startsWith("data:image/");
+  };
+
   return (
     <section id="table">
       <h2>{name}</h2>
@@ -56,6 +61,8 @@ export default function Table({ data, name }) {
                     ? formatDate(row[col])
                     : col === 'זמן התחלה'
                     ? formatTime(row[col])
+                    : isBase64Image(row[col])
+                    ? <img src={row[col]} alt="image" style={{ maxWidth: '100px', maxHeight: '100px' }} />
                     : row[col]}
                 </td>
               ))}
