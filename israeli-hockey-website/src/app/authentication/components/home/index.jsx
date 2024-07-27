@@ -41,6 +41,7 @@ const Home = () => {
       // <Content style={{ padding: '0 50px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ textAlign: 'center' }}>
           <Title level={2}>שלום {name}, אתה מחובר עכשיו.</Title>
+          {/* <Title level={4}>{currentUser}</Title> */}
           {userType && <Title level={4}>סוג המשתמש שלך הוא: {userType}</Title>}
         </div>
       // </Content>

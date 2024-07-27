@@ -1,7 +1,7 @@
 import DropdownTable from "../DropdownTable";
 import "../style.css";
 import Table from "../Table";
-import ProtectedPage from "../ProtectedPage";
+import ProtectedPage from "../ProtectedPage/ProtectedPage";
 import { AuthProvider } from '../authentication/contexts/authContext';
 
 const query_team_statistics = `SELECT T1.Team_Name AS 'שם הקבוצה', COALESCE(T1.Total_Games,0) AS משחקים , (3*COALESCE(win_count,0)+COALESCE(tie_count,0)) AS נקודות, 

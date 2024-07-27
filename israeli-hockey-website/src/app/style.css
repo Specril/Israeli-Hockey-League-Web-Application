@@ -240,3 +240,19 @@ footer {
   border-color: #0073e6;
   box-shadow: 0 0 5px rgba(0, 115, 230, 0.5);
 }
+
+.fade-enter {
+  opacity: 0;
+}
+.fade-enter-active {
+  opacity: 1;
+  transition: opacity 800ms;
+}
+.fade-exit {
+  opacity: 1;
+}
+.fade-exit-active {
+  opacity: 0;
+  transition: opacity 300ms;
+}
+
