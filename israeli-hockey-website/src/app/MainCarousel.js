@@ -1,18 +1,39 @@
-import React from 'react';
+"use client"
+import React, { useState, useEffect } from 'react';
 import { Carousel } from 'antd';
 
 const CarouselComponent = ({ data = [] }) => {
+  const [carouselWidth, setCarouselWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setCarouselWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  // Calculate carousel width
+  const calculateCarouselWidth = () => {
+    const cardWidth = 350; // Adjust this to the width of your cards
+    const margin = 20; // Adjust this to the margin between cards
+    return carouselWidth - 2 * (cardWidth + margin);
+  };
+
   // Container style for the carousel
   const carouselStyle = {
-    width: '800px', // Ensure the carousel takes the full width of the parent container
+    width: calculateCarouselWidth() + 'px', // Set calculated width
     height: '600px', // Adjust height based on your design
     margin: '0 auto',
   };
 
   // Style for images inside the carousel
   const imgStyle = {
-    width: '800px', // Ensure image takes the full width of the carousel container
-    height: '600px', // Ensure image takes the full height of the carousel container
+    width: '100%', // Ensure image takes the full width of the carousel container
+    height: '100%', // Ensure image takes the full height of the carousel container
     objectFit: 'cover', // Maintain aspect ratio
   };
 

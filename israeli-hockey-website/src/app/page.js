@@ -182,10 +182,10 @@ async function dataFetchStatistics() {
   
     return (
         <div style={{ display: 'flex', flexDirection: 'row', padding: '0px', width: '100%' }}>
-          <div style={{ flex: '3', marginRight: '20px' }}>
+          <div style={{ flex: '3', marginRight: '10px' }}>
             <PremierLeagueTable data={data_statistics} name={"סטטיסטיקות קבוצתיות"} />
           </div>
-          <div style={{ flex: '2', marginRight: '20px' }}>
+          <div style={{ flex: '2', marginRight: '0px' }}>
             <CarouselComponent data={data_photos} style={{ height: '100%' }} />
           </div>
           <div style={{ flex: '2' }}>
