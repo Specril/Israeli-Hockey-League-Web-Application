@@ -1,12 +1,9 @@
 import React from "react";
-import { Card } from "antd";
-import "./style.css";
-import Table from "./Table";
 import PremierLeagueTable from "./MainCard";
 import CarouselComponent from "./MainCarousel";
-import MainCardUpcomingGames from "./MainCardUpcomingGames"
+import MainCardUpcomingGames from "./MainCardUpcomingGames";
 
-
+const fetchRows = require("./api/fetchRows");
 const query_team_statistics = `
 SELECT 
     T1.Team_Name AS 'שם הקבוצה', 
@@ -141,40 +138,58 @@ LEFT JOIN TeamsLogos AS TeamsLogos_Home ON T_with_first_referee.Home_Team_ID = T
 LEFT JOIN TeamsLogos AS TeamsLogos_Away ON T_with_first_referee.Away_Team_ID = TeamsLogos_Away.Team_ID
 ;`;
 
+const query_photos = `
+SELECT Photo
+FROM Photos`
 
-const fetchRows = require("./api/fetchRows");
 
 async function dataFetchStatistics() {
-  let teamsData = [];
-  try {
-    teamsData = await fetchRows(() => query_team_statistics);
-  } catch (error) {
-    console.error("Error fetching teams:", error);
+    let teamsData = [];
+    try {
+      teamsData = await fetchRows(() => query_team_statistics);
+    } catch (error) {
+      console.error("Error fetching teams:", error);
+    }
+    return teamsData;
   }
-  return teamsData;
-}
-
-async function dataFetchUpcoming() {
-  let teamsData = [];
-  try {
-    teamsData = await fetchRows(() => query_upcoming_games);
-  } catch (error) {
-    console.error("Error fetching teams:", error);
+  
+  async function dataFetchUpcoming() {
+    let teamsData = [];
+    try {
+      teamsData = await fetchRows(() => query_upcoming_games);
+    } catch (error) {
+      console.error("Error fetching teams:", error);
+    }
+    return teamsData;
   }
-  return teamsData;
-}
-
-export default async function Home() {
-  // Fetch data on the server side
-  const data_statistics = await dataFetchStatistics();
-  const data_upcoming = await dataFetchUpcoming();
-
-  return (
-    <div style={{ display: "flex", justifyContent: "space-between", padding: "0px" }}>
-      
-      <PremierLeagueTable data={data_statistics} name={"סטטיסטיקות קבוצתיות"} style={{ flex: "12", marginRight: "20px" }} /> {/* Adjust styles as needed */}
-      <CarouselComponent style={{ flex: "2", marginRight: "20px" }} /> {/* Adjust styles as needed */}
-      <MainCardUpcomingGames data={data_upcoming} name={"משחקים קרובים"} style={{ flex: "2" }} /> {/* Adjust styles as needed */}
-    </div>
-  );
-}
+  
+  async function dataFetchPhotos() {
+    let photosData = [];
+    try {
+      photosData = await fetchRows(() => query_photos);
+    } catch (error) {
+      console.error("Error fetching teams:", error);
+    }
+    return photosData;
+  }
+  
+  export default async function Home() {
+    const data_statistics = await dataFetchStatistics();
+    const data_upcoming = await dataFetchUpcoming();
+    const data_photos = await dataFetchPhotos();
+    console.log("Fetched Photos Data:", data_photos);
+  
+    return (
+      <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", padding: "0px", height: "100vh" }}>
+        <div style={{ flex: 4, marginRight: "20px", overflow: "auto" }}>
+          <PremierLeagueTable data={data_statistics} name={"סטטיסטיקות קבוצתיות"} />
+        </div>
+        <div style={{ flex: 2, marginRight: "20px", maxHeight: "100%", overflow: "auto" }}>
+          <CarouselComponent data={data_photos} />
+        </div>
+        <div style={{ flex: 2, maxHeight: "100%", overflow: "auto" }}>
+          <MainCardUpcomingGames data={data_upcoming} name={"משחקים קרובים"} />
+        </div>
+      </div>
+    );
+  }
