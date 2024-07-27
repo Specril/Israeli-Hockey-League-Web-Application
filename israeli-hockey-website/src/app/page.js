@@ -9,8 +9,8 @@ SELECT
     T1.Team_Name AS 'שם הקבוצה', 
     COALESCE(T7.Photo, '') AS Logo,
     COALESCE(T1.Total_Games, 0) AS משחקים, 
-    (3 * COALESCE(win_count, 0) + COALESCE(tie_count, 0)) AS נקודות, 
-    (COALESCE(total_goals, 0) - COALESCE(rivals_goals, 0)) AS הפרש
+    (3 * COALESCE(T2.win_count, 0) + COALESCE(T3.tie_count, 0)) AS נקודות, 
+    (COALESCE(T4.total_goals, 0) - COALESCE(T5.rivals_goals, 0)) AS הפרש
 FROM 
     (SELECT 
         Teams.Team_ID,
@@ -25,6 +25,8 @@ FROM
             SELECT Away_Team_ID AS Team_ID, Game_ID
             FROM Games
         ) AS Games ON Teams.Team_ID = Games.Team_ID
+    WHERE
+        Teams.Age = N'בוגרים'
     GROUP BY 
         Teams.Team_ID, 
         Teams.Team_Name
@@ -32,18 +34,18 @@ FROM
 LEFT JOIN
     (SELECT 
         Winner_ID, 
-        COUNT(*) as win_count
+        COUNT(*) AS win_count
     FROM 
         Games_with_winner 
     WHERE 
         Winner_ID != 0
     GROUP BY
         Winner_ID
-    ) AS T2 on T1.Team_ID = T2.Winner_ID
+    ) AS T2 ON T1.Team_ID = T2.Winner_ID
 LEFT JOIN
     (SELECT 
         Team_ID, 
-        COUNT(*) as tie_count
+        COUNT(*) AS tie_count
     FROM 
         (SELECT Home_Team_ID AS Team_ID
         FROM Games_with_winner 
@@ -55,42 +57,38 @@ LEFT JOIN
         ) AS combined
     GROUP BY
         Team_ID
-    ) AS T3 on T1.Team_ID = T3.Team_ID
+    ) AS T3 ON T1.Team_ID = T3.Team_ID
 LEFT JOIN
     (SELECT 
         Goals.Team_ID, 
-        COUNT(*) as total_goals
+        COUNT(*) AS total_goals
     FROM 
         Goals
     GROUP BY 
-        Team_ID
-    ) AS T4 on T1.Team_ID = T4.Team_ID
+        Goals.Team_ID
+    ) AS T4 ON T1.Team_ID = T4.Team_ID
 LEFT JOIN 
     (SELECT 
-        home_team_id as Team_ID, 
-        SUM(away_team_goals) as rivals_goals 
+        home_team_id AS Team_ID, 
+        SUM(away_team_goals) AS rivals_goals 
     FROM 
         games_with_winner 
     GROUP BY 
         home_team_id
-    ) AS T5 on T1.Team_ID = T5.Team_ID
-LEFT JOIN
-    (SELECT 
-        Age, 
-        Team_ID 
-    FROM 
-        Teams
-    ) AS T6 on T1.Team_ID = T6.Team_ID
+    ) AS T5 ON T1.Team_ID = T5.Team_ID
 LEFT JOIN
     (SELECT 
         Team_ID, 
         Photo 
     FROM 
         TeamsLogos
-    ) AS T7 on T1.Team_ID = T7.Team_ID
+    ) AS T7 ON T1.Team_ID = T7.Team_ID
 ORDER BY 
     נקודות DESC;
 `;
+
+
+
 
 const query_upcoming_games = `
 SELECT
@@ -131,12 +129,15 @@ FROM
         WHERE
             Date > CURRENT_TIMESTAMP
             AND Games.League_ID = 1) AS T1
+            
+            
     LEFT JOIN Teams ON Away_Team_ID = Teams.Team_ID
     LEFT JOIN Users ON Referee_ID = user_ID) AS T_with_first_referee
 LEFT JOIN Users ON Second_Referee_ID = user_ID
 LEFT JOIN TeamsLogos AS TeamsLogos_Home ON T_with_first_referee.Home_Team_ID = TeamsLogos_Home.Team_ID
 LEFT JOIN TeamsLogos AS TeamsLogos_Away ON T_with_first_referee.Away_Team_ID = TeamsLogos_Away.Team_ID
-;`;
+;
+`;
 
 const query_photos = `
 SELECT Photo
