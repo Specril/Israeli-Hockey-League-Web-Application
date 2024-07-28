@@ -3,7 +3,7 @@ import { getConnection } from "@/app/lib/db";
 import sql from 'mssql';
 
 export async function POST(req, res) {
-    let {Team_Name, Rank, Location_ID, Age, New_Location} = await req.json();
+    let {Team_Name, Location_ID, Age, New_Location} = await req.json();
     try {
         const pool = await getConnection();
         if (New_Location){
@@ -32,10 +32,9 @@ export async function POST(req, res) {
         await pool.request()
             .input('Team_ID',sql.Int, newTeamId)
             .input('Team_Name', sql.NVarChar, Team_Name)
-            .input('Rank', sql.NVarChar, Rank)
             .input('Location_ID', sql.Int, Location_ID)
             .input('Age', sql.NVarChar, Age)
-            .query('INSERT INTO Teams (Team_ID, Team_Name, Rank, Location_ID, Age) VALUES (@Team_ID, @Team_Name, @Rank, @Location_ID, @Age)')
+            .query('INSERT INTO Teams (Team_ID, Team_Name, Location_ID, Age) VALUES (@Team_ID, @Team_Name, @Location_ID, @Age)')
         return NextResponse.json({ success: true});
 
     } catch (error) {
