@@ -6,7 +6,7 @@ import { Button, Form, Input, Typography, Divider, Alert, Layout, Row, Col } fro
 import { GoogleOutlined } from '@ant-design/icons';
 import { doSignInWithEmailAndPassword, doSignInWithGoogle } from '../../../firebase/auth';
 import { useAuth } from '../../../contexts/authContext';
-import getUserType from './GetUserType';
+import { getUserType, getUserID } from './GetUserData.js';
 import { getAuth, updateProfile } from "firebase/auth";
 const auth = getAuth();
 
@@ -26,10 +26,19 @@ const Login = () => {
     const fetchUserType = async () => {
       setIsLoading(true);
       if (currentUser) {
+        console.log(currentUser);
         try {
-          const data = await getUserType(currentUser);
+          // if the currentUser doesnt have phoneNumber, call the getUserId function to get the user ID. if it does, use the phoneNumber as the user ID
+          if (!currentUser.phoneNumber) {
+            const userID = await getUserID(currentUser.uid).User_ID;
+          }
+          else {
+            const userID = currentUser.phoneNumber;
+          }
+          const userType = await getUserType(userID);
           await updateProfile(auth.currentUser, {
-            photoURL: JSON.stringify(data.result)
+            photoURL: JSON.stringify(userType),
+            phoneNumber: userID
           });
           await auth.currentUser.reload();
           setPhotoUrlUpdated(true);
@@ -72,12 +81,12 @@ const Login = () => {
   if (isLoading) {
     return (
       <Layout className="layout">
-      <Content style={{ padding: '0 50px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ textAlign: 'center' }}>
-          <Title level={2}>מתחבר...</Title>
-        </div>
-      </Content>
-    </Layout>
+        <Content style={{ padding: '0 50px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ textAlign: 'center' }}>
+            <Title level={2}>מתחבר...</Title>
+          </div>
+        </Content>
+      </Layout>
     );
   }
 

@@ -1,4 +1,5 @@
 import Dropdown from "../Dropdown";
+import ProtectedPage from "../ProtectedPage/ProtectedPage";
 import "../style.css";
 import Table from "../Table";
 
@@ -32,11 +33,14 @@ export default async function Home() {
   // Fetch data on the server side
   const data_upcoming = await dataFetchUpcoming();
   const options = ["בוגרים"];
-
   return (
+    <ProtectedPage content={
     <>
         <Dropdown options={options} name="בחירת ליגה"></Dropdown>
       <Table data={data_upcoming} name={"משחקים קרובים בליגה: בוגרים"} />
     </>
+    }
+    allowed_user_types={["admin"]}
+     />
   );
 }
