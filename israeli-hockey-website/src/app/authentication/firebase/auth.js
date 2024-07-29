@@ -10,14 +10,14 @@ import {
   updateProfile
 } from "firebase/auth";
 
-export const doCreateUserWithEmailAndPassword = async (email, name, password) => {
+export const doCreateUserWithEmailAndPassword = async (email, name, password, type) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
+    console.log("User created:", user);
 
     // Update the user profile with the display name
-    await updateProfile(user, { displayName: name });
-
+    await updateProfile(user, { displayName: name, photoURL: JSON.stringify({ 'coach': 0, 'referee': 0, 'admin': 0, 'player': 0, 'fan': 0 }) });
     // Reload the user to ensure the displayName is updated
     await user.reload();
 
@@ -37,7 +37,7 @@ export const doSignInWithGoogle = async () => {
   const provider = new GoogleAuthProvider();
   const result = await signInWithPopup(auth, provider);
   const user = result.user;
-  
+
   // Add user to Firestore (if needed)
   // await db.collection('users').doc(user.uid).set({ ... });
 

@@ -17,7 +17,7 @@ export function AuthProvider({ children }) {
   const [isEmailUser, setIsEmailUser] = useState(false);
   const [isGoogleUser, setIsGoogleUser] = useState(false);
   const [loading, setLoading] = useState(true);
-  
+
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, initializeUser);

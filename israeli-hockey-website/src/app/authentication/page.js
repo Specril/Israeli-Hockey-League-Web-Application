@@ -1,16 +1,13 @@
 "use client";
 
 import { React, useState, useEffect } from 'react';
-import { BrowserRouter, useRoutes } from 'react-router-dom';
+import { HashRouter, useRoutes } from 'react-router-dom';
 import Login from './components/auth/login';
 import Register from './components/auth/register';
 import Header from './components/header';
 import Home from './components/home';
 import { AuthProvider } from './contexts/authContext';
 import 'antd/dist/reset.css'; // Import Ant Design styles
-
-
-
 
 function AppRoutes() {
   const routes = [
@@ -47,9 +44,9 @@ function Root() {
   }
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <App />
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 

@@ -16,6 +16,7 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
+  const [type, setType] = useState('player');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -26,7 +27,7 @@ const Register = () => {
     if (!isRegistering) {
       setIsRegistering(true);
       try {
-        const user = await doCreateUserWithEmailAndPassword(email, name, password);
+        const user = await doCreateUserWithEmailAndPassword(email, name, password, type);
         const unsubscribe = onAuthStateChanged(auth, (updatedUser) => {
           if (updatedUser && updatedUser.displayName === name) {
             setCurrentUser(updatedUser);

@@ -22,7 +22,6 @@ const getUserType = async (currentUser) => {
     console.error('Error updating data', error);
     return null; // Return null or handle the error as needed
   }
-  // return "player";
 };
 
 export default getUserType;

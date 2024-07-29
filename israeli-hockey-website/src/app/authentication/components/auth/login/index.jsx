@@ -6,20 +6,44 @@ import { Button, Form, Input, Typography, Divider, Alert, Layout, Row, Col } fro
 import { GoogleOutlined } from '@ant-design/icons';
 import { doSignInWithEmailAndPassword, doSignInWithGoogle } from '../../../firebase/auth';
 import { useAuth } from '../../../contexts/authContext';
+import getUserType from './GetUserType';
+import { getAuth, updateProfile } from "firebase/auth";
+const auth = getAuth();
 
 const { Title, Text } = Typography;
 const { Content } = Layout;
 
 const Login = () => {
-  const { userLoggedIn } = useAuth();
+  const { userLoggedIn, currentUser } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [photoUrlUpdated, setPhotoUrlUpdated] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // Any other client-side only code here
-  }, []);
+    const fetchUserType = async () => {
+      setIsLoading(true);
+      if (currentUser) {
+        try {
+          const data = await getUserType(currentUser);
+          await updateProfile(auth.currentUser, {
+            photoURL: JSON.stringify(data.result)
+          });
+          await auth.currentUser.reload();
+          setPhotoUrlUpdated(true);
+        } catch (error) {
+          console.error("Error updating profile:", error);
+        }
+      } else {
+        setPhotoUrlUpdated(true);
+      }
+      setIsLoading(false);
+    };
+
+    fetchUserType();
+  }, [currentUser]);
 
   const onSubmit = async (e) => {
     setErrorMessage('');
@@ -45,10 +69,21 @@ const Login = () => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <Layout className="layout">
+      <Content style={{ padding: '0 50px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ textAlign: 'center' }}>
+          <Title level={2}>מתחבר...</Title>
+        </div>
+      </Content>
+    </Layout>
+    );
+  }
+
   return (
-    
     <Layout>
-      {userLoggedIn && (<Navigate to={'/home'} replace={true} />)}
+      {userLoggedIn && photoUrlUpdated && (<Navigate to={'/home'} replace={true} />)}
       <Content style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 0, margin: 0 }}>
         <Row justify="center" align="middle" style={{ minHeight: '60vh', width: '100%', margin: 0 }}>
           <Col xs={24} sm={16} md={12} lg={8} xl={6}>
