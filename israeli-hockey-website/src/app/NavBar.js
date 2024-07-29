@@ -39,6 +39,9 @@ export default function NavBar() {
           <a href="form_add_game">הוספת משחק</a>
         </li>
         <li>
+          <a href="form_results_updating">העלאת תוצאות משחק</a>
+        </li>
+        <li>
           <a href="form_personal_details">עדכון פרטים אישיים</a>
         </li>
 
@@ -46,17 +49,25 @@ export default function NavBar() {
           <a href="form_add_player">הוספת שחקן</a>
         </li>
         <li>
-          <a href="form_add_team">הוספת קבוצה</a>
-        </li>
-        <li>
-          <a href="form_results_updating">העלאת תוצאות משחק</a>
-        </li>
-        <li>
           <a href="form_delete_player">מחיקת שחקן</a>
         </li>
         <li>
+          <a href="form_add_team">הוספת קבוצה חדשה</a>
+        </li>
+
+        <li>
           <a href="form_delete_team">מחיקת קבוצה</a>
         </li>
+
+        <li>
+          <a href="form_add_team_to_league">הוספת קבוצה לליגה</a>
+        </li>
+
+        <li>
+          <a href="form_delete_team_from_league"> מחיקת קבוצה מליגה</a>
+        </li>
+
+        
         <li>
           <a href="#login" className="login-button" onClick={toggleLoginForm}>
             התחברות

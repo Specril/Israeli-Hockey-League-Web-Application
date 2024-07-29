@@ -13,15 +13,13 @@ export default function FormComponent({ data }) {
     Team_Name: '',
     Age: '',
     Location_ID: '',
-    Rank: null,
     New_Location: '', // For new location name
   };
 
   const fieldLabels = {
     Team_Name: 'שם קבוצה',
-    Age: 'ליגה-גיל',
+    Age: 'גיל',
     Location_ID: 'מיקום',
-    Rank: 'דירוג',
     New_Location: 'מיקום חדש', // Label for new location
   };
 
@@ -125,7 +123,7 @@ export default function FormComponent({ data }) {
         onFinish={handleSubmit}
       >
         <Row gutter={16}>
-          <Col span={12}>
+          <Col span={24}>
             <Form.Item
               label={fieldLabels['Team_Name']}
               name="Team_Name"
@@ -144,7 +142,7 @@ export default function FormComponent({ data }) {
             </Form.Item>
           </Col>
 
-          <Col span={12}>
+          <Col span={24}>
             <Form.Item
               label={fieldLabels['Age']}
               name="Age"
@@ -168,7 +166,7 @@ export default function FormComponent({ data }) {
             </Form.Item>
           </Col>
 
-          <Col span={12}>
+          <Col span={24}>
             <Form.Item
               label={fieldLabels['Location_ID']}
               name="Location_ID"
@@ -193,14 +191,14 @@ export default function FormComponent({ data }) {
                   </Option>
                 ))}
                 <Option key="other" value="other">
-                  Other
+                  אחר
                 </Option>
               </Select>
             </Form.Item>
           </Col>
 
           {isOtherLocation && (
-            <Col span={12}>
+            <Col span={24}>
               <Form.Item
                 label={fieldLabels['New_Location']}
                 name="New_Location"
@@ -220,36 +218,8 @@ export default function FormComponent({ data }) {
             </Col>
           )}
 
-          <Col span={12}>
-            <Form.Item
-              label={fieldLabels['Rank']}
-              name="Rank"
-              rules={[
-                {
-                  type: 'number',
-                  message: `${fieldLabels['Rank']} must be a number`,
-                },
-                {
-                  validator: (_, value) => {
-                    if (value === null || (Number.isInteger(value) && value >= 0)) {
-                      return Promise.resolve();
-                    }
-                    return Promise.reject(`${fieldLabels['Rank']} must be a non-negative integer`);
-                  },
-                },
-              ]}
-            >
-              <InputNumber
-                style={{ width: '100%' }}
-                min={0}
-                precision={0}
-                value={formData['Rank']}
-                onChange={(value) => handleChange({ Rank: value })}
-              />
-            </Form.Item>
-          </Col>
 
-          <Col span={12}></Col>
+          <Col span={24}></Col>
         </Row>
         <Row gutter={16}>
           <Col span={12}>

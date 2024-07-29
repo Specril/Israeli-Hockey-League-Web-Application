@@ -92,7 +92,7 @@ export default function FormComponent({data}) {
     alert('Form Data JSON: ' + JSON.stringify(final_data));
 
     try {
-      const response = await fetch('/api/form_delete_player', {
+      const response = await fetch('/api/form_delete_player', { // change name to manage player and change method
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
