@@ -6,7 +6,8 @@ import 'antd/dist/reset.css'; // Import Ant Design CSS reset
 const fetchRows = require("../api/fetchRows");
 
 
-const query_teams =  `select Team_Name, Team_ID, Age from teams`
+const query_teams =  `select Team_Name, teams.Team_ID, Teams.Age, league.League_Type, league.League_ID 
+from teams inner join teamsInLeagues on teamsInLeagues.Team_ID=teams.Team_ID inner join league on league.League_ID=teamsInLeagues.League_ID;`
 
 async function dataFetchTeams() {
   let teamsData = [];
@@ -15,9 +16,19 @@ async function dataFetchTeams() {
   } catch (error) {
     console.error("Error fetching teams:", error);
   }
-  const options = teamsData.map(team => ({ key: team.Team_ID, value: [team.Team_Name+ " "+ team.Age] }));;
+  //const options = teamsData.map(team => ({ key: team.Team_ID, value: [team.Team_Name+ " "+ team.Age+ " "+ team.League_Type] }));;
   // console.log(teamsData)
-  return options
+  const teamsOptions = teamsData.map(team => ({
+    key: `${team.Team_ID}-${team.League_ID}`,
+    value: {
+      League_ID: team.League_ID,
+      Team_Name: team.Team_Name,
+      Age: team.Age,
+      League_Type: team.League_Type
+    }
+  }));
+  console.log(teamsOptions)
+  return teamsOptions
 }
 
 async function dataFetchLeague() {

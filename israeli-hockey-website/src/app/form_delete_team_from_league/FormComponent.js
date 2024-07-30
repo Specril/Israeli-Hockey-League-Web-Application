@@ -12,7 +12,6 @@ export default function FormComponent({ data }) {
   const initialFormState = {
     Team_ID: '',
     League_ID: '',
-
   };
 
   const fieldLabels = {
@@ -20,12 +19,19 @@ export default function FormComponent({ data }) {
     League_ID: 'ליגה',
   };
 
+  // const teamsOptions = data[0].map(team => ({
+  //   key: `${team.Team_ID}-${team.League_ID}`,
+  //   value: {
+  //     League_ID: team.League_ID,
+  //     Team_Name: team.Team_Name,
+  //     Age: team.Age,
+  //     League_Type: team.League_Type
+  //   }
+  // }));
+  // console.log(teamsOptions)
   const teamsOptions = data[0];
+
   const League_ID_options = data[1];
-
-
-  console.log("inside form component");
-
 
   const [formData, setFormData] = useState(initialFormState);
   const [isClient, setIsClient] = useState(false);
@@ -46,26 +52,20 @@ export default function FormComponent({ data }) {
   }, [formData, isClient]);
 
   const handleChange = (changedValues) => {
+    console.log('inside handle change')
     setFormData((prevData) => ({
       ...prevData,
       ...changedValues,
     }));
   };
 
-  const handleDateChange = (date, dateString) => {
+  const handleSelectChange = (value, field) => {
+    console.log('inside handle select change')
     setFormData((prevData) => ({
       ...prevData,
-      Date_of_Birth: date ? dateString : null,
+      [field]: value,
     }));
-  };
-
-  const handleSelectChange = (value, field) => {
-
-      setFormData((prevData) => ({
-        ...prevData,
-        [field]: value,
-      }));
-
+    
   };
 
   const handleSubmit = async () => {
@@ -76,7 +76,7 @@ export default function FormComponent({ data }) {
     alert('Form Data JSON: ' + JSON.stringify(final_data));
 
     try {
-      const response = await fetch('/api/form_delete_team_from_league', {
+      await fetch('/api/form_delete_team_from_league', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -84,7 +84,7 @@ export default function FormComponent({ data }) {
         body: JSON.stringify(final_data),
       });
     } catch (error) {
-      console.alert('Error updating data');
+      console.error('Error updating data');
     }
   };
 
@@ -104,6 +104,11 @@ export default function FormComponent({ data }) {
     }
   }, [formData, form, isClient]);
 
+  const filteredTeams = formData.League_ID
+    ? teamsOptions.filter(option => option.value.League_ID === formData.League_ID)
+    : teamsOptions;  
+
+
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
       <Title level={3}>טופס מחיקת קבוצה מליגה</Title>
@@ -115,9 +120,8 @@ export default function FormComponent({ data }) {
         onFinish={handleSubmit}
       >
         <Row gutter={16}>
-
           <Col span={24}>
-          <Form.Item
+            <Form.Item
               label={fieldLabels['League_ID']}
               name="League_ID"
               rules={[
@@ -152,13 +156,14 @@ export default function FormComponent({ data }) {
                 },
               ]}
             >
-          <Select
+              <Select
                 value={formData['Team_ID']}
                 onChange={(value) => handleSelectChange(value, 'Team_ID')}
+                style={{ width: '100%' }}
               >
-                {teamsOptions.map((option) => (
+                {filteredTeams.map((option) => (
                   <Option key={option.key} value={option.key}>
-                    {option.value}
+                    {`${option.value.Team_Name} - ${option.value.Age} - ${option.value.League_Type}`}
                   </Option>
                 ))}
               </Select>

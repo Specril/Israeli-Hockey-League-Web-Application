@@ -17,7 +17,7 @@ export default function FormComponent({ data }) {
   };
 
   const fieldLabels = {
-    Date_of_Birth: 'תאריך',
+    Date_of_Birth: 'תאריך לידה',
     Full_Name: 'שם מלא',
     Phone: 'טלפון',
     Email: 'מייל',
@@ -114,7 +114,7 @@ export default function FormComponent({ data }) {
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-      <Title level={3}>טופס פרטים אישיים בדיקה</Title>
+      <Title level={3}>טופס פרטים אישיים </Title>
       <Form
         form={form}
         layout="vertical"
