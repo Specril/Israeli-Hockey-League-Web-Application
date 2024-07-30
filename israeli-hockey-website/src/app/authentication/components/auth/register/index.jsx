@@ -22,12 +22,41 @@ const Register = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const { userLoggedIn, setCurrentUser } = useAuth();
 
+  const addUserToDB = async (user) => {
+    try {
+      const response = await fetch('/api/form_personal_details', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          Full_Name: name,
+          Email: email,
+          UID: user.uid,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error('Failed to add user to the database');
+      }
+
+      console.log('User added to the database:', data);
+    } catch (error) {
+      console.error('Error adding user to the database:', error);
+      setErrorMessage('Failed to add user to the database');
+      setIsRegistering(false);
+    }
+  };
+
   const onSubmit = async (e) => {
     setErrorMessage('');
     if (!isRegistering) {
       setIsRegistering(true);
       try {
         const user = await doCreateUserWithEmailAndPassword(email, name, password, type);
+        await addUserToDB(user);
         const unsubscribe = onAuthStateChanged(auth, (updatedUser) => {
           if (updatedUser && updatedUser.displayName === name) {
             setCurrentUser(updatedUser);
@@ -39,7 +68,6 @@ const Register = () => {
         setErrorMessage(error.message);
         setIsRegistering(false);
       }
-      
     }
   };
 

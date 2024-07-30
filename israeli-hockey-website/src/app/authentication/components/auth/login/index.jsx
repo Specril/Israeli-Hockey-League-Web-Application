@@ -28,17 +28,20 @@ const Login = () => {
       if (currentUser) {
         console.log(currentUser);
         try {
-          // if the currentUser doesnt have phoneNumber, call the getUserId function to get the user ID. if it does, use the phoneNumber as the user ID
+          let userID = '';
           if (!currentUser.phoneNumber) {
-            const userID = await getUserID(currentUser.uid).User_ID;
+            const id = await getUserID(currentUser.uid);
+            userID = id.User_ID;
           }
           else {
-            const userID = currentUser.phoneNumber;
+            userID = currentUser.phoneNumber;
           }
+          console.log("userID:", userID);
           const userType = await getUserType(userID);
+          console.log("userType:", userType);
           await updateProfile(auth.currentUser, {
             photoURL: JSON.stringify(userType),
-            phoneNumber: userID
+            phoneNumber: parseInt(userID),
           });
           await auth.currentUser.reload();
           setPhotoUrlUpdated(true);

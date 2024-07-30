@@ -10,7 +10,7 @@ import {
   updateProfile
 } from "firebase/auth";
 
-export const doCreateUserWithEmailAndPassword = async (email, name, password, type) => {
+export const doCreateUserWithEmailAndPassword = async (email, name, password, userID) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;

@@ -1,9 +1,9 @@
 import React from 'react';
 import 'antd/dist/reset.css'; // Import Ant Design CSS reset
 
-const getUserType = async (currentUser) => {
+const getUserType = async (userID) => {
   try {
-    const response = await fetch('/api/get_user_type?User_ID=' + "1", {
+    const response = await fetch(`/api/get_user_type?User_ID=${userID}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -23,6 +23,7 @@ const getUserType = async (currentUser) => {
 };
 
 const getUserID = async (uid) => {
+  console.log("uid:", uid);
   try {
     const response = await fetch(`/api/get_User_ID?UID=${uid}`, {
       method: 'GET',
@@ -34,7 +35,6 @@ const getUserID = async (uid) => {
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
-
     const data = await response.json();
     return data; // Return the parsed data
   } catch (error) {

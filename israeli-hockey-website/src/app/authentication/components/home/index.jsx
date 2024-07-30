@@ -25,6 +25,7 @@ const Home = () => {
 
   useEffect(() => {
     if (currentUser) {
+      console.log("currentuser:", currentUser);
       const userTypeKey = currentUser.photoURL;
       if (userTypeKey) {
         setUserType(userTypes[userTypeKey]);
