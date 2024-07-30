@@ -1,16 +1,12 @@
+"use client";
+
 import "../style.css";
 import Table from "../Table";
 import GoalKing from "./GoalKing";
 import King from "./King";
 import { Flex } from "antd";
+import { useEffect, useState } from "react";
 
-// const query_goal_king = `
-// SELECT Full_Name AS "שם השחקן", "כמות גולים" from
-// Users INNER JOIN
-// (SELECT Goals.User_ID, count(*) as "כמות גולים"
-// from Goals
-// group by User_ID) AS T1 on Users.User_ID=T1.User_ID
-// order by "כמות גולים" DESC;`;
 const query_goal_king = `
 SELECT 
     ROW_NUMBER() OVER (ORDER BY T1."כמות גולים" DESC) AS "מקום",
@@ -30,33 +26,60 @@ LEFT JOIN Teams ON PlayersInTeams.Team_ID = Teams.Team_ID
 ORDER BY "כמות גולים" DESC;
 `;
 
-const fetchRows = require("../api/fetchRows");
-
-async function dataFetchGoalKing() {
-  let teamsData = [];
+async function fetchData() {
+  let data = [];
   try {
-    teamsData = await fetchRows(() => query_goal_king);
+    const response = await fetch(`/api/fetch`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ query: query_goal_king }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    const result = await response.json();
+    // Ensure data is an array
+    data = Array.isArray(result) ? result : [];
+    return data;
   } catch (error) {
-    console.error("Error fetching teams:", error);
+    console.error("Error fetching data:", error);
+    return [];
   }
-  return teamsData;
 }
 
-export default async function Home() {
-  // Fetch data on the server side
-  const data_goal_king = await dataFetchGoalKing();
+const Home = () => {
+  const [dataGoalKing, setDataGoalKing] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDataAsync = async () => {
+      const data = await fetchData();
+      setDataGoalKing(data);
+      setLoading(false);
+    };
+
+    fetchDataAsync();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
       <section>
         <Flex gap="large" align="start" justify="space-evenly">
           <King
-            data={data_goal_king}
+            data={dataGoalKing}
             header={"מלך השערים"}
             backgroundColorFirst={"blue"}
           />
           <King
-            data={data_goal_king}
+            data={dataGoalKing}
             header={"מלך האלימות"}
             backgroundColorFirst={"red"}
           />
@@ -64,4 +87,6 @@ export default async function Home() {
       </section>
     </>
   );
-}
+};
+
+export default Home;
