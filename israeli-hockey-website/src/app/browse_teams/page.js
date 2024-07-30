@@ -1,30 +1,11 @@
+"use client";
+
 import "../style.css";
+import { useEffect, useState } from "react";
 import { Flex } from "antd";
-import Table from "../Table"
-import TeamOverview from "./TeamOverview"
+import TeamOverview from "./TeamOverview";
 
-// const query_goal_king = `
-// SELECT Full_Name AS "שם השחקן", "כמות גולים" from
-// Users INNER JOIN
-// (SELECT Goals.User_ID, count(*) as "כמות גולים"
-// from Goals
-// group by User_ID) AS T1 on Users.User_ID=T1.User_ID
-// order by "כמות גולים" DESC;`;
-const query_teams = `
-SELECT 
-    CoachUsers.Full_Name AS "שם מאמן",
-    Teams.Team_Name AS "שם קבוצה",
-    TeamsLogos.Photo AS "תמונה של הלוגו",
-    PlayerUsers.Full_Name AS "שם השחקן"
-FROM Teams
-INNER JOIN CoachesOfTeams ON Teams.Team_ID = CoachesOfTeams.Team_ID
-INNER JOIN Users AS CoachUsers ON CoachesOfTeams.User_ID = CoachUsers.User_ID
-INNER JOIN PlayersInTeams ON Teams.Team_ID = PlayersInTeams.Team_ID
-INNER JOIN Users AS PlayerUsers ON PlayersInTeams.User_ID = PlayerUsers.User_ID
-LEFT JOIN TeamsLogos ON Teams.Team_ID = TeamsLogos.Team_ID
-ORDER BY Teams.Team_Name, PlayerUsers.Full_Name;
-`;
-
+// Define SQL queries
 const query_team_details = `SELECT 
     Teams.Team_ID AS "Team ID",
     Users.Full_Name AS "Team Coach",
@@ -50,37 +31,59 @@ FROM Teams
 INNER JOIN PlayersInTeams ON Teams.Team_ID = PlayersInTeams.Team_ID
 INNER JOIN Users AS PlayerUsers ON PlayersInTeams.User_ID = PlayerUsers.User_ID
 ORDER BY Teams.Team_Name, PlayerUsers.Full_Name;
-`
+`;
 
-const fetchRows = require("../api/fetchRows");
-
-async function dataFetchTeamDetails() {
-  let teamsData = [];
+// Function to fetch data from the API
+async function fetchData(query) {
+  let data = [];
   try {
-    teamsData = await fetchRows(() => query_team_details);
+    const response = await fetch(`/api/fetch`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ query }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    data = await response.json();
+    return data;
   } catch (error) {
-    console.error("Error fetching teams:", error);
+    console.error("Error fetching data:", error);
+    return [];
   }
-  return teamsData;
-}
-async function dataFetchTeamPlayers() {
-  let teamsData = [];
-  try {
-    teamsData = await fetchRows(() => query_team_players);
-  } catch (error) {
-    console.error("Error fetching teams:", error);
-  }
-  return teamsData;
 }
 
-export default async function Home() {
-  // Fetch data on the server side
-  const data_team_details = await dataFetchTeamDetails();
-  const data_team_players = await dataFetchTeamPlayers();
+const Home = () => {
+  const [dataTeamDetails, setDataTeamDetails] = useState([]);
+  const [dataTeamPlayers, setDataTeamPlayers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDataAsync = async () => {
+      const details = await fetchData(query_team_details);
+      const players = await fetchData(query_team_players);
+
+      setDataTeamDetails(details);
+      setDataTeamPlayers(players);
+      setLoading(false);
+    };
+
+    fetchDataAsync();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
-    <TeamOverview details={data_team_details} players={data_team_players}/>
+      <TeamOverview details={dataTeamDetails} players={dataTeamPlayers} />
     </>
   );
-}
+};
+
+export default Home;
