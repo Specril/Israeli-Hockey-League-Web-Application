@@ -3,7 +3,7 @@ import { getConnection } from "@/app/lib/db";
 import sql from 'mssql';
 
 export async function POST(req, res) {
-    const {User_ID, admin, referee, coach, player, fan} = await req.json();
+    const {User_ID, admin, referee, coach, coachRole, player, fan} = await req.json();
     try {
         const pool = await getConnection();
         if (admin){
@@ -39,7 +39,8 @@ export async function POST(req, res) {
                 // insert the user to UsersCoaches table
                 await pool.request()
                 .input('User_ID',sql.Int, User_ID)
-                .query('INSERT INTO UsersCoaches (User_ID) VALUES (@User_ID)')
+                .input('Role', sql.NVarChar, coachRole)
+                .query('INSERT INTO UsersCoaches (User_ID, Role) VALUES (@User_ID, @Role)')
             }
         }
         if (player){
