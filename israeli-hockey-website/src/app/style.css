@@ -271,3 +271,16 @@ footer {
 .ant-card-head {
   padding: 0 !important;
 }
+
+/* Ensure the table header is styled with blue background and white text */
+.ant-table-thead > tr > th {
+  background-color: #0073e6 !important; /* Blue header background */
+  color: white !important; /* White text color for better contrast */
+  font-weight: bold !important; /* Bold text for header */
+  text-align: center !important; /* Center align header text */
+}
+
+/* Style for the table to make it wider */
+.custom-table {
+  width: 100%; /* Adjust width as needed */
+}

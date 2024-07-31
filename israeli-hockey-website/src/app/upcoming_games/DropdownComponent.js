@@ -1,12 +1,28 @@
-"use client";
 
+"use client"
 import React, { useState, useEffect } from 'react';
 import { Select, Typography, Row, Col, Table } from 'antd';
 import 'antd/dist/reset.css';
-import "../style.css";
+import "../style.css"; // Ensure this import is correct
 
 const { Title } = Typography;
 const { Option } = Select;
+
+// Helper functions to format date and time
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
+  const year = date.getFullYear();
+  return `${day}-${month}-${year}`;
+};
+
+const formatTime = (timeString) => {
+  const time = new Date(timeString);
+  const hours = time.getUTCHours().toString().padStart(2, '0');
+  const minutes = time.getUTCMinutes().toString().padStart(2, '0');
+  return `${hours}:${minutes}`;
+};
 
 export default function DropdownComponent({ options, data }) {
   const [selectedAge, setSelectedAge] = useState(null);
@@ -50,11 +66,13 @@ export default function DropdownComponent({ options, data }) {
       title: 'תאריך',
       dataIndex: 'תאריך',
       key: 'תאריך',
+      render: (text) => formatDate(text), // Format date using helper function
     },
     {
       title: 'זמן התחלה',
       dataIndex: 'זמן התחלה',
       key: 'זמן התחלה',
+      render: (text) => formatTime(text), // Format time using helper function
     },
     {
       title: 'מיקום',
@@ -74,7 +92,7 @@ export default function DropdownComponent({ options, data }) {
   ];
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
+    <div style={{ maxWidth: '100%', margin: '0 auto', padding: '20px' }}>
       <Title level={3}>משחקים קרובים</Title>
       <Row gutter={16}>
         <Col span={24}>
@@ -94,7 +112,12 @@ export default function DropdownComponent({ options, data }) {
       </Row>
       <Row gutter={16} style={{ marginTop: '20px' }}>
         <Col span={24}>
-          <Table columns={columns} dataSource={filteredData} rowKey="קבוצת בית" />
+          <Table
+            columns={columns}
+            dataSource={filteredData}
+            rowKey="קבוצת בית"
+            className="custom-table" // Apply custom table class
+          />
         </Col>
       </Row>
     </div>

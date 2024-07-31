@@ -27,6 +27,14 @@ export default function FormComponent({ data }) {
     { key: 'Users-Coaches', value: 'מאמן' }
   ]; // Predefined roles
 
+  const roleKeys = {
+    'Users_Admin': 'admin',
+    'Users-Referees': 'referee',
+    'Users-Players': 'player',
+    'Users-Fans': 'fan',
+    'Users-Coaches': 'coach'
+  };
+
   // Additional state to hold selected user details
   const [selectedUser, setSelectedUser] = useState(null);
 
@@ -74,20 +82,33 @@ export default function FormComponent({ data }) {
   };
 
   const handleSubmit = async () => {
-    const finalData = { ...formData };
+    const roleData = rolesOptions.reduce((acc, role) => {
+      acc[roleKeys[role.key]] = formData.Roles.includes(role.key) ? 1 : 0;
+      return acc;
+    }, {});
 
-    alert('Form Data JSON: ' + JSON.stringify(finalData));
+    const finalData = {
+      User_ID: formData.User_ID,
+      ...roleData
+    };
 
     try {
-      await fetch('/api/form_add_roles', {
+      const response = await fetch('/api/manage_users_types', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(finalData),
       });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      
+      alert('Form submitted successfully');
     } catch (error) {
       console.error('Error submitting form:', error);
+      alert('Error updating data');
     }
   };
 
