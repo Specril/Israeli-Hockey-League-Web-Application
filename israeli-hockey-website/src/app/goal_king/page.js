@@ -26,7 +26,26 @@ LEFT JOIN Teams ON PlayersInTeams.Team_ID = Teams.Team_ID
 ORDER BY "כמות גולים" DESC;
 `;
 
-async function fetchData() {
+const query_penalty_king = `
+SELECT 
+    ROW_NUMBER() OVER (ORDER BY T1."כמות עונשים" DESC) AS "מקום",
+    Users.Full_Name AS "שם השחקן", 
+    T1."כמות עונשים", 
+    TeamsLogos.Photo AS "סמל קבוצה",
+    Teams.Team_Name AS "שם הקבוצה"
+FROM Users 
+INNER JOIN (
+    SELECT Penalties.User_ID, COUNT(*) AS "כמות עונשים"
+    FROM Penalties
+    GROUP BY Penalties.User_ID
+) AS T1 ON Users.User_ID = T1.User_ID
+INNER JOIN PlayersInTeams ON Users.User_ID = PlayersInTeams.User_ID
+LEFT JOIN TeamsLogos ON PlayersInTeams.Team_ID = TeamsLogos.Team_ID
+LEFT JOIN Teams ON PlayersInTeams.Team_ID = Teams.Team_ID
+ORDER BY "כמות עונשים" DESC;
+`;
+
+async function fetchData(query) {
   let data = [];
   try {
     const response = await fetch(`/api/fetch`, {
@@ -34,7 +53,7 @@ async function fetchData() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ query: query_goal_king }),
+      body: JSON.stringify({ query: query }),
     });
 
     if (!response.ok) {
@@ -53,12 +72,15 @@ async function fetchData() {
 
 const Home = () => {
   const [dataGoalKing, setDataGoalKing] = useState([]);
+  const [dataPenaltyKing, setDataPenaltyKing] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchDataAsync = async () => {
-      const data = await fetchData();
-      setDataGoalKing(data);
+      const data_goals = await fetchData(query_goal_king);
+      const data_penalty = await fetchData(query_penalty_king);
+      setDataGoalKing(data_goals);
+      setDataPenaltyKing(data_penalty);
       setLoading(false);
     };
 
@@ -79,8 +101,8 @@ const Home = () => {
             backgroundColorFirst={"blue"}
           />
           <King
-            data={dataGoalKing}
-            header={"מלך האלימות"}
+            data={dataPenaltyKing}
+            header={"מלך העונשים"}
             backgroundColorFirst={"red"}
           />
         </Flex>

@@ -48,7 +48,7 @@ export default function King({ data, header, backgroundColorFirst }) {
                   }
                 />
                 <div style={{ fontSize: "25px", color: "white" }}>
-                  {item["כמות גולים"]}
+                  {item["כמות גולים"] | item["כמות עונשים"]}
                 </div>
               </List.Item>
             );
@@ -67,7 +67,7 @@ export default function King({ data, header, backgroundColorFirst }) {
                     </span>
                   }
                 />
-                <div>{item["כמות גולים"]}</div>
+                <div>{item["כמות גולים"] | item["כמות עונשים"]}</div>
               </List.Item>
             );
           }
