@@ -48,7 +48,11 @@ export default function King({ data, header, backgroundColorFirst }) {
                   }
                 />
                 <div style={{ fontSize: "25px", color: "white" }}>
-                  {item["כמות גולים"] | item["כמות עונשים"]}
+                  <Tooltip
+                    title={item["כמות גולים"] ? "כמות גולים" : "כמות עונשים"}
+                  >
+                    {item["כמות גולים"] | item["כמות עונשים"]}
+                  </Tooltip>
                 </div>
               </List.Item>
             );
@@ -67,7 +71,13 @@ export default function King({ data, header, backgroundColorFirst }) {
                     </span>
                   }
                 />
-                <div>{item["כמות גולים"] | item["כמות עונשים"]}</div>
+                <div>
+                  <Tooltip
+                    title={item["כמות גולים"] ? "כמות גולים" : "כמות עונשים"}
+                  >
+                    {item["כמות גולים"] | item["כמות עונשים"]}
+                  </Tooltip>
+                </div>
               </List.Item>
             );
           }

@@ -1,13 +1,13 @@
 "use client";
 
 import "../style.css";
-import Table from "../Table";
-import GoalKing from "./GoalKing";
+import { Flex, Select } from "antd";
 import King from "./King";
-import { Flex } from "antd";
 import { useEffect, useState } from "react";
 
-const query_goal_king = `
+const { Option } = Select;
+
+const query_goal_king = (leagueId) => `
 SELECT 
     ROW_NUMBER() OVER (ORDER BY T1."כמות גולים" DESC) AS "מקום",
     Users.Full_Name AS "שם השחקן", 
@@ -23,10 +23,12 @@ INNER JOIN (
 INNER JOIN PlayersInTeams ON Users.User_ID = PlayersInTeams.User_ID
 LEFT JOIN TeamsLogos ON PlayersInTeams.Team_ID = TeamsLogos.Team_ID
 LEFT JOIN Teams ON PlayersInTeams.Team_ID = Teams.Team_ID
+INNER JOIN TeamsInLeagues ON Teams.Team_ID = TeamsInLeagues.Team_ID
+WHERE TeamsInLeagues.League_ID = ${leagueId}
 ORDER BY "כמות גולים" DESC;
 `;
 
-const query_penalty_king = `
+const query_penalty_king = (leagueId) => `
 SELECT 
     ROW_NUMBER() OVER (ORDER BY T1."כמות עונשים" DESC) AS "מקום",
     Users.Full_Name AS "שם השחקן", 
@@ -42,7 +44,17 @@ INNER JOIN (
 INNER JOIN PlayersInTeams ON Users.User_ID = PlayersInTeams.User_ID
 LEFT JOIN TeamsLogos ON PlayersInTeams.Team_ID = TeamsLogos.Team_ID
 LEFT JOIN Teams ON PlayersInTeams.Team_ID = Teams.Team_ID
+INNER JOIN TeamsInLeagues ON Teams.Team_ID = TeamsInLeagues.Team_ID
+WHERE TeamsInLeagues.League_ID = ${leagueId}
 ORDER BY "כמות עונשים" DESC;
+`;
+
+const query_leagues = `
+SELECT 
+    League_ID,
+    Age,
+    League_Type
+FROM League
 `;
 
 async function fetchData(query) {
@@ -61,7 +73,6 @@ async function fetchData(query) {
     }
 
     const result = await response.json();
-    // Ensure data is an array
     data = Array.isArray(result) ? result : [];
     return data;
   } catch (error) {
@@ -70,41 +81,120 @@ async function fetchData(query) {
   }
 }
 
+async function fetchLeagues() {
+  let leagues = [];
+  try {
+    const response = await fetch(`/api/fetch`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ query: query_leagues }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    const result = await response.json();
+    leagues = Array.isArray(result) ? result : [];
+    return leagues;
+  } catch (error) {
+    console.error("Error fetching leagues:", error);
+    return [];
+  }
+}
+
 const Home = () => {
   const [dataGoalKing, setDataGoalKing] = useState([]);
   const [dataPenaltyKing, setDataPenaltyKing] = useState([]);
+  const [leagues, setLeagues] = useState([]);
+  const [selectedLeague, setSelectedLeague] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchDataAsync = async () => {
-      const data_goals = await fetchData(query_goal_king);
-      const data_penalty = await fetchData(query_penalty_king);
-      setDataGoalKing(data_goals);
-      setDataPenaltyKing(data_penalty);
-      setLoading(false);
+    const fetchLeaguesAsync = async () => {
+      const leaguesData = await fetchLeagues();
+      setLeagues(leaguesData);
+      if (leaguesData.length > 0) {
+        setSelectedLeague(leaguesData[0].League_ID);
+      }
     };
 
-    fetchDataAsync();
+    fetchLeaguesAsync();
   }, []);
 
+  useEffect(() => {
+    if (selectedLeague) {
+      const fetchDataAsync = async () => {
+        try {
+          setLoading(true);
+          const data_goals = await fetchData(query_goal_king(selectedLeague));
+          const data_penalty = await fetchData(
+            query_penalty_king(selectedLeague)
+          );
+          setDataGoalKing(data_goals);
+          setDataPenaltyKing(data_penalty);
+        } catch (err) {
+          setError(err.message);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchDataAsync();
+    }
+  }, [selectedLeague]);
+
+  const handleLeagueChange = (value) => {
+    setSelectedLeague(value);
+  };
+
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div style={{ textAlign: "center", padding: "20px" }}>Loading...</div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div style={{ textAlign: "center", color: "red", padding: "20px" }}>
+        {error}
+      </div>
+    );
   }
 
   return (
     <>
       <section>
         <Flex gap="large" align="start" justify="space-evenly">
-          <King
-            data={dataGoalKing}
-            header={"מלך השערים"}
-            backgroundColorFirst={"blue"}
-          />
-          <King
-            data={dataPenaltyKing}
-            header={"מלך העונשים"}
-            backgroundColorFirst={"red"}
-          />
+          <Select
+            style={{ width: 200 }}
+            placeholder="Select a league"
+            onChange={handleLeagueChange}
+            value={selectedLeague}
+          >
+            {leagues.map((league) => (
+              <Option key={league.League_ID} value={league.League_ID}>
+                {`${league.Age} - ${league.League_Type} - ${league.League_ID}`}
+              </Option>
+            ))}
+          </Select>
+          {selectedLeague && (
+            <>
+              <King
+                data={dataGoalKing}
+                header={"מלך השערים"}
+                backgroundColorFirst={"blue"}
+              />
+              <King
+                data={dataPenaltyKing}
+                header={"מלך העונשים"}
+                backgroundColorFirst={"red"}
+              />
+            </>
+          )}
         </Flex>
       </section>
     </>
