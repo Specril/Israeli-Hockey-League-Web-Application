@@ -1,32 +1,43 @@
-
 import React from 'react';
 import FormComponent from './FormComponent';
 import 'antd/dist/reset.css'; // Import Ant Design CSS reset
-const fetchRows = require("../api/fetchRows");
 
 const query_users = 'SELECT User_ID, Full_Name FROM Users;';
 const query_roles = 'SELECT Role_ID, Role_Name FROM Roles;';
 
-async function dataFetchUsers() {
-  let usersData = [];
+async function fetchData(query) {
+  let data = [];
   try {
-    usersData = await fetchRows(() => query_users);
+    const response = await fetch(`http://localhost:3001/api/fetch`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ query: query }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    const result = await response.json();
+    // Ensure data is an array
+    data = Array.isArray(result) ? result : [];
   } catch (error) {
-    console.error("Error fetching users:", error);
+    console.error("Error fetching data:", error);
   }
+  return data;
+}
+
+async function dataFetchUsers() {
+  const usersData = await fetchData(query_users);
   return usersData.map(user => ({ key: user.User_ID, value: user.Full_Name }));
 }
 
 async function dataFetchRoles() {
-  let rolesData = [];
-  try {
-    rolesData = await fetchRows(() => query_roles);
-  } catch (error) {
-    console.error("Error fetching roles:", error);
-  }
+  const rolesData = await fetchData(query_roles);
   return rolesData.map(role => ({ key: role.Role_ID, value: role.Role_Name }));
 }
-
 
 export default async function Page() {
   const usersData = await dataFetchUsers();
