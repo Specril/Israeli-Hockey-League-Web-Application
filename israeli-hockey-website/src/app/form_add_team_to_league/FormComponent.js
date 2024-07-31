@@ -76,7 +76,7 @@ export default function FormComponent({ data }) {
     alert('Form Data JSON: ' + JSON.stringify(final_data));
 
     try {
-      const response = await fetch('/api/form_add_team_to_league', {
+      const response = await fetch('/api/manage_teams_in_leagues', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

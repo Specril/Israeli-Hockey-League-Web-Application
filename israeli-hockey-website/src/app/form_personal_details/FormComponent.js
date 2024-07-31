@@ -14,6 +14,7 @@ export default function FormComponent({ data }) {
     Full_Name: '',
     Phone: '',
     Email: '',
+    Residence: ''
   };
 
   const fieldLabels = {
@@ -21,6 +22,7 @@ export default function FormComponent({ data }) {
     Full_Name: 'שם מלא',
     Phone: 'טלפון',
     Email: 'מייל',
+    Residence: 'כתובת'
   };
 
   const [formData, setFormData] = useState(initialFormState);
@@ -68,31 +70,31 @@ export default function FormComponent({ data }) {
     }));
   };
 
-  const handleSubmit = () => {
-    alert('Form Data JSON: ' + JSON.stringify(formData));
-    console.log('Form Data JSON:', JSON.stringify(formData));
-    setFormData(initialFormState);
-  };
-
-   // const handleSubmit = async () => {
-  //   // setFormData({...formData, User_ID: data[0]['User_ID']})
-  //   const final_data = {...formData, User_ID: data[0]['User_ID']}
-
-  //   alert('Form Data JSON: ' + JSON.stringify(final_data));
-  //   // onFinish(formData);
-  //   try {
-  //     const response = await fetch('/api/form_personal_details', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify(final_data),
-  //     })
-  //   } catch (error) {
-  //     console.alert('Error updating data');
-  //   }
-    
+  // const handleSubmit = () => {
+  //   alert('Form Data JSON: ' + JSON.stringify(formData));
+  //   console.log('Form Data JSON:', JSON.stringify(formData));
+  //   setFormData(initialFormState);
   // };
+
+   const handleSubmit = async () => {
+    // setFormData({...formData, User_ID: data[0]['User_ID']})
+    const final_data = {...formData, User_ID: data[0]['User_ID']}
+
+    alert('Form Data JSON: ' + JSON.stringify(final_data));
+    // onFinish(formData);
+    try {
+      const response = await fetch('/api/form_personal_details', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(final_data),
+      })
+    } catch (error) {
+      console.alert('Error updating data');
+    }
+    
+  };
 
 
   const handleClearAll = () => {
@@ -176,6 +178,20 @@ export default function FormComponent({ data }) {
                 name="Email"
                 value={formData['Email']}
                 onChange={(e) => handleChange({ Email: e.target.value })}
+              />
+            </Form.Item>
+          </Col>
+
+          <Col span={12}>
+            <Form.Item
+              label={fieldLabels['Residence']}
+              name="Residence"
+             
+            >
+              <Input
+                name="Residence"
+                value={formData['Residence']}
+                onChange={(e) => handleChange({ Residence: e.target.value })}
               />
             </Form.Item>
           </Col>

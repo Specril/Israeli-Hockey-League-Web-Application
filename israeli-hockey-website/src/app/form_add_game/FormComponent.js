@@ -124,11 +124,30 @@ export default function AddGameForm({ data }) {
     }));
   };
 
-  const handleSubmit = () => {
+  // const handleSubmit = () => {
+  //   alert('Form Data JSON: ' + JSON.stringify(formData));
+  //   console.log('Form Data JSON:', JSON.stringify(formData));
+  //   // form.resetFields();
+  // };
+
+
+     const handleSubmit = async () => {
+    // setFormData({...formData, User_ID: data[0]['User_ID']})
+
     alert('Form Data JSON: ' + JSON.stringify(formData));
-    console.log('Form Data JSON:', JSON.stringify(formData));
-    // form.resetFields();
-  };
+    // onFinish(formData);
+    try {
+      const response = await fetch('/api/form_add_game', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+    } catch (error) {
+      console.alert('Error updating data');
+    }
+  }
 
   const handleClearAll = () => {
     // form.resetFields();

@@ -146,11 +146,52 @@ export default function UploadGameResultForm({ data }) {
   const optionsCard = ['blue','red']
 
   const handleSubmit = async () => {
-    const final_data = { ...formData };
+    const final_data = {
+      Game_ID: formData.selectedGameId,
+      Goals: [
+        ...formData.homeTeamGoals.map(goal => ({
+          User_ID: goal.User_ID,
+          Team_ID: selectedGame.value.Home_Team_ID,
+          Time_Stamp: goal.Time_Stamp,
+        })),
+        ...formData.awayTeamGoals.map(goal => ({
+          User_ID: goal.User_ID,
+          Team_ID: selectedGame.value.Away_Team_ID,
+          Time_Stamp: goal.Time_Stamp,
+        }))
+      ],
+      Penalties: [
+        ...formData.homeTeamPenalties.map(penalty => ({
+          User_ID: penalty.User_ID,
+          Team_ID: selectedGame.value.Home_Team_ID,
+          Time_Stamp: penalty.Time_Stamp,
+        })),
+        ...formData.awayTeamPenalties.map(penalty => ({
+          User_ID: penalty.User_ID,
+          Team_ID: selectedGame.value.Away_Team_ID,
+          Time_Stamp: penalty.Time_Stamp,
+        }))
+      ],
+      Cards: [
+        ...formData.homeTeamCards.map(card => ({
+          User_ID: card.User_ID,
+          Team_ID: selectedGame.value.Home_Team_ID,
+          Time_Stamp: card.Time_Stamp,
+          Card_Type: card.Card_Type,
+        })),
+        ...formData.awayTeamCards.map(card => ({
+          User_ID: card.User_ID,
+          Team_ID: selectedGame.value.Away_Team_ID,
+          Time_Stamp: card.Time_Stamp,
+          Card_Type: card.Card_Type,
+        }))
+      ]
+    };
+  
     alert('Form Data JSON: ' + JSON.stringify(final_data));
-
+  
     try {
-      const response = await fetch('/api/form_results_updating', {
+      const response = await fetch('/api/form_results_updatingrg', { // change dir
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -158,9 +199,10 @@ export default function UploadGameResultForm({ data }) {
         body: JSON.stringify(final_data),
       });
     } catch (error) {
-      console.alert('Error updating data');
+      console.error('Error updating data');
     }
   };
+  
 
   const handleClearAll = () => {
     form.resetFields();
@@ -203,7 +245,7 @@ export default function UploadGameResultForm({ data }) {
             >
               <Select
                 showSearch
-                placeholder="Select a game"
+                placeholder="בחר משחק"
                 optionFilterProp="children"
                 filterOption={(input, option) =>
                   option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -437,7 +479,7 @@ export default function UploadGameResultForm({ data }) {
               <Title level={5}>{`רישום כרטיסים`}</Title>
               {formData.awayTeamCards.map((card, index) => (
                 <Row gutter={8} key={index}>
-                  <Col span={8}>
+                  <Col span={16}>
                     <Form.Item>
                       <Select
                         placeholder="שחקן"

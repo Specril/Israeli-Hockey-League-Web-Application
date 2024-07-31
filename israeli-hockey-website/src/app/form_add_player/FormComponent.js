@@ -76,7 +76,7 @@ export default function FormComponent({ data }) {
     alert('Form Data JSON: ' + JSON.stringify(final_data));
 
     try {
-      await fetch('/api/form_add_player', {
+      await fetch('/api/form_manage_player', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

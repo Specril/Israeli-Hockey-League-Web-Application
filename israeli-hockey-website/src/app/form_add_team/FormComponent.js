@@ -8,6 +8,34 @@ import "../style.css";
 const { Title } = Typography;
 const { Option } = Select;
 
+
+// async function fetchData() {
+//   let leagueData = [];
+//   try {
+//     const response = await fetch(`/api/fetch`, { // Use relative URL
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify({ query: 'SELECT DISTINCT Age from League;' }),
+//     });
+
+//     if (!response.ok) {
+//       throw new Error('Network response was not ok');
+//     }
+
+//     leagueData = await response.json();
+//     return leagueData; // Return the parsed data
+//   } catch (error) {
+//     console.error("Error fetching photos:", error);
+//   }
+//   return leagueData;
+// }
+
+// const AgeOptions = await fetchData()
+
+
+
 export default function FormComponent({ data }) {
   const initialFormState = {
     Team_Name: '',
@@ -24,6 +52,7 @@ export default function FormComponent({ data }) {
   };
 
   const AgeOptions = data[0];
+  
   const LocationsOptions = data[1];
   console.log("inside form component");
   console.log(LocationsOptions);
@@ -83,7 +112,7 @@ export default function FormComponent({ data }) {
     alert('Form Data JSON: ' + JSON.stringify(final_data));
 
     try {
-      const response = await fetch('/api/form_add_team', {
+      const response = await fetch('/api/form_manage_team', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

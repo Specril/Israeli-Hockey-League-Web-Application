@@ -12,23 +12,23 @@ const query_locations = 'select * from Locations'
 
 async function dataFetchLeagues() {
   let leagueData = [];
-  // try {
-  //   leagueData = await fetchRows(() => query_league);
-  // } catch (error) {
-  //   console.error("Error fetching leagues:", error);
-  // }
-
   try {
-      leagueData = await fetch('/api/fetch', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ query: 'SELECT DISTINCT Age from League;' }),
-    })
+    leagueData = await fetchRows(() => query_league);
   } catch (error) {
-    console.error('Error updating data');
+    console.error("Error fetching leagues:", error);
   }
+
+  // try {
+  //     leagueData = await fetch('/api/fetch', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify({ query: 'SELECT DISTINCT Age from League;' }),
+  //   })
+  // } catch (error) {
+  //   console.error('Error updating data');
+  // }
 
   const ageArray = leagueData.map(obj => obj.Age);
   console.log(ageArray)

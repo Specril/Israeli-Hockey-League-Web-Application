@@ -65,8 +65,8 @@ export default function FormComponent({ data }) {
     alert('Form Data JSON: ' + JSON.stringify(final_data));
 
     try {
-      const response = await fetch('/api/form_delete_team', {
-        method: 'POST',
+      const response = await fetch('/api/form_manage_team', {
+        method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
         },

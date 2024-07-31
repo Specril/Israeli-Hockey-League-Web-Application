@@ -39,7 +39,13 @@ export default function NavBar() {
           <a href="form_add_game">הוספת משחק</a>
         </li>
         <li>
+          <a href="form_delete_game">מחיקת משחק</a>
+        </li>
+        <li>
           <a href="form_results_updating">העלאת תוצאות משחק</a>
+        </li>
+        <li>
+          <a href="form_edit_game_results">עריכת תוצאות משחק</a>
         </li>
         <li>
           <a href="form_personal_details">עדכון פרטים אישיים</a>

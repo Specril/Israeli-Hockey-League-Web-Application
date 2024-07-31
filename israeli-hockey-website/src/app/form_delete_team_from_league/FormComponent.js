@@ -19,16 +19,7 @@ export default function FormComponent({ data }) {
     League_ID: 'ליגה',
   };
 
-  // const teamsOptions = data[0].map(team => ({
-  //   key: `${team.Team_ID}-${team.League_ID}`,
-  //   value: {
-  //     League_ID: team.League_ID,
-  //     Team_Name: team.Team_Name,
-  //     Age: team.Age,
-  //     League_Type: team.League_Type
-  //   }
-  // }));
-  // console.log(teamsOptions)
+
   const teamsOptions = data[0];
 
   const League_ID_options = data[1];
@@ -70,14 +61,15 @@ export default function FormComponent({ data }) {
 
   const handleSubmit = async () => {
     const final_data = {
-      ...formData
+      ...formData,
+      Team_ID: formData.Team_ID.includes('-') ? formData.Team_ID.split('-')[0] : formData.Team_ID,
     };
 
     alert('Form Data JSON: ' + JSON.stringify(final_data));
 
     try {
-      await fetch('/api/form_delete_team_from_league', {
-        method: 'POST',
+      await fetch('/api/manage_teams_in_leagues', {
+        method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
         },
