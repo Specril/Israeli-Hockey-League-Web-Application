@@ -1,3 +1,4 @@
+"use client"
 import React from 'react';
 import FormComponent from './FormComponent';
 import 'antd/dist/reset.css'; // Import Ant Design CSS reset
@@ -8,7 +9,7 @@ const query_roles = 'SELECT Role_ID, Role_Name FROM Roles;';
 async function fetchData(query) {
   let data = [];
   try {
-    const response = await fetch(`http://localhost:3001/api/fetch`, {
+    const response = await fetch(`/api/fetch`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

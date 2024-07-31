@@ -1,3 +1,4 @@
+"use client"
 import "../style.css";
 import DropdownComponent from "./DropdownComponent";
 import Table from "../Table";
@@ -18,7 +19,7 @@ const query_upcoming_games = `
 async function fetchData(query) {
   let data = [];
   try {
-    const response = await fetch(`http://localhost:3001/api/fetch`, {
+    const response = await fetch(`/api/fetch`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
