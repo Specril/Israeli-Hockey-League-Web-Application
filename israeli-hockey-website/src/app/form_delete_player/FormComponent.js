@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Typography, Row, Col, Select, InputNumber } from 'antd';
 import 'antd/dist/reset.css';
 import "../style.css";
+import { dataFetchPlayers,dataFetchTeams } from './fetching';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -24,21 +25,36 @@ export default function FormComponent({data}) {
 
   };
   
-  // const field2Options = ['Team A', 'Team B', 'Team C']; 
-    const Team_IDOptions = data[0]
-    const users_options = data[1].map(user =>  ({
-      key: user.User_ID,
-      value: {
-        Full_Name: user.Full_Name,
-        Team_ID: user.Team_ID,
-      }
-    }));
+
 
 
 
   const [formData, setFormData] = useState(initialFormState);
   const [isClient, setIsClient] = useState(false);
   const [form] = Form.useForm();
+  const [Team_IDOptions, setTeamsOptions] = useState([]);
+  const [users_options, setUsersOptions] = useState([]);
+  const [selectedTeam, setSelectedTeam] = useState(null);
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const fetchedTeams = await dataFetchTeams();
+      const fetchedPlayers = await dataFetchPlayers()
+      const players = fetchedPlayers.map(user =>  ({
+        key: user.User_ID,
+        value: {
+          Full_Name: user.Full_Name,
+          Team_ID: user.Team_ID,
+        }
+      }));;
+      setTeamsOptions(fetchedTeams);
+      setUsersOptions(players);
+      
+
+    };
+    fetchData();
+  }, []); 
 
   useEffect(() => {
     setIsClient(true);
@@ -47,6 +63,7 @@ export default function FormComponent({data}) {
       setFormData(JSON.parse(savedFormData));
     }
   }, []);
+
 
   useEffect(() => {
     if (isClient) {
@@ -75,15 +92,12 @@ export default function FormComponent({data}) {
       ...prevData,
       [field]: value,
     }));
+    if (field === "Team_ID"){
+      setSelectedTeam(value)
+    }
   };
 
 
-  // This version of handleSubmit is good for debugging frontend without connecting to the db
-
-  // const handleSubmit = () => {
-  //   alert('Form Data JSON: ' + JSON.stringify(formData));
-  //   console.log('Form Data JSON:', JSON.stringify(formData));
-  // };
 
   const handleSubmit = async () => {
 
@@ -163,8 +177,7 @@ export default function FormComponent({data}) {
     </Select>
             </Form.Item>
             </Col> 
-
-            <Col span={24}>
+{selectedTeam && <Col span={24}>
             <Form.Item
               label={fieldLabels['User_ID']}
               name="User_ID"
@@ -186,7 +199,8 @@ export default function FormComponent({data}) {
                 ))}
               </Select>
             </Form.Item>
-          </Col>
+          </Col>}
+            
           
         </Row>
         <Row gutter={16}>
@@ -208,81 +222,3 @@ export default function FormComponent({data}) {
 
 
 
-
-
-
-    {/* <Form.Item
-      label={fieldLabels[field]}
-      name={field}
-      rules={[
-        {
-          required: field === 'Full_Name' || field === 'field2' || field === 'Shirt_Number',
-          message: `${fieldLabels[field]} is required`,
-        },
-        field === 'Full_Name' || field === 'Position' ? {
-          type: 'string',
-          max: 255,
-          message: `${fieldLabels[field]} must be a string of max length 255`,
-        } : {},
-        field === 'Shirt_Number' ? [
-          {
-            type: 'number',
-            message: `${fieldLabels[field]} must be a number`,
-          },
-          {
-            validator: (_, value) => {
-              if (value === null || (Number.isInteger(value) && value >= 0)) {
-                return Promise.resolve();
-              }
-              return Promise.reject(`${fieldLabels[field]} must be a non-negative integer`);
-            },
-          },
-        ] : {},
-      ]}
-    >
-      {field === 'field2' ? (
-        <Select
-          value={formData[field]}
-          onChange={(value) => handleSelectChange(value, field)}
-        >
-          {field2Options.map((option) => (
-            <Option key={option} value={option}>
-              {option}
-            </Option>
-          ))}
-        </Select>
-      ) : field === 'Shirt_Number' ? (
-        <InputNumber
-          style={{ width: '100%' }}
-          min={0}
-          precision={0}
-          value={formData[field]}
-          onChange={(value) => handleChange({ [field]: value })}
-        />
-      ) : (
-        <Input
-          name={field}
-          value={formData[field]}
-          onChange={(e) => handleChange({ [field]: e.target.value })}
-        />
-      )}
-    </Form.Item> */}
-  {/* </Col>
-))}
-        </Row>
-        <Row gutter={16}>
-          <Col span={12}>
-            <Button type="primary" htmlType="submit" block>
-              Send
-            </Button>
-          </Col>
-          <Col span={12}>
-            <Button type="default" onClick={handleClearAll} block>
-              Clear All
-            </Button>
-          </Col>
-        </Row>
-      </Form>
-    </div>
-  );
-} */}

@@ -70,11 +70,7 @@ export default function FormComponent({ data }) {
     }));
   };
 
-  // const handleSubmit = () => {
-  //   alert('Form Data JSON: ' + JSON.stringify(formData));
-  //   console.log('Form Data JSON:', JSON.stringify(formData));
-  //   setFormData(initialFormState);
-  // };
+
 
    const handleSubmit = async () => {
     // setFormData({...formData, User_ID: data[0]['User_ID']})
@@ -125,7 +121,7 @@ export default function FormComponent({ data }) {
         onFinish={handleSubmit}
       >
         <Row gutter={16}>
-          <Col span={12}>
+          <Col span={16}>
             <Form.Item
               label={fieldLabels['Full_Name']}
               name="Full_Name"
@@ -144,7 +140,7 @@ export default function FormComponent({ data }) {
             </Form.Item>
           </Col>
 
-          <Col span={12}>
+          <Col span={16}>
             <Form.Item
               label={fieldLabels['Phone']}
               name="Phone"
@@ -163,7 +159,7 @@ export default function FormComponent({ data }) {
             </Form.Item>
           </Col>
 
-          <Col span={12}>
+          <Col span={16}>
             <Form.Item
               label={fieldLabels['Email']}
               name="Email"
@@ -182,7 +178,7 @@ export default function FormComponent({ data }) {
             </Form.Item>
           </Col>
 
-          <Col span={12}>
+          <Col span={16}>
             <Form.Item
               label={fieldLabels['Residence']}
               name="Residence"
@@ -196,7 +192,7 @@ export default function FormComponent({ data }) {
             </Form.Item>
           </Col>
 
-          <Col span={12}>
+          <Col span={16}>
             <Form.Item
               label={fieldLabels['Date_of_Birth']}
               name="Date_of_Birth"
@@ -214,16 +210,16 @@ export default function FormComponent({ data }) {
               />
             </Form.Item>
           </Col>
-          <Col span={24}>
+          <Col span={16}>
           </Col>
         </Row>
         <Row gutter={16}>
-          <Col span={12}>
+          <Col span={8}>
             <Button type="primary" htmlType="submit" block>
               Send
             </Button>
           </Col>
-          <Col span={12}>
+          <Col span={8}>
             <Button type="default" onClick={handleClearAll} block>
               Clear All
             </Button>

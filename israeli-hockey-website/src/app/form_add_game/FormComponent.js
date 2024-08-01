@@ -6,6 +6,7 @@ import 'antd/dist/reset.css'; // Import Ant Design styles
 import "../style.css"; // Ensure you have the correct path for your CSS
 import moment from 'moment';
 import dayjs from 'dayjs';
+import { dataFetchLeague, dataFetchTeams, dataFetchLocations, dataFetchReferees } from './fetching';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -36,32 +37,37 @@ export default function AddGameForm({ data }) {
   };
 
   const DayOptions = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
-  const League_ID_options = data[1];
-  const locations_options = data[2];
-  const Referee_IDOptions =data[3];
-  console.log(Referee_IDOptions)
-  console.log("!!!!!")
-  console.log(League_ID_options)
+  // const League_ID_options = data[1];
+  // const locations_options = data[2];
+  // const Referee_IDOptions =data[3];
+  // const teams = data[0]
 
 
-  // const teams = data[0].map(team => ({
-  //   key: team.Team_ID,
-  //   value: {
-  //     Team_Name: team.Team_Name,
-  //     Age: team.Age,
-  //     League_Type: team.League_Type,
-  //     League_ID: team.League_ID,
-  //   },
-  // }));
-
-  const teams = data[0]
-
-  // console.log(teams)
 
   const [formData, setFormData] = useState(initialFormState);
   const [isClient, setIsClient] = useState(false);
   const [selectedLeague, setSelectedLeague] = useState(null);
   const [form] = Form.useForm();
+  const [League_ID_options, setLeagueOptions] = useState([]);
+  const [locations_options, setLocationOptions] = useState([]);
+  const [Referee_IDOptions, setRefereesOptions] = useState([]);
+  const [teams, setTeamsOptions] = useState([]);
+
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const fetchedLeagues = await dataFetchLeague();
+      const fetchedLocations = await dataFetchLocations();
+      const fetchedTeams = await dataFetchTeams();
+      const fetchReferees = await dataFetchReferees();
+      setLeagueOptions(fetchedLeagues);
+      setLocationOptions(fetchedLocations);
+      setTeamsOptions(fetchedTeams);
+      setRefereesOptions(fetchReferees)
+    };
+    fetchData();
+  }, []); 
 
   useEffect(() => {
     setIsClient(true);
@@ -124,20 +130,14 @@ export default function AddGameForm({ data }) {
     }));
   };
 
-  // const handleSubmit = () => {
-  //   alert('Form Data JSON: ' + JSON.stringify(formData));
-  //   console.log('Form Data JSON:', JSON.stringify(formData));
-  //   // form.resetFields();
-  // };
+
 
 
      const handleSubmit = async () => {
-    // setFormData({...formData, User_ID: data[0]['User_ID']})
-
     alert('Form Data JSON: ' + JSON.stringify(formData));
-    // onFinish(formData);
+
     try {
-      const response = await fetch('/api/form_add_game', {
+      const response = await fetch('/api/form_manage_game', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -170,7 +170,7 @@ export default function AddGameForm({ data }) {
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-      <Title level={3}>טופס העלאת פרטי משחק</Title>
+      <Title level={3}>טופס העלאת פרטי משחק חדש</Title>
       <Form
         form={form}
         layout="vertical"
@@ -194,6 +194,7 @@ export default function AddGameForm({ data }) {
                 format="YYYY-MM-DD"
                 value={formData['Date'] ? dayjs(formData['Date'], 'YYYY-MM-DD') : null}
                 onChange={handleDateChange}
+                style={{ width: '100%' }}
               />
             </Form.Item>
           </Col>
@@ -349,9 +350,15 @@ export default function AddGameForm({ data }) {
     
             >
               <Select
+                showSearch  
                 value={formData['Referee_ID']}
                 onChange={(value) => handleSelectChange(value, 'Referee_ID')}
                 style={{ width: '100%' }}
+                filterOption={(input, option) =>
+                  option.props.children
+                    ? option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    : false
+                }
               >
                 {Referee_IDOptions.map((option) => (
                   <Option key={option.key} value={option.key}>

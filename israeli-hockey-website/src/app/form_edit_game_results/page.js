@@ -1,3 +1,4 @@
+
 import React from 'react';
 import FormComponent from './FormComponent';
 import 'antd/dist/reset.css'; // Import Ant Design CSS reset
@@ -38,10 +39,7 @@ async function dataFetchGames() {
   } catch (error) {
     console.error("Error fetching Games:", error);
   }
-  // console.log("hereeeeeeeee")
-  // const options = teamsData.map(game => ({ key: game.Game_ID, value: [game.Home_Team_Name, game. Away_Team_Name, game.Date] }));
 
-  // console.log(options)
   return teamsData
 }
 
@@ -90,6 +88,7 @@ export default async function Page() {
   const goalsData = await dataFetchGoals()
   const penaltiesData= await dataFetchPenalties();
   const cardsData = await dataFetchCards();
+
   const combined_data = [games, goalsData, penaltiesData, cardsData]
   // console.log(combined_data);
 

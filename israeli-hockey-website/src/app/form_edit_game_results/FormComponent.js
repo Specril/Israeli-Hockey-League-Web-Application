@@ -1,6 +1,6 @@
 
 
-  "use client";
+"use client";
 
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Typography, Row, Col, Select, Table } from 'antd';
@@ -43,12 +43,23 @@ export default function EditGameInfo({ data }) {
     setIsClient(true);
   }, []);
 
+
   const handleGameSelect = (gameId) => {
     setSelectedGameId(gameId);
-    setGoalsData(goals.filter(goal => goal.Game_ID === gameId));
-    setPenaltiesData(penalties.filter(penalty => penalty.Game_ID === gameId));
-    setCardsData(cards.filter(card => card.Game_ID === gameId));
+  
+    // Filter the goals, penalties, and cards for the selected game
+    const filteredGoals = goals.filter(goal => goal.Game_ID === gameId);
+    const filteredPenalties = penalties.filter(penalty => penalty.Game_ID === gameId);
+    const filteredCards = cards.filter(card => card.Game_ID === gameId);
+    console.log("Filtered Goals: ", filteredGoals);
+    console.log("Filtered Penalties: ", filteredPenalties);
+    console.log("Filtered Cards: ", filteredCards);
+    
+    setGoalsData(filteredGoals);
+    setPenaltiesData(filteredPenalties);
+    setCardsData(filteredCards);
   };
+  
 
   const handleGoalSelect = (selectedRowKeys) => setSelectedGoals(selectedRowKeys);
   const handlePenaltySelect = (selectedRowKeys) => setSelectedPenalties(selectedRowKeys);
@@ -57,16 +68,16 @@ export default function EditGameInfo({ data }) {
   const handleSubmit = async () => {
     const finalData = {
       Game_ID: selectedGameId,
-      Goals_To_Delete: selectedGoals,
-      Penalties_To_Delete: selectedPenalties,
-      Cards_To_Delete: selectedCards,
+      Goal_IDs: selectedGoals,
+      Penalty_IDs: selectedPenalties,
+      Card_IDs: selectedCards,
     };
 
     alert('Form Data JSON: ' + JSON.stringify(finalData));
 
     try {
-      const response = await fetch('/api/delete_game_info', {
-        method: 'POST',
+      const response = await fetch('/api/form_results_updating', {
+        method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -83,19 +94,19 @@ export default function EditGameInfo({ data }) {
  
       { title: 'שם מלא', dataIndex: 'Full_Name', key: 'Full_Name' },
       { title: 'קבוצה', dataIndex: 'Team_Name', key: 'Team_Name' },
-      { title: 'זמן', dataIndex: 'Time_Stamp', key: 'Time_Stamp', render: timeStamp => timeStamp || 'NULL' },
+      { title: 'זמן', dataIndex: 'Time_Stamp', key: 'Time_Stamp', render: (text) => moment(text, 'HH:mm').format('HH:mm') },
     ],
     penalties: [
 
       { title: 'שם מלא', dataIndex: 'Full_Name', key: 'Full_Name' },
       { title: 'קבוצה', dataIndex: 'Team_Name', key: 'Team_Name' },
-      { title: 'זמן', dataIndex: 'Time_Stamp', key: 'Time_Stamp', render: timeStamp => timeStamp || 'NULL' },
+      { title: 'זמן', dataIndex: 'Time_Stamp', key: 'Time_Stamp', render: (text) => moment(text, 'HH:mm').format('HH:mm') },
     ],
     cards: [
 
       { title: 'שם מלא', dataIndex: 'Full_Name', key: 'Full_Name' },
       { title: 'קבוצה', dataIndex: 'Team_Name', key: 'Team_Name' },
-      { title: 'זמן', dataIndex: 'Time_Stamp', key: 'Time_Stamp', render: timeStamp => timeStamp || 'NULL' },
+      { title: 'זמן', dataIndex: 'Time_Stamp', key: 'Time_Stamp', render: (text) => moment(text, 'HH:mm').format('HH:mm') },
       { title: 'כרטיס', dataIndex: 'Card_Type', key: 'Card_Type' },
     ],
   };

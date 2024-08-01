@@ -5,16 +5,22 @@ import { Table, Button, Typography } from 'antd';
 import 'antd/dist/reset.css';
 import "../style.css";
 import moment from 'moment';
+import { dataFetchGames } from './fetching';
 
 const { Title } = Typography;
 
-export default function DeleteGamePage({ data }) {
+export default function DeleteGamePage() {
   const [games, setGames] = useState([]);
   const [selectedGameIds, setSelectedGameIds] = useState([]);
 
   useEffect(() => {
-    setGames(data);
-  }, [data]);
+    const fetchData = async () => {
+      const fetchedGames = await dataFetchGames();
+
+      setGames(fetchedGames);
+    };
+    fetchData();
+  }, []); 
 
   const handleSelectChange = (selectedRowKeys) => {
     setSelectedGameIds(selectedRowKeys);
@@ -28,8 +34,8 @@ export default function DeleteGamePage({ data }) {
     alert('Form Data JSON: ' + JSON.stringify(payload));
 
     try {
-      const response = await fetch('/api/form_delete_games', {
-        method: 'POST',
+      const response = await fetch('/api/form_manage_game', {
+        method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -49,7 +55,7 @@ export default function DeleteGamePage({ data }) {
 
 
   const columns = [
-    { title: 'Game ID', dataIndex: 'Game_ID', key: 'Game_ID' },
+    // { title: 'Game ID', dataIndex: 'Game_ID', key: 'Game_ID' },
     { title: 'גיל', dataIndex: 'Age', key: 'Age' },
     { title: 'קבוצת בית', dataIndex: 'Home_Team_Name', key: 'Home_Team_Name' },
     { title: 'קבוצת חוץ', dataIndex: 'Away_Team_Name', key: 'Away_Team_Name' },

@@ -33,10 +33,7 @@ async function dataFetchGames() {
   } catch (error) {
     console.error("Error fetching Games:", error);
   }
-  // console.log("hereeeeeeeee")
-  // const options = teamsData.map(game => ({ key: game.Game_ID, value: [game.Home_Team_Name, game. Away_Team_Name, game.Date] }));
 
-  // console.log(options)
   return teamsData
 }
 

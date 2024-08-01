@@ -4,11 +4,12 @@ import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Typography, Row, Col, Select } from 'antd';
 import 'antd/dist/reset.css';
 import "../style.css";
+import { dataFetchLeague, dataFetchTeams } from './fetching';
 
 const { Title } = Typography;
 const { Option } = Select;
 
-export default function FormComponent({ data }) {
+export default function FormComponent() {
   const initialFormState = {
     Age: '',
     Team_ID: '',
@@ -19,18 +20,31 @@ export default function FormComponent({ data }) {
     Team_ID: 'קבוצה',
   };
 
-  const Team_IDOptions = data[0].map(team => ({
-    key: team.Team_ID,
-    value: {
-      Age: team.Age,
-      Team_Name: team.Team_Name,
-    }
-  }));
-  const Age_options = data[1];
+
 
   const [formData, setFormData] = useState(initialFormState);
   const [isClient, setIsClient] = useState(false);
   const [form] = Form.useForm();
+  const [Team_IDOptions, setTeamsOptions] =  useState([]);
+  const [Age_options, setAge_options] =  useState([]);
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const fetchedLeagues = await dataFetchLeague();
+      const fetchedTeams = await dataFetchTeams();
+      const teamOptions = fetchedTeams.map(team => ({
+        key: team.Team_ID,
+        value: {
+          Age: team.Age,
+          Team_Name: team.Team_Name,
+        }
+      }));
+      setAge_options(fetchedLeagues);
+      setTeamsOptions(teamOptions);
+    };
+    fetchData();
+  }, []); 
 
   useEffect(() => {
     setIsClient(true);

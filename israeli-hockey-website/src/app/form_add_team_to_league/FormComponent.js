@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Typography, Row, Col, Select, InputNumber } from 'antd';
 import 'antd/dist/reset.css';
 import "../style.css";
+import { dataFetchLeague, dataFetchTeams,  } from './fetching';
+
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -20,8 +22,8 @@ export default function FormComponent({ data }) {
     League_ID: 'ליגה',
   };
 
-  const teamsOptions = data[0];
-  const League_ID_options = data[1];
+  // const teamsOptions = data[0];
+  // const League_ID_options = data[1];
 
 
   console.log("inside form component");
@@ -30,6 +32,19 @@ export default function FormComponent({ data }) {
   const [formData, setFormData] = useState(initialFormState);
   const [isClient, setIsClient] = useState(false);
   const [form] = Form.useForm();
+  const [League_ID_options, setLeagueOptions] = useState([]);
+  const [teamsOptions, setTeamsOptions] = useState([]);
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const fetchedLeagues = await dataFetchLeague();
+      const fetchedTeams = await dataFetchTeams();
+      setLeagueOptions(fetchedLeagues);
+      setTeamsOptions(fetchedTeams);
+    };
+    fetchData();
+  }, []); 
 
   useEffect(() => {
     setIsClient(true);

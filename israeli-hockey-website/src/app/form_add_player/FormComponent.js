@@ -4,11 +4,13 @@ import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Typography, Row, Col, Select, InputNumber } from 'antd';
 import 'antd/dist/reset.css';
 import "../style.css";
+import { dataFetchTeams, dataFetchUsers } from './fetching';
+
 
 const { Title } = Typography;
 const { Option } = Select;
 
-export default function FormComponent({ data }) {
+export default function FormComponent() {
   const initialFormState = {
     User_ID: '',
     Team_ID: '',
@@ -23,15 +25,24 @@ export default function FormComponent({ data }) {
     Shirt_Number: 'מספר חולצה',
   };
 
-  const Team_IDOptions = data[0];
-  console.log('teams data is:')
-  console.log(Team_IDOptions);
-
-  const users_options = data[1]
 
   const [formData, setFormData] = useState(initialFormState);
   const [isClient, setIsClient] = useState(false);
   const [form] = Form.useForm();
+  const [Team_IDOptions, setTeamsOptions] = useState([]);
+  const [users_options, setUsersOptions] = useState([]);
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const fetchedUsers = await dataFetchUsers();
+      const fetchedTeams = await dataFetchTeams();
+      setTeamsOptions(fetchedTeams);
+      setUsersOptions(fetchedUsers)
+    };
+    fetchData();
+  }, []); 
+
 
   useEffect(() => {
     setIsClient(true);

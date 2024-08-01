@@ -138,10 +138,7 @@ export default function UploadGameResultForm({ data }) {
     }));
   };
 
-  // const handleSubmit = () => {
-  //   alert('Form Data JSON: ' + JSON.stringify(formData));
-  //   console.log('Form Data JSON:', JSON.stringify(formData));
-  // };
+
 
   const optionsCard = ['blue','red']
 
@@ -191,7 +188,7 @@ export default function UploadGameResultForm({ data }) {
     alert('Form Data JSON: ' + JSON.stringify(final_data));
   
     try {
-      const response = await fetch('/api/form_results_updatingrg', { // change dir
+      const response = await fetch('/api/form_results_updating', { // change dir
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -549,9 +546,6 @@ export default function UploadGameResultForm({ data }) {
           </Col>
         </Row>
       </Form>
-
-
-
 
     </div>
   );

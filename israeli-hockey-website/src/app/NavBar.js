@@ -39,7 +39,7 @@ export default function NavBar() {
           <a href="form_add_game">הוספת משחק</a>
         </li>
         <li>
-          <a href="form_delete_game">מחיקת משחק</a>
+          <a href="form_delete_game">מחיקת משחקים</a>
         </li>
         <li>
           <a href="form_results_updating">העלאת תוצאות משחק</a>
@@ -52,10 +52,10 @@ export default function NavBar() {
         </li>
 
         <li>
-          <a href="form_add_player">הוספת שחקן</a>
+          <a href="form_add_player">הוספת שחקן לקבוצה</a>
         </li>
         <li>
-          <a href="form_delete_player">מחיקת שחקן</a>
+          <a href="form_delete_player">מחיקת שחקן מקבוצה</a>
         </li>
         <li>
           <a href="form_add_team">הוספת קבוצה חדשה</a>

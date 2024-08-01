@@ -4,16 +4,12 @@ import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Typography, Row, Col, Select, InputNumber } from 'antd';
 import 'antd/dist/reset.css';
 import "../style.css";
-import { fetchData } from './fetching';
+import { dataFetchLeagues, dataFetchLocations } from './fetching';
 
 const { Title } = Typography;
 const { Option } = Select;
 
-
-
-
-
-export default async function FormComponent({ data }) {
+export default function FormComponent() {
   const initialFormState = {
     Team_Name: '',
     Age: '',
@@ -28,21 +24,12 @@ export default async function FormComponent({ data }) {
     New_Location: 'מיקום חדש', // Label for new location
   };
 
-  // const AgeOptions = data[0];
-
-  const dataleagues = await fetchData()
-  console.log("!!!!!!!!!!!!!!!",dataleagues)
-  const AgeOptions = dataleagues.map(obj => obj.Age);
-  console.log("ziv was here"+AgeOptions)
-  
-  // const LocationsOptions = data[1];
-  console.log("inside form component");
-  // console.log(LocationsOptions);
-
   const [formData, setFormData] = useState(initialFormState);
   const [isClient, setIsClient] = useState(false);
   const [form] = Form.useForm();
-  const [isOtherLocation, setIsOtherLocation] = useState(false); // State for other location
+  const [isOtherLocation, setIsOtherLocation] = useState(false); 
+  const [ageOptions, setAgeOptions] = useState([]);
+  const [locationOptions, setLocationOptions] = useState([]);
 
   useEffect(() => {
     setIsClient(true);
@@ -58,17 +45,20 @@ export default async function FormComponent({ data }) {
     }
   }, [formData, isClient]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const fetchedLeagues = await dataFetchLeagues();
+      const fetchedLocations = await dataFetchLocations();
+      setAgeOptions(fetchedLeagues.map(obj => obj.Age));
+      setLocationOptions(fetchedLocations);
+    };
+    fetchData();
+  }, []); 
+
   const handleChange = (changedValues) => {
     setFormData((prevData) => ({
       ...prevData,
       ...changedValues,
-    }));
-  };
-
-  const handleDateChange = (date, dateString) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      Date_of_Birth: date ? dateString : null,
     }));
   };
 
@@ -102,7 +92,7 @@ export default async function FormComponent({ data }) {
         body: JSON.stringify(final_data),
       });
     } catch (error) {
-      console.alert('Error updating data');
+      console.error('Error updating data');
     }
   };
 
@@ -138,12 +128,7 @@ export default async function FormComponent({ data }) {
             <Form.Item
               label={fieldLabels['Team_Name']}
               name="Team_Name"
-              rules={[
-                {
-                  required: true,
-                  message: `${fieldLabels['Team_Name']} is required`,
-                },
-              ]}
+              rules={[{ required: true, message: `${fieldLabels['Team_Name']} is required` }]}
             >
               <Input
                 name="Team_Name"
@@ -157,18 +142,13 @@ export default async function FormComponent({ data }) {
             <Form.Item
               label={fieldLabels['Age']}
               name="Age"
-              rules={[
-                {
-                  required: true,
-                  message: `${fieldLabels['Age']} is required`,
-                },
-              ]}
+              rules={[{ required: true, message: `${fieldLabels['Age']} is required` }]}
             >
               <Select
                 value={formData['Age']}
                 onChange={(value) => handleSelectChange(value, 'Age')}
               >
-                {AgeOptions.map((option) => (
+                {ageOptions.map((option) => (
                   <Option key={option} value={option}>
                     {option}
                   </Option>
@@ -181,22 +161,17 @@ export default async function FormComponent({ data }) {
             <Form.Item
               label={fieldLabels['Location_ID']}
               name="Location_ID"
-              rules={[
-                {
-                  required: true,
-                  message: `${fieldLabels['Location_ID']} is required`,
-                },
-              ]}
+              rules={[{ required: true, message: `${fieldLabels['Location_ID']} is required` }]}
             >
               <Select
                 showSearch
                 value={formData['Location_ID']}
                 onChange={(value) => handleSelectChange(value, 'Location_ID')}
                 filterOption={(input, option) =>
-                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  option.children.toLowerCase().includes(input.toLowerCase())
                 }
               >
-                {LocationsOptions.map((option) => (
+                {locationOptions.map((option) => (
                   <Option key={option.key} value={option.key}>
                     {option.value}
                   </Option>
@@ -213,12 +188,7 @@ export default async function FormComponent({ data }) {
               <Form.Item
                 label={fieldLabels['New_Location']}
                 name="New_Location"
-                rules={[
-                  {
-                    required: true,
-                    message: `${fieldLabels['New_Location']} is required`,
-                  },
-                ]}
+                rules={[{ required: true, message: `${fieldLabels['New_Location']} is required` }]}
               >
                 <Input
                   name="New_Location"
@@ -228,7 +198,6 @@ export default async function FormComponent({ data }) {
               </Form.Item>
             </Col>
           )}
-
 
           <Col span={24}></Col>
         </Row>
