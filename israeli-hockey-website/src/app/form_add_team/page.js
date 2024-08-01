@@ -18,22 +18,35 @@ async function dataFetchLeagues() {
     console.error("Error fetching leagues:", error);
   }
 
-  // try {
-  //     leagueData = await fetch('/api/fetch', {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify({ query: 'SELECT DISTINCT Age from League;' }),
-  //   })
-  // } catch (error) {
-  //   console.error('Error updating data');
-  // }
-
   const ageArray = leagueData.map(obj => obj.Age);
   console.log(ageArray)
   return ageArray
 }
+
+// async function dataFetchLeagues() {
+//   let leagueData = [];
+//   try {
+//     const response = await fetch(`/api/fetch`, { // Use relative URL
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify({ query: 'SELECT DISTINCT Age from League;' }),
+//     });
+
+//     if (!response.ok) {
+//       throw new Error('Network response was not ok');
+//     }
+
+//     leagueData = await response.json();
+//     return leagueData; // Return the parsed data
+//   } catch (error) {
+//     console.error("Error fetching photos:", error);
+//   }
+//   const ageArray = leagueData.map(obj => obj.Age);
+//   return ageArray;
+// }
+
 
 
 async function dataFetchLocations() {
@@ -45,7 +58,7 @@ async function dataFetchLocations() {
   }
 
   const options_locations = locationsData.map(loc => ({ key: loc.Location_ID, value: loc.Location_Name }));;
-
+  console.log(options_locations)
   return options_locations
 }
 

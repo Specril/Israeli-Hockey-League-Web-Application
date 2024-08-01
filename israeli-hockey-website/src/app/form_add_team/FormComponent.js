@@ -4,39 +4,16 @@ import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Typography, Row, Col, Select, InputNumber } from 'antd';
 import 'antd/dist/reset.css';
 import "../style.css";
+import { fetchData } from './fetching';
 
 const { Title } = Typography;
 const { Option } = Select;
 
 
-// async function fetchData() {
-//   let leagueData = [];
-//   try {
-//     const response = await fetch(`/api/fetch`, { // Use relative URL
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//       body: JSON.stringify({ query: 'SELECT DISTINCT Age from League;' }),
-//     });
-
-//     if (!response.ok) {
-//       throw new Error('Network response was not ok');
-//     }
-
-//     leagueData = await response.json();
-//     return leagueData; // Return the parsed data
-//   } catch (error) {
-//     console.error("Error fetching photos:", error);
-//   }
-//   return leagueData;
-// }
-
-// const AgeOptions = await fetchData()
 
 
 
-export default function FormComponent({ data }) {
+export default async function FormComponent({ data }) {
   const initialFormState = {
     Team_Name: '',
     Age: '',
@@ -51,11 +28,16 @@ export default function FormComponent({ data }) {
     New_Location: 'מיקום חדש', // Label for new location
   };
 
-  const AgeOptions = data[0];
+  // const AgeOptions = data[0];
+
+  const dataleagues = await fetchData()
+  console.log("!!!!!!!!!!!!!!!",dataleagues)
+  const AgeOptions = dataleagues.map(obj => obj.Age);
+  console.log("ziv was here"+AgeOptions)
   
-  const LocationsOptions = data[1];
+  // const LocationsOptions = data[1];
   console.log("inside form component");
-  console.log(LocationsOptions);
+  // console.log(LocationsOptions);
 
   const [formData, setFormData] = useState(initialFormState);
   const [isClient, setIsClient] = useState(false);
