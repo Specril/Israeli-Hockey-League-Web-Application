@@ -60,10 +60,37 @@ export async function POST(req, res) {
     }
       return NextResponse.json({ success: true});
 
-
     } catch (error) {
       console.error('Database operation failed: ', error);
       return NextResponse.json({ success: false});
     }
 
+}
+
+export async function DELETE(req, res) {
+  const { Goal_IDs, Penalty_IDs, Card_IDs } = await req.json();
+  try {
+      const pool = await getConnection();
+      for (const Goal_ID of Goal_IDs){
+        await pool.request()
+          .input('Goal_ID', sql.Int, Goal_ID)
+          .query('DELETE FROM Goals WHERE Goal_ID = @Goal_ID;');
+      }
+      for (const Penalty_ID of Penalty_IDs){
+        await pool.request()
+          .input('Penalty_ID', sql.Int, Penalty_ID)
+          .query('DELETE FROM Penalties WHERE Penalty_ID = @Penalty_ID;');
+      }
+      for (const Card_ID of Card_IDs){
+        await pool.request()
+          .input('Card_ID', sql.Int, Card_ID)
+          .query('DELETE FROM Cards WHERE Card_ID = @Card_ID;');
+      }
+     
+      return NextResponse.json({ success: true });
+
+  } catch (error) {
+      console.error('Database operation failed: ', error);
+      return NextResponse.json({ success: false });
+  }
 }
