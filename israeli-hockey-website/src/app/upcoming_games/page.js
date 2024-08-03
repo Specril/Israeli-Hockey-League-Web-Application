@@ -80,11 +80,11 @@ export default function Home() {
   // Render the component
   return (
     <ProtectedPage content={
-    <>
-      <DropdownComponent options={options} data={dataUpcoming} />
-    </>
+      <>
+        <DropdownComponent options={options} data={dataUpcoming} />
+      </>
     }
-    allowed_user_types={["player"]}
-     />
+      allowed_user_types={[]}
+    />
   );
 }

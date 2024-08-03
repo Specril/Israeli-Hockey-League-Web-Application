@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Typography, Row, Col, Select, InputNumber } from 'antd';
 import 'antd/dist/reset.css';
 import "../style.css";
-import { dataFetchLeague, dataFetchTeams,  } from './fetching';
+import { dataFetchLeague, dataFetchTeams, } from './fetching';
 
 
 const { Title } = Typography;
@@ -44,7 +44,7 @@ export default function FormComponent({ data }) {
       setTeamsOptions(fetchedTeams);
     };
     fetchData();
-  }, []); 
+  }, []);
 
   useEffect(() => {
     setIsClient(true);
@@ -76,10 +76,10 @@ export default function FormComponent({ data }) {
 
   const handleSelectChange = (value, field) => {
 
-      setFormData((prevData) => ({
-        ...prevData,
-        [field]: value,
-      }));
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: value,
+    }));
 
   };
 
@@ -141,7 +141,7 @@ export default function FormComponent({ data }) {
                 },
               ]}
             >
-          <Select
+              <Select
                 value={formData['Team_ID']}
                 onChange={(value) => handleSelectChange(value, 'Team_ID')}
               >
@@ -155,7 +155,7 @@ export default function FormComponent({ data }) {
           </Col>
 
           <Col span={24}>
-          <Form.Item
+            <Form.Item
               label={fieldLabels['League_ID']}
               name="League_ID"
               rules={[

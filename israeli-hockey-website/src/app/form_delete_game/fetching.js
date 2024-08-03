@@ -22,7 +22,7 @@ LEFT JOIN Users on Second_Referee_ID = user_ID
 
 export async function dataFetchGames() {
     try {
-        const response = await fetch(`/api/fetch`, { 
+        const response = await fetch(`/api/fetch`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

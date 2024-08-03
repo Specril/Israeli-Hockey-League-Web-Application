@@ -83,7 +83,7 @@ export default function FormComponent({ data }) {
       ...prevData,
       Clasification: checkedValues,
     }));
-    
+
     // Check if 'Users-Coaches' is selected and manage custom role input visibility
     if (checkedValues.includes('Users-Coaches')) {
       setCustomRole(formData.CustomRole); // Preserve custom role
@@ -111,14 +111,14 @@ export default function FormComponent({ data }) {
       acc[roleKeys[role.key]] = formData.Clasification.includes(role.key) ? 1 : 0;
       return acc;
     }, {});
-  
+
     // Prepare final data to be sent
     const finalData = {
       User_ID: formData.User_ID,
       ...roleData,
       CustomRole: formData.Clasification.includes('Users-Coaches') ? formData.CustomRole : ''
     };
-  
+
     try {
       const response = await fetch('/api/manage_users_types', {
         method: 'POST',
@@ -127,18 +127,18 @@ export default function FormComponent({ data }) {
         },
         body: JSON.stringify(finalData), // Ensure CustomRole is sent as a string
       });
-  
+
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-      
+
       message.success('Form submitted successfully');
     } catch (error) {
       console.error('Error submitting form:', error);
       message.error('Error updating data');
     }
   };
-  
+
   const handleClearAll = () => {
     form.resetFields();
     setFormData(initialFormState);

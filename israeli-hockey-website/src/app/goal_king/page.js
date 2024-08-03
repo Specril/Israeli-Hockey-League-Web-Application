@@ -4,6 +4,8 @@ import "../style.css";
 import { Flex, Select } from "antd";
 import King from "./King";
 import { useEffect, useState } from "react";
+import ProtectedPage from "../ProtectedPage/ProtectedPage";
+
 
 const { Option } = Select;
 
@@ -153,7 +155,7 @@ const Home = () => {
 
   if (loading) {
     return (
-      <div style={{ textAlign: "center", padding: "20px" }}>Loading...</div>
+      <div style={{ textAlign: "center", padding: "20px" }}>טוען עמוד...</div>
     );
   }
 
@@ -166,7 +168,7 @@ const Home = () => {
   }
 
   return (
-    <>
+    <ProtectedPage content={
       <section>
         <Flex gap="large" align="start" justify="space-evenly">
           <Select
@@ -197,7 +199,9 @@ const Home = () => {
           )}
         </Flex>
       </section>
-    </>
+    }
+      allowed_user_types={["player"]}
+    />
   );
 };
 

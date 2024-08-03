@@ -9,7 +9,7 @@ const query_league = 'SELECT DISTINCT Age from League;'
 
 export async function dataFetchTeams() {
     try {
-        const response = await fetch(`/api/fetch`, { 
+        const response = await fetch(`/api/fetch`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -26,7 +26,7 @@ export async function dataFetchTeams() {
 
 export async function dataFetchLeague() {
     try {
-        const response = await fetch(`/api/fetch`, { 
+        const response = await fetch(`/api/fetch`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -35,7 +35,7 @@ export async function dataFetchLeague() {
         });
         if (!response.ok) throw new Error('Network response was not ok');
         const leaguesData = await response.json();
-        const ageArray = leaguesData.map(obj => obj.Age);        
+        const ageArray = leaguesData.map(obj => obj.Age);
         return ageArray
     } catch (error) {
         console.error("Error fetching locations", error);

@@ -1,6 +1,8 @@
 "use client";
 
 import UploadPhotosClient from './UploadPhotosClient';
+import ProtectedPage from "../ProtectedPage/ProtectedPage";
+
 
 const query_photos = `SELECT Photo_ID, Photo FROM Photos;`;
 
@@ -29,5 +31,7 @@ async function fetchData() {
 
 export default async function Page() {
   const initialPhotos = await fetchData();
-  return <UploadPhotosClient initialPhotos={initialPhotos} />;
+  return <ProtectedPage content={<UploadPhotosClient initialPhotos={initialPhotos} />}
+    allowed_user_types={[]}
+  />;
 }

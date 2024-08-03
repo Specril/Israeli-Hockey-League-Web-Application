@@ -67,7 +67,7 @@ export default function AddGameForm({ data }) {
       setRefereesOptions(fetchReferees)
     };
     fetchData();
-  }, []); 
+  }, []);
 
   useEffect(() => {
     setIsClient(true);
@@ -133,7 +133,7 @@ export default function AddGameForm({ data }) {
 
 
 
-     const handleSubmit = async () => {
+  const handleSubmit = async () => {
     alert('Form Data JSON: ' + JSON.stringify(formData));
 
     try {
@@ -299,7 +299,7 @@ export default function AddGameForm({ data }) {
             </Col>
 
             <Col span={12}>
-            <Form.Item
+              <Form.Item
                 label={fieldLabels['Away_Team_ID']}
                 name="Away_Team_ID"
                 rules={[
@@ -322,77 +322,77 @@ export default function AddGameForm({ data }) {
                   ))}
                 </Select>
               </Form.Item>
-              </Col>
-              <Col span={12}>
+            </Col>
+            <Col span={12}>
               <Form.Item
-              label={fieldLabels['Location_ID']}
-              name="Location_ID"
-    
-            >
-              <Select
-                value={formData['Location_ID']}
-                onChange={(value) => handleSelectChange(value, 'Location_ID')}
-                style={{ width: '100%' }}
+                label={fieldLabels['Location_ID']}
+                name="Location_ID"
+
               >
-                {locations_options.map((option) => (
-                  <Option key={option.key} value={option.key}>
-                    {option.value}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>       
+                <Select
+                  value={formData['Location_ID']}
+                  onChange={(value) => handleSelectChange(value, 'Location_ID')}
+                  style={{ width: '100%' }}
+                >
+                  {locations_options.map((option) => (
+                    <Option key={option.key} value={option.key}>
+                      {option.value}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
             </Col>
 
             <Col span={12}>
               <Form.Item
-              label={fieldLabels['Referee_ID']}
-              name="Referee_ID"
-    
-            >
-              <Select
-                showSearch  
-                value={formData['Referee_ID']}
-                onChange={(value) => handleSelectChange(value, 'Referee_ID')}
-                style={{ width: '100%' }}
-                filterOption={(input, option) =>
-                  option.props.children
-                    ? option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    : false
-                }
+                label={fieldLabels['Referee_ID']}
+                name="Referee_ID"
+
               >
-                {Referee_IDOptions.map((option) => (
-                  <Option key={option.key} value={option.key}>
-                    {option.value}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>       
+                <Select
+                  showSearch
+                  value={formData['Referee_ID']}
+                  onChange={(value) => handleSelectChange(value, 'Referee_ID')}
+                  style={{ width: '100%' }}
+                  filterOption={(input, option) =>
+                    option.props.children
+                      ? option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      : false
+                  }
+                >
+                  {Referee_IDOptions.map((option) => (
+                    <Option key={option.key} value={option.key}>
+                      {option.value}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
             </Col>
 
             <Col span={12}>
               <Form.Item
-              label={fieldLabels['Second_Referee_ID']}
-              name="Second_Referee_ID"
-    
-            >
-              <Select
-                showSearch  
-                value={formData['Second_Referee_ID']}
-                onChange={(value) => handleSelectChange(value, 'Second_Referee_ID')}
-                style={{ width: '100%' }}
-                filterOption={(input, option) =>
-                  option.props.children
-                    ? option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    : false
-                }
+                label={fieldLabels['Second_Referee_ID']}
+                name="Second_Referee_ID"
+
               >
-                {Referee_IDOptions.map((option) => (
-                  <Option key={option.key} value={option.key}>
-                    {option.value}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>       
+                <Select
+                  showSearch
+                  value={formData['Second_Referee_ID']}
+                  onChange={(value) => handleSelectChange(value, 'Second_Referee_ID')}
+                  style={{ width: '100%' }}
+                  filterOption={(input, option) =>
+                    option.props.children
+                      ? option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      : false
+                  }
+                >
+                  {Referee_IDOptions.map((option) => (
+                    <Option key={option.key} value={option.key}>
+                      {option.value}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
             </Col>
 
 

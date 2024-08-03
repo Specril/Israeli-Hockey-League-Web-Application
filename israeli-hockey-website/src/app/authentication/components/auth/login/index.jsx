@@ -38,8 +38,8 @@ const Login = () => {
         console.log(currentUser);
         try {
           let userID = '';
-          const userType = await getUserType(userID);
-          if (currentUser.photoURL && isValidJSON(JSON.parse(currentUser.photoURL))) {
+
+          if (currentUser.photoURL && isValidJSON(currentUser.photoURL)) {
             const allData = JSON.parse(currentUser.photoURL);
             if (allData.userID) {
               userID = allData.userID;
@@ -53,10 +53,12 @@ const Login = () => {
             }
           } else {
             const id = await getUserID(currentUser.uid);
+            const typeRes = await getUserType(userID);
+            const userType = typeRes.result;
             userID = id.User_ID;
             const allData = {
               userID: userID,
-              userType: userType.result
+              userType: await userType
             };
             await updateProfile(auth.currentUser, {
               photoURL: JSON.stringify(allData),
@@ -64,12 +66,13 @@ const Login = () => {
           }
 
           console.log("userID:", userID);
-
+          const typeRes = await getUserType(userID);
+          const userType = typeRes.result;
           const all_data = {
-            'userType': userType.result,
+            'userType': userType,
             'userID': userID
           };
-          console.log("userType111:", userType.result);
+          console.log("userType:", userType);
           await updateProfile(auth.currentUser, {
             photoURL: JSON.stringify(all_data),
           });

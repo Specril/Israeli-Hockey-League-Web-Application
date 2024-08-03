@@ -25,8 +25,8 @@ export default function FormComponent() {
   const [formData, setFormData] = useState(initialFormState);
   const [isClient, setIsClient] = useState(false);
   const [form] = Form.useForm();
-  const [Team_IDOptions, setTeamsOptions] =  useState([]);
-  const [Age_options, setAge_options] =  useState([]);
+  const [Team_IDOptions, setTeamsOptions] = useState([]);
+  const [Age_options, setAge_options] = useState([]);
 
 
   useEffect(() => {
@@ -44,7 +44,7 @@ export default function FormComponent() {
       setTeamsOptions(teamOptions);
     };
     fetchData();
-  }, []); 
+  }, []);
 
   useEffect(() => {
     setIsClient(true);

@@ -4,13 +4,13 @@ import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Typography, Row, Col, Select, InputNumber } from 'antd';
 import 'antd/dist/reset.css';
 import "../style.css";
-import { dataFetchPlayers,dataFetchTeams } from './fetching';
+import { dataFetchPlayers, dataFetchTeams } from './fetching';
 
 const { Title } = Typography;
 const { Option } = Select;
 
 
-export default function FormComponent({data}) {
+export default function FormComponent({ data }) {
 
 
   const initialFormState = {
@@ -18,13 +18,13 @@ export default function FormComponent({data}) {
     Team_ID: '',
 
   };
-  
+
   const fieldLabels = {
     User_ID: 'שם מלא',
     Team_ID: 'קבוצה',
 
   };
-  
+
 
 
 
@@ -41,7 +41,7 @@ export default function FormComponent({data}) {
     const fetchData = async () => {
       const fetchedTeams = await dataFetchTeams();
       const fetchedPlayers = await dataFetchPlayers()
-      const players = fetchedPlayers.map(user =>  ({
+      const players = fetchedPlayers.map(user => ({
         key: user.User_ID,
         value: {
           Full_Name: user.Full_Name,
@@ -50,11 +50,11 @@ export default function FormComponent({data}) {
       }));;
       setTeamsOptions(fetchedTeams);
       setUsersOptions(players);
-      
+
 
     };
     fetchData();
-  }, []); 
+  }, []);
 
   useEffect(() => {
     setIsClient(true);
@@ -92,7 +92,7 @@ export default function FormComponent({data}) {
       ...prevData,
       [field]: value,
     }));
-    if (field === "Team_ID"){
+    if (field === "Team_ID") {
       setSelectedTeam(value)
     }
   };
@@ -101,7 +101,7 @@ export default function FormComponent({data}) {
 
   const handleSubmit = async () => {
 
-    const final_data = {...formData}
+    const final_data = { ...formData }
 
     alert('Form Data JSON: ' + JSON.stringify(final_data));
 
@@ -116,7 +116,7 @@ export default function FormComponent({data}) {
     } catch (error) {
       console.alert('Error updating data');
     }
-    
+
   };
 
 
@@ -138,7 +138,7 @@ export default function FormComponent({data}) {
     }
   }, [formData, form, isClient]);
 
-  const filteredPlayers = formData.Team_ID 
+  const filteredPlayers = formData.Team_ID
     ? users_options.filter(option => option.value.Team_ID === formData.Team_ID)
     : Team_IDOptions;
 
@@ -154,8 +154,8 @@ export default function FormComponent({data}) {
       >
         <Row gutter={16}>
 
-          <Col span={24}>   
-          <Form.Item
+          <Col span={24}>
+            <Form.Item
               label={fieldLabels['Team_ID']}
               name="Team_ID"
               rules={[
@@ -165,19 +165,19 @@ export default function FormComponent({data}) {
                 },
               ]}
             >
-             <Select
-      value={formData['Team_ID']}
-      onChange={(value) => handleSelectChange(value, 'Team_ID')}
-    >
-      {Team_IDOptions.map((option) => (
-        <Option key={option.key} value={option.key}>
-          {option.value}
-        </Option>
-      ))}
-    </Select>
+              <Select
+                value={formData['Team_ID']}
+                onChange={(value) => handleSelectChange(value, 'Team_ID')}
+              >
+                {Team_IDOptions.map((option) => (
+                  <Option key={option.key} value={option.key}>
+                    {option.value}
+                  </Option>
+                ))}
+              </Select>
             </Form.Item>
-            </Col> 
-{selectedTeam && <Col span={24}>
+          </Col>
+          {selectedTeam && <Col span={24}>
             <Form.Item
               label={fieldLabels['User_ID']}
               name="User_ID"
@@ -200,8 +200,8 @@ export default function FormComponent({data}) {
               </Select>
             </Form.Item>
           </Col>}
-            
-          
+
+
         </Row>
         <Row gutter={16}>
           <Col span={12}>

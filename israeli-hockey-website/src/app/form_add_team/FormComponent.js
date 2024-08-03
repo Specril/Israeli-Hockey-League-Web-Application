@@ -27,7 +27,7 @@ export default function FormComponent() {
   const [formData, setFormData] = useState(initialFormState);
   const [isClient, setIsClient] = useState(false);
   const [form] = Form.useForm();
-  const [isOtherLocation, setIsOtherLocation] = useState(false); 
+  const [isOtherLocation, setIsOtherLocation] = useState(false);
   const [ageOptions, setAgeOptions] = useState([]);
   const [locationOptions, setLocationOptions] = useState([]);
 
@@ -53,7 +53,7 @@ export default function FormComponent() {
       setLocationOptions(fetchedLocations);
     };
     fetchData();
-  }, []); 
+  }, []);
 
   const handleChange = (changedValues) => {
     setFormData((prevData) => ({

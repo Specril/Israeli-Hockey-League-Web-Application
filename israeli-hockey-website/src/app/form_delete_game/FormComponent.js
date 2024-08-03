@@ -20,7 +20,7 @@ export default function DeleteGamePage() {
       setGames(fetchedGames);
     };
     fetchData();
-  }, []); 
+  }, []);
 
   const handleSelectChange = (selectedRowKeys) => {
     setSelectedGameIds(selectedRowKeys);
@@ -60,7 +60,7 @@ export default function DeleteGamePage() {
     { title: 'קבוצת בית', dataIndex: 'Home_Team_Name', key: 'Home_Team_Name' },
     { title: 'קבוצת חוץ', dataIndex: 'Away_Team_Name', key: 'Away_Team_Name' },
     { title: 'יום', dataIndex: 'Day', key: 'Day' },
-    { title: 'תאריך', dataIndex: 'Date', key: 'Date' , render: (text) => moment(text).format('YYYY-MM-DD')},
+    { title: 'תאריך', dataIndex: 'Date', key: 'Date', render: (text) => moment(text).format('YYYY-MM-DD') },
     { title: 'זמן התחלה', dataIndex: 'Start_Time', key: 'Start_Time', render: (text) => moment(text, 'HH:mm').format('HH:mm') },
   ];
 

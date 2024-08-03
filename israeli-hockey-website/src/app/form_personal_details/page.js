@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import FormComponent from './FormComponent';
 import 'antd/dist/reset.css'; // Import Ant Design CSS reset
 import { useAuth } from '../authentication/contexts/authContext';
+import ProtectedPage from "../ProtectedPage/ProtectedPage";
 
 const fetchData = async (userId) => {
   const query = `select * from Users where User_ID=${userId}`;
@@ -52,12 +53,14 @@ export default function Page() {
   }, [userId]);
 
   if (!currentUser) {
-    return <div>Loading...</div>;
+    return <div>טוען עמוד...</div>;
   }
 
   return (
-    <>
+    <ProtectedPage content={
       <FormComponent data={data} />
-    </>
+    }
+      allowed_user_types={["admin"]}
+    />
   );
 }

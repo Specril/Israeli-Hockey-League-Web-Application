@@ -1,9 +1,14 @@
-"use client"
+"use client";
 import React, { useEffect, useState } from "react";
 import PremierLeagueTable from "./MainCard";
 import CarouselComponent from "./MainCarousel";
 import MainCardUpcomingGames from "./MainCardUpcomingGames";
-import { Flex } from "antd";
+import { Layout, Typography } from "antd";
+import ProtectedPage from "./ProtectedPage/ProtectedPage";
+
+
+const { Content } = Layout;
+const { Title } = Typography;
 
 // Define your queries
 const query_team_statistics = `
@@ -142,66 +147,74 @@ FROM Photos
 
 // Define your fetch function
 async function fetchData(query) {
-  try {
-    const response = await fetch('/api/fetch', {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ query }),
-    });
+    try {
+        const response = await fetch('/api/fetch', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ query }),
+        });
 
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
+        if (!response.ok) {
+            throw new Error("Network response was not ok");
+        }
+
+        const result = await response.json();
+        return Array.isArray(result) ? result : [];
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        return [];
     }
-
-    const result = await response.json();
-    return Array.isArray(result) ? result : [];
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    return [];
-  }
 }
 
 // Define your Home component
 const Home = () => {
-  const [dataStatistics, setDataStatistics] = useState([]);
-  const [dataUpcoming, setDataUpcoming] = useState([]);
-  const [dataPhotos, setDataPhotos] = useState([]);
-  const [loading, setLoading] = useState(true);
+    const [dataStatistics, setDataStatistics] = useState([]);
+    const [dataUpcoming, setDataUpcoming] = useState([]);
+    const [dataPhotos, setDataPhotos] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchDataAsync = async () => {
-      const stats = await fetchData(query_team_statistics);
-      const upcoming = await fetchData(query_upcoming_games);
-      const photos = await fetchData(query_photos);
+    useEffect(() => {
+        const fetchDataAsync = async () => {
+            const stats = await fetchData(query_team_statistics);
+            const upcoming = await fetchData(query_upcoming_games);
+            const photos = await fetchData(query_photos);
 
-      setDataStatistics(stats);
-      setDataUpcoming(upcoming);
-      setDataPhotos(photos);
-      setLoading(false);
-    };
+            setDataStatistics(stats);
+            setDataUpcoming(upcoming);
+            setDataPhotos(photos);
+            setLoading(false);
+        };
 
-    fetchDataAsync();
-  }, []);
+        fetchDataAsync();
+    }, []);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+    if (loading) {
+        return (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+                <Title level={2}>טוען עמוד...</Title>
+            </div>
+        );
+    }
 
-  return (
-    <div style={{ display: 'flex', flexDirection: 'row', padding: '0px', width: '100%' }}>
-      <div style={{ flex: '3', marginRight: '10px' }}>
-        <PremierLeagueTable data={dataStatistics} name={"סטטיסטיקות קבוצתיות"} />
-      </div>
-      <div style={{ flex: '2', marginRight: '0px' }}>
-        <CarouselComponent data={dataPhotos} style={{ height: '100%' }} />
-      </div>
-      <div style={{ flex: '2' }}>
-        <MainCardUpcomingGames data={dataUpcoming} name={"משחקים קרובים"} />
-      </div>
-    </div>
-  );
+    return (
+        <ProtectedPage content={
+            <div style={{ display: 'flex', flexDirection: 'row', padding: '0px', width: '100%' }}>
+                <div style={{ flex: '3', marginRight: '10px' }}>
+                    <PremierLeagueTable data={dataStatistics} name={"סטטיסטיקות קבוצתיות"} />
+                </div>
+                <div style={{ flex: '2', marginRight: '0px' }}>
+                    <CarouselComponent data={dataPhotos} style={{ height: '100%' }} />
+                </div>
+                <div style={{ flex: '2' }}>
+                    <MainCardUpcomingGames data={dataUpcoming} name={"משחקים קרובים"} />
+                </div>
+            </div>
+        }
+            allowed_user_types={[]}
+        />
+    );
 };
 
 export default Home;

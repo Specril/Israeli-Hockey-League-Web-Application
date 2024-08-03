@@ -59,7 +59,7 @@ export default function TeamOverview({
   );
 
   if (loading) {
-    return <Spin tip="Loading..." />;
+    return <Spin tip="טוען עמוד..." />;
   }
 
   if (error) {

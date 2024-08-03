@@ -140,7 +140,7 @@ export default function UploadGameResultForm({ data }) {
 
 
 
-  const optionsCard = ['blue','red']
+  const optionsCard = ['blue', 'red']
 
   const handleSubmit = async () => {
     const final_data = {
@@ -184,9 +184,9 @@ export default function UploadGameResultForm({ data }) {
         }))
       ]
     };
-  
+
     alert('Form Data JSON: ' + JSON.stringify(final_data));
-  
+
     try {
       const response = await fetch('/api/form_results_updating', { // change dir
         method: 'POST',
@@ -199,7 +199,7 @@ export default function UploadGameResultForm({ data }) {
       console.error('Error updating data');
     }
   };
-  
+
 
   const handleClearAll = () => {
     form.resetFields();
@@ -339,7 +339,7 @@ export default function UploadGameResultForm({ data }) {
             {/* Penalties */}
 
             <Col span={12}>
-            <Title level={5}>רישום עבירות</Title>
+              <Title level={5}>רישום עבירות</Title>
               {formData.homeTeamPenalties.map((penalty, index) => (
                 <Row gutter={8} key={index}>
                   <Col span={16}>
@@ -414,10 +414,10 @@ export default function UploadGameResultForm({ data }) {
                 הוסף עבירה
               </Button>
             </Col>
-    {/* Cards */}  
+            {/* Cards */}
 
-    <Col span={12}>
-            <Title level={5}>רישום כרטיסים</Title>
+            <Col span={12}>
+              <Title level={5}>רישום כרטיסים</Title>
               {formData.homeTeamCards.map((card, index) => (
                 <Row gutter={8} key={index}>
                   <Col span={16}>
@@ -448,20 +448,20 @@ export default function UploadGameResultForm({ data }) {
 
 
                     <Form.Item>
-              <Select
-              placeholder="סוג כרטיס"
-                value={card.Card_Type}
-                onChange={(value) => handleCardChange('homeTeamCards', index, 'Card_Type', value)}
-                style={{ width: '100%' }}
-              >
-                {optionsCard.map((option) => (
-                  <Option key={option} value={option}>
-                  {option}
-                </Option>
-                ))}
-              </Select>
-            </Form.Item>
-                    
+                      <Select
+                        placeholder="סוג כרטיס"
+                        value={card.Card_Type}
+                        onChange={(value) => handleCardChange('homeTeamCards', index, 'Card_Type', value)}
+                        style={{ width: '100%' }}
+                      >
+                        {optionsCard.map((option) => (
+                          <Option key={option} value={option}>
+                            {option}
+                          </Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+
                   </Col>
 
                 </Row>
@@ -503,20 +503,20 @@ export default function UploadGameResultForm({ data }) {
                     </Form.Item>
 
                     <Form.Item>
-              <Select
-              placeholder="סוג כרטיס"
-                value={card.Card_Type}
-                onChange={(value) => handleCardChange('awayTeamCards', index, 'Card_Type', value)}
-                style={{ width: '100%' }}
-              >
-                {optionsCard.map((option) => (
-                  <Option key={option} value={option}>
-                  {option}
-                </Option>
-                ))}
-              </Select>
-            </Form.Item>
-                    
+                      <Select
+                        placeholder="סוג כרטיס"
+                        value={card.Card_Type}
+                        onChange={(value) => handleCardChange('awayTeamCards', index, 'Card_Type', value)}
+                        style={{ width: '100%' }}
+                      >
+                        {optionsCard.map((option) => (
+                          <Option key={option} value={option}>
+                            {option}
+                          </Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+
 
                   </Col>
 
@@ -528,11 +528,11 @@ export default function UploadGameResultForm({ data }) {
             </Col>
 
           </Row>
-  
 
-        )}        
-      
-        
+
+        )}
+
+
         <Row gutter={16} style={{ marginTop: '20px' }}>
           <Col span={12}>
             <Button type="primary" htmlType="submit" block>

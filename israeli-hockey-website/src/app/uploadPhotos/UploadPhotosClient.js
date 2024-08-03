@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Layout, Upload, Button, Typography, message, Input, Card, Select } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import { CSSTransition } from 'react-transition-group';
+import ProtectedPage from "../ProtectedPage/ProtectedPage";
 
 const { Header, Content, Footer } = Layout;
 const { Option } = Select;
@@ -111,70 +111,74 @@ export default function UploadPhotosClient({ initialPhotos }) {
   };
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
-      <Header style={{ backgroundColor: '#001529' }}>
-        <Typography.Title level={3} style={{ color: 'white', textAlign: 'center', margin: 0 }}>
-          מערכת העלאת תמונות
-        </Typography.Title>
-      </Header>
-      <Content style={{ padding: '50px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
-          <Card style={{ width: '100%', maxWidth: '600px', textAlign: 'center', marginBottom: '20px' }}>
-            <Typography.Title level={2}>העלאת תמונה</Typography.Title>
-            <Upload
-              accept="image/*"
-              showUploadList={false}
-              beforeUpload={(file) => {
-                handleFileChange({ file });
-                return false; // Prevent automatic upload
-              }}
-            >
-              <Button icon={<UploadOutlined />}>בחר תמונה</Button>
-            </Upload>
-            {base64String && (
-              <>
-                <Input
-                  value={photoName}
-                  onChange={(e) => setPhotoName(e.target.value)}
-                  placeholder="הזן שם לתמונה"
-                  style={{ marginTop: '20px' }}
-                />
-                <Button type="primary" onClick={handleUpload} style={{ marginTop: '20px', width: '100%' }}>
-                  שלח תמונה
-                </Button>
+    <ProtectedPage content={
+      <Layout style={{ minHeight: '100vh' }}>
+        <Header style={{ backgroundColor: '#001529' }}>
+          <Typography.Title level={3} style={{ color: 'white', textAlign: 'center', margin: 0 }}>
+            מערכת העלאת תמונות
+          </Typography.Title>
+        </Header>
+        <Content style={{ padding: '50px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
+            <Card style={{ width: '100%', maxWidth: '600px', textAlign: 'center', marginBottom: '20px' }}>
+              <Typography.Title level={2}>העלאת תמונה</Typography.Title>
+              <Upload
+                accept="image/*"
+                showUploadList={false}
+                beforeUpload={(file) => {
+                  handleFileChange({ file });
+                  return false; // Prevent automatic upload
+                }}
+              >
+                <Button icon={<UploadOutlined />}>בחר תמונה</Button>
+              </Upload>
+              {base64String && (
+                <>
+                  <Input
+                    value={photoName}
+                    onChange={(e) => setPhotoName(e.target.value)}
+                    placeholder="הזן שם לתמונה"
+                    style={{ marginTop: '20px' }}
+                  />
+                  <Button type="primary" onClick={handleUpload} style={{ marginTop: '20px', width: '100%' }}>
+                    שלח תמונה
+                  </Button>
+                  <div style={{ marginTop: '20px' }}>
+                    <Typography.Title level={4}>תמונה שהועלתה:</Typography.Title>
+                    <img src={base64String} alt="Uploaded" style={{ maxWidth: '100%', height: 'auto' }} />
+                  </div>
+                </>
+              )}
+            </Card>
+            <Card style={{ width: '100%', maxWidth: '600px', textAlign: 'center', marginBottom: '20px' }}>
+              <Typography.Title level={2}>בחירת תמונה למחיקה</Typography.Title>
+              <Select
+                style={{ width: '100%' }}
+                placeholder="בחר תמונה"
+                onChange={handlePhotoSelect}
+                value={selectedPhotoId}
+              >
+                {photos.map(photo => (
+                  <Option key={photo.Photo_ID} value={photo.Photo_ID.toString()}>
+                    {`Photo ${photo.Photo_ID}`}
+                  </Option>
+                ))}
+              </Select>
+              {selectedPhoto && (
                 <div style={{ marginTop: '20px' }}>
-                  <Typography.Title level={4}>תמונה שהועלתה:</Typography.Title>
-                  <img src={base64String} alt="Uploaded" style={{ maxWidth: '100%', height: 'auto' }} />
+                  <img src={selectedPhoto.Photo} alt="Selected" style={{ maxWidth: '100%', height: 'auto' }} />
+                  <Button type="primary" danger onClick={handleDelete} style={{ marginTop: '20px', width: '100%' }}>
+                    מחק תמונה
+                  </Button>
                 </div>
-              </>
-            )}
-          </Card>
-          <Card style={{ width: '100%', maxWidth: '600px', textAlign: 'center', marginBottom: '20px' }}>
-            <Typography.Title level={2}>בחירת תמונה למחיקה</Typography.Title>
-            <Select
-              style={{ width: '100%' }}
-              placeholder="בחר תמונה"
-              onChange={handlePhotoSelect}
-              value={selectedPhotoId}
-            >
-              {photos.map(photo => (
-                <Option key={photo.Photo_ID} value={photo.Photo_ID.toString()}>
-                  {`Photo ${photo.Photo_ID}`}
-                </Option>
-              ))}
-            </Select>
-            {selectedPhoto && (
-              <div style={{ marginTop: '20px' }}>
-                <img src={selectedPhoto.Photo} alt="Selected" style={{ maxWidth: '100%', height: 'auto' }} />
-                <Button type="primary" danger onClick={handleDelete} style={{ marginTop: '20px', width: '100%' }}>
-                  מחק תמונה
-                </Button>
-              </div>
-            )}
-          </Card>
-        </div>
-      </Content>
-      <Footer style={{ textAlign: 'center' }}>©2023 מערכת העלאת תמונות</Footer>
-    </Layout>
+              )}
+            </Card>
+          </div>
+        </Content>
+        <Footer style={{ textAlign: 'center' }}>©2023 מערכת העלאת תמונות</Footer>
+      </Layout>
+    }
+      allowed_user_types={[]}
+    />
   );
 }
