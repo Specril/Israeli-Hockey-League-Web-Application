@@ -10,7 +10,7 @@ const { Title } = Typography;
 
 export default function FormComponent({ data }) {
   const initialFormState = {
-    Date_of_Birth: null, // Changed this to null initially
+    Date_of_Birth: null,
     Full_Name: '',
     Phone: '',
     Email: '',
@@ -31,27 +31,17 @@ export default function FormComponent({ data }) {
 
   useEffect(() => {
     setIsClient(true);
-    const savedFormData = localStorage.getItem('formDataPersonal');
-    if (savedFormData) {
-      setFormData(JSON.parse(savedFormData));
-    } else {
-      // Initial load from props
-      if (data && data.length > 0) {
-        setFormData({
-          Date_of_Birth: data[0].Date_of_Birth ? dayjs(data[0].Date_of_Birth).format('YYYY-MM-DD') : null,
-          Full_Name: data[0].Full_Name || '',
-          Phone: data[0].Phone || '',
-          Email: data[0].Email || '',
-        });
-      }
+    // Initial load from props
+    if (data && data.length > 0) {
+      setFormData({
+        Date_of_Birth: data[0].Date_of_Birth ? dayjs(data[0].Date_of_Birth).format('YYYY-MM-DD') : null,
+        Full_Name: data[0].Full_Name || '',
+        Phone: data[0].Phone || '',
+        Email: data[0].Email || '',
+        Residence: data[0].Residence || ''
+      });
     }
   }, [data]);
-
-  useEffect(() => {
-    if (isClient) {
-      localStorage.setItem('formDataPersonal', JSON.stringify(formData));
-    }
-  }, [formData, isClient]);
 
   const handleChange = (changedValues) => {
     setFormData((prevData) => ({
@@ -61,44 +51,31 @@ export default function FormComponent({ data }) {
   };
 
   const handleDateChange = (date, dateString) => {
-    console.log("handleDateChange - date: ", date);
-    console.log("handleDateChange - dateString: ", dateString);
-
     setFormData((prevData) => ({
       ...prevData,
       Date_of_Birth: date ? dateString : null,
     }));
   };
 
-
-
-   const handleSubmit = async () => {
-    // setFormData({...formData, User_ID: data[0]['User_ID']})
-    const final_data = {...formData, User_ID: data[0]['User_ID']}
+  const handleSubmit = async () => {
+    const final_data = { ...formData, User_ID: data[0]['User_ID'] };
 
     alert('Form Data JSON: ' + JSON.stringify(final_data));
-    // onFinish(formData);
     try {
-      const response = await fetch('/api/form_personal_details', {
+      await fetch('/api/form_personal_details', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(final_data),
-      })
+      });
     } catch (error) {
-      console.alert('Error updating data');
+      console.error('Error updating data', error);
     }
-    
   };
 
-
   const handleClearAll = () => {
-    // form.resetFields();
     setFormData(initialFormState);
-    if (isClient) {
-      localStorage.removeItem('formDataPersonal');
-    }
   };
 
   useEffect(() => {
@@ -182,7 +159,6 @@ export default function FormComponent({ data }) {
             <Form.Item
               label={fieldLabels['Residence']}
               name="Residence"
-             
             >
               <Input
                 name="Residence"

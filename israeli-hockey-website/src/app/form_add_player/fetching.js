@@ -8,12 +8,12 @@ import "../style.css";
 const query_teams = `select DISTINCT teams.Team_ID, teams.Team_Name, league.Age from teams inner JOIN teamsInLeagues on teams.Team_ID=teamsInLeagues.Team_ID 
 left join league on teamsInLeagues.league_id=league.league_id;`
 
-const query_users =  'select Users.User_ID, Users.Full_Name from Users INNER JOIN UsersPlayers on Users.User_ID= UsersPlayers.User_ID;'
+const query_users = 'select Users.User_ID, Users.Full_Name from Users INNER JOIN UsersPlayers on Users.User_ID= UsersPlayers.User_ID;'
 
 
 export async function dataFetchTeams() {
     try {
-        const response = await fetch(`/api/fetch`, { 
+        const response = await fetch(`/api/fetch`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -21,8 +21,8 @@ export async function dataFetchTeams() {
             body: JSON.stringify({ query: query_teams }),
         });
         if (!response.ok) throw new Error('Network response was not ok');
-        const teamsData =  await response.json();
-        const options = teamsData.map(team => ({ key: team.Team_ID, value: [team.Team_Name+ " "+ team.Age] }));;
+        const teamsData = await response.json();
+        const options = teamsData.map(team => ({ key: team.Team_ID, value: [team.Team_Name + " " + team.Age] }));;
         return options
     } catch (error) {
         console.error("Error fetching leagues", error);
@@ -32,7 +32,7 @@ export async function dataFetchTeams() {
 
 export async function dataFetchUsers() {
     try {
-        const response = await fetch(`/api/fetch`, { 
+        const response = await fetch(`/api/fetch`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

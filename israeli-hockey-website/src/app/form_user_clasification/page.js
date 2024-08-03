@@ -2,6 +2,8 @@
 import React from 'react';
 import FormComponent from './FormComponent';
 import 'antd/dist/reset.css'; // Import Ant Design CSS reset
+import ProtectedPage from "../ProtectedPage/ProtectedPage";
+
 
 const query_users = 'SELECT User_ID, Full_Name FROM Users;';
 const query_roles = 'SELECT Role_ID, Role_Name FROM Roles;';
@@ -46,8 +48,10 @@ export default async function Page() {
   const combinedData = [usersData, rolesData];
 
   return (
-    <>
+    <ProtectedPage content={
       <FormComponent data={combinedData} />
-    </>
+    }
+      allowed_user_types={["admin"]}
+    />
   );
 }

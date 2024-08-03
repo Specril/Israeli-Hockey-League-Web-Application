@@ -4,6 +4,8 @@ import { useEffect, useState, useRef } from "react";
 import { Select, Table, Card, Row, Col, Input, Button, Space } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
+import ProtectedPage from "../ProtectedPage/ProtectedPage";
+
 
 const { Option } = Select;
 
@@ -146,9 +148,9 @@ const BrowseUsers = () => {
     onFilter: (value, record) =>
       record[dataIndex]
         ? record[dataIndex]
-            .toString()
-            .toLowerCase()
-            .includes(value.toLowerCase())
+          .toString()
+          .toLowerCase()
+          .includes(value.toLowerCase())
         : "",
     onFilterDropdownVisibleChange: (visible) => {
       if (visible) {
@@ -225,27 +227,31 @@ const BrowseUsers = () => {
   ];
 
   return (
-    <Row align="center" justify="center" style={{ padding: "20px" }}>
-      <Col span={24}>
-        <Select
-          style={{ width: 200, marginBottom: 20 }}
-          placeholder="Select a role"
-          onChange={handleRoleChange}
-          value={selectedRole}
-        >
-          <Option value="Admins">אדמינים</Option>
-          <Option value="Coaches">מאמנים</Option>
-          <Option value="Fans">אוהדים</Option>
-          <Option value="Players">שחקנים</Option>
-          <Option value="Referees">שופטים</Option>
-        </Select>
-      </Col>
-      <Col span={24}>
-        <Card bordered={false} style={{ width: "100%" }}>
-          <Table dataSource={usersData} columns={columns} rowKey="User_ID" />
-        </Card>
-      </Col>
-    </Row>
+    <ProtectedPage content={
+      <Row align="center" justify="center" style={{ padding: "20px" }}>
+        <Col span={24}>
+          <Select
+            style={{ width: 200, marginBottom: 20 }}
+            placeholder="Select a role"
+            onChange={handleRoleChange}
+            value={selectedRole}
+          >
+            <Option value="Admins">אדמינים</Option>
+            <Option value="Coaches">מאמנים</Option>
+            <Option value="Fans">אוהדים</Option>
+            <Option value="Players">שחקנים</Option>
+            <Option value="Referees">שופטים</Option>
+          </Select>
+        </Col>
+        <Col span={24}>
+          <Card bordered={false} style={{ width: "100%" }}>
+            <Table dataSource={usersData} columns={columns} rowKey="User_ID" />
+          </Card>
+        </Col>
+      </Row>
+    }
+      allowed_user_types={["admin"]}
+    />
   );
 };
 

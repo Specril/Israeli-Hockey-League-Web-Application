@@ -5,6 +5,8 @@ import FormComponent from './FormComponent';
 import 'antd/dist/reset.css'; // Import Ant Design CSS reset
 import { Date } from 'mssql';
 const fetchRows = require("../api/fetchRows");
+import ProtectedPage from "../ProtectedPage/ProtectedPage";
+
 
 
 
@@ -61,9 +63,11 @@ export default async function Page() {
 
 
   return (
-    <>
-      <FormComponent data = {combined_data} />
-      
-    </>
+    <ProtectedPage content={
+      <FormComponent data={combined_data} />
+
+    }
+      allowed_user_types={["admin"]}
+    />
   );
 }

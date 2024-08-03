@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Typography, Row, Col, Select, InputNumber } from 'antd';
 import 'antd/dist/reset.css';
 import "../style.css";
-import { dataFetchLeague, dataFetchTeams} from './fetching';
+import { dataFetchLeague, dataFetchTeams } from './fetching';
 
 
 const { Title } = Typography;
@@ -39,7 +39,7 @@ export default function FormComponent({ data }) {
       setTeamsOptions(fetchedTeams);
     };
     fetchData();
-  }, []); 
+  }, []);
 
 
   useEffect(() => {
@@ -70,7 +70,7 @@ export default function FormComponent({ data }) {
       ...prevData,
       [field]: value,
     }));
-    
+
   };
 
   const handleSubmit = async () => {
@@ -112,7 +112,7 @@ export default function FormComponent({ data }) {
 
   const filteredTeams = formData.League_ID
     ? teamsOptions.filter(option => option.value.League_ID === formData.League_ID)
-    : teamsOptions;  
+    : teamsOptions;
 
 
   return (

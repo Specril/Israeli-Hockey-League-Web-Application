@@ -8,7 +8,7 @@ const query_leagues = 'SELECT DISTINCT Age from League';
 
 export async function dataFetchLeagues() {
     try {
-        const response = await fetch(`/api/fetch`, { 
+        const response = await fetch(`/api/fetch`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -25,7 +25,7 @@ export async function dataFetchLeagues() {
 
 export async function dataFetchLocations() {
     try {
-        const response = await fetch(`/api/fetch`, { 
+        const response = await fetch(`/api/fetch`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

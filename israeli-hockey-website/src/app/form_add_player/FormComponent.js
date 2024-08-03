@@ -41,7 +41,7 @@ export default function FormComponent() {
       setUsersOptions(fetchedUsers)
     };
     fetchData();
-  }, []); 
+  }, []);
 
 
   useEffect(() => {
@@ -137,22 +137,22 @@ export default function FormComponent() {
                 },
               ]}
             >
-             <Select
-             showSearch
-          value={formData['User_ID']}
-          onChange={(value) => handleSelectChangeName(value, 'User_ID')}
-          filterOption={(input, option) =>
-            option.props.children
-              ? option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              : false
-          }
-        >
-          {users_options.map((option) => (
-            <Option key={option.key} value={option.key}>
-              {option.value}
-            </Option>
-          ))}
-        </Select>
+              <Select
+                showSearch
+                value={formData['User_ID']}
+                onChange={(value) => handleSelectChangeName(value, 'User_ID')}
+                filterOption={(input, option) =>
+                  option.props.children
+                    ? option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    : false
+                }
+              >
+                {users_options.map((option) => (
+                  <Option key={option.key} value={option.key}>
+                    {option.value}
+                  </Option>
+                ))}
+              </Select>
             </Form.Item>
           </Col>
 
@@ -174,8 +174,8 @@ export default function FormComponent() {
               >
                 {Team_IDOptions.map((option) => (
                   <Option key={option.key} value={option.key}>
-                  {option.value}
-                </Option>
+                    {option.value}
+                  </Option>
                 ))}
               </Select>
             </Form.Item>

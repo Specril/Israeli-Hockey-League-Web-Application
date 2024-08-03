@@ -4,6 +4,8 @@ import FormComponent from './FormComponent';
 import 'antd/dist/reset.css'; // Import Ant Design CSS reset
 import { Date } from 'mssql';
 const fetchRows = require("../api/fetchRows");
+import ProtectedPage from "../ProtectedPage/ProtectedPage";
+
 
 
 
@@ -58,35 +60,35 @@ async function dataFetchGoals() {
 
 
 async function dataFetchPenalties() {
-    let goalsData = [];
-    try {
-      goalsData = await fetchRows(() => queryPenalties);
-    } catch (error) {
-      console.error("Error fetching Games:", error);
-    }
-  
-    // console.log(playersData)
-    return goalsData
+  let goalsData = [];
+  try {
+    goalsData = await fetchRows(() => queryPenalties);
+  } catch (error) {
+    console.error("Error fetching Games:", error);
   }
 
-  async function dataFetchCards() {
-    let goalsData = [];
-    try {
-      goalsData = await fetchRows(() => queryCards);
-    } catch (error) {
-      console.error("Error fetching Games:", error);
-    }
-  
-    // console.log(goalsData)
-    return goalsData
+  // console.log(playersData)
+  return goalsData
+}
+
+async function dataFetchCards() {
+  let goalsData = [];
+  try {
+    goalsData = await fetchRows(() => queryCards);
+  } catch (error) {
+    console.error("Error fetching Games:", error);
   }
+
+  // console.log(goalsData)
+  return goalsData
+}
 
 
 export default async function Page() {
 
   const games = await dataFetchGames();
   const goalsData = await dataFetchGoals()
-  const penaltiesData= await dataFetchPenalties();
+  const penaltiesData = await dataFetchPenalties();
   const cardsData = await dataFetchCards();
 
   const combined_data = [games, goalsData, penaltiesData, cardsData]
@@ -95,9 +97,11 @@ export default async function Page() {
 
 
   return (
-    <>
-      <FormComponent data = {combined_data} />
-      
-    </>
+    <ProtectedPage content={
+      <FormComponent data={combined_data} />
+
+    }
+      allowed_user_types={["admin"]}
+    />
   );
 }

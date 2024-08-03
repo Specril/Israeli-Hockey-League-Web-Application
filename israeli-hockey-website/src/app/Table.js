@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 
+
 export default function Table({ data, name }) {
   if (!data || data.length === 0) {
     return (

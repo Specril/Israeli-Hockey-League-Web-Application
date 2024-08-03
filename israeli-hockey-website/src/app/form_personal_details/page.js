@@ -1,36 +1,66 @@
+"use client";
 
-
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import FormComponent from './FormComponent';
 import 'antd/dist/reset.css'; // Import Ant Design CSS reset
+import { useAuth } from '../authentication/contexts/authContext';
+import ProtectedPage from "../ProtectedPage/ProtectedPage";
 
-
-const fetchRows = require("../api/fetchRows");
-
-
-const query_example = 'select * from Users where User_ID=1;'
-
-async function dataFetch() {
-  let teamsData = [];
+const fetchData = async (userId) => {
+  const query = `select * from Users where User_ID=${userId}`;
+  let data = [];
   try {
-    teamsData = await fetchRows(() => query_example);
+    const response = await fetch(`/api/fetch`, { // Use relative URL
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ query: query }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    data = await response.json();
+    return data; // Return the parsed data
   } catch (error) {
-    console.error("Error fetching Users:", error);
+    console.error("Error fetching data:", error);
   }
-  return teamsData;
-}
+  return data;
+};
 
-export default async function Page() {
+export default function Page() {
+  const { currentUser } = useAuth();
+  const [userId, setUserId] = useState(null);
+  const [data, setData] = useState([]);
 
-  const old_data = await dataFetch();
-  console.log(old_data);
+  useEffect(() => {
+    if (currentUser) {
+      console.log('Current user:', currentUser);
+      const userData = JSON.parse(currentUser.photoURL);
+      console.log('User data:', userData);
+      setUserId(userData.userID);
+    }
+  }, [currentUser]);
 
+  useEffect(() => {
+    if (userId) {
+      fetchData(userId).then(fetchedData => {
+        setData(fetchedData);
+      });
+    }
+  }, [userId]);
 
+  if (!currentUser) {
+    return <div>טוען עמוד...</div>;
+  }
 
   return (
-    <>
-      <FormComponent data = {old_data} />
-      
-    </>
+    <ProtectedPage content={
+      <FormComponent data={data} />
+    }
+      allowed_user_types={[]}
+    />
   );
 }

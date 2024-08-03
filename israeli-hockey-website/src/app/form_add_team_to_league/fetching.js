@@ -4,11 +4,11 @@ import 'antd/dist/reset.css';
 import "../style.css";
 
 
-const query_teams =  `select Team_Name, Team_ID, Age from teams`
+const query_teams = `select Team_Name, Team_ID, Age from teams`
 
 export async function dataFetchTeams() {
     try {
-        const response = await fetch(`/api/fetch`, { 
+        const response = await fetch(`/api/fetch`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -16,8 +16,8 @@ export async function dataFetchTeams() {
             body: JSON.stringify({ query: query_teams }),
         });
         if (!response.ok) throw new Error('Network response was not ok');
-        const teamsData= await response.json();
-        const options = teamsData.map(team => ({ key: team.Team_ID, value: [team.Team_Name+ " "+ team.Age] }));;
+        const teamsData = await response.json();
+        const options = teamsData.map(team => ({ key: team.Team_ID, value: [team.Team_Name + " " + team.Age] }));;
         return options
     } catch (error) {
         console.error("Error fetching leagues", error);
@@ -27,7 +27,7 @@ export async function dataFetchTeams() {
 
 export async function dataFetchLeague() {
     try {
-        const response = await fetch(`/api/fetch`, { 
+        const response = await fetch(`/api/fetch`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -36,7 +36,7 @@ export async function dataFetchLeague() {
         });
         if (!response.ok) throw new Error('Network response was not ok');
         const leaguesData = await response.json();
-        const options = leaguesData.map(league => ({ key: league.League_ID, value: [league.Age+ " "+ league.League_Type] }));;
+        const options = leaguesData.map(league => ({ key: league.League_ID, value: [league.Age + " " + league.League_Type] }));;
         return options
     } catch (error) {
         console.error("Error fetching locations", error);

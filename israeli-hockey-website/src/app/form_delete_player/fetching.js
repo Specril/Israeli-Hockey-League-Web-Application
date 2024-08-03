@@ -12,7 +12,7 @@ const query_players = `SELECT Users.User_ID, Users.Full_Name, Team_ID from Users
 
 export async function dataFetchTeams() {
     try {
-        const response = await fetch(`/api/fetch`, { 
+        const response = await fetch(`/api/fetch`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -20,8 +20,8 @@ export async function dataFetchTeams() {
             body: JSON.stringify({ query: query_teams }),
         });
         if (!response.ok) throw new Error('Network response was not ok');
-        const teamsData= await response.json();
-        const options = teamsData.map(team => ({ key: team.Team_ID, value: [team.Team_Name+ " "+ team.Age] }));;
+        const teamsData = await response.json();
+        const options = teamsData.map(team => ({ key: team.Team_ID, value: [team.Team_Name + " " + team.Age] }));;
         return options
     } catch (error) {
         console.error("Error fetching leagues", error);
@@ -33,7 +33,7 @@ export async function dataFetchTeams() {
 
 export async function dataFetchPlayers() {
     try {
-        const response = await fetch(`/api/fetch`, { 
+        const response = await fetch(`/api/fetch`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -42,7 +42,7 @@ export async function dataFetchPlayers() {
         });
         if (!response.ok) throw new Error('Network response was not ok');
         return await response.json();
-        
+
     } catch (error) {
         console.error("Error fetching locations", error);
         return []; // Return an empty array on error
