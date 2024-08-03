@@ -75,6 +75,9 @@ export default function NavBar() {
 
         
         <li>
+          <a href="form_user_clasification">סיווג יוזר</a>
+        </li>
+        <li>
           <a href="#login" className="login-button" onClick={toggleLoginForm}>
             התחברות
           </a>

@@ -1,19 +1,18 @@
-import React from "react";
-import { Card } from "antd";
-import "./style.css";
-import Table from "./Table";
+"use client"
+import React, { useEffect, useState } from "react";
 import PremierLeagueTable from "./MainCard";
 import CarouselComponent from "./MainCarousel";
-import MainCardUpcomingGames from "./MainCardUpcomingGames"
+import MainCardUpcomingGames from "./MainCardUpcomingGames";
+import { Flex } from "antd";
 
-
+// Define your queries
 const query_team_statistics = `
 SELECT 
     T1.Team_Name AS 'שם הקבוצה', 
     COALESCE(T7.Photo, '') AS Logo,
     COALESCE(T1.Total_Games, 0) AS משחקים, 
-    (3 * COALESCE(win_count, 0) + COALESCE(tie_count, 0)) AS נקודות, 
-    (COALESCE(total_goals, 0) - COALESCE(rivals_goals, 0)) AS הפרש
+    (3 * COALESCE(T2.win_count, 0) + COALESCE(T3.tie_count, 0)) AS נקודות, 
+    (COALESCE(T4.total_goals, 0) - COALESCE(T5.rivals_goals, 0)) AS הפרש
 FROM 
     (SELECT 
         Teams.Team_ID,
@@ -28,6 +27,8 @@ FROM
             SELECT Away_Team_ID AS Team_ID, Game_ID
             FROM Games
         ) AS Games ON Teams.Team_ID = Games.Team_ID
+    WHERE
+        Teams.Age = N'בוגרים'
     GROUP BY 
         Teams.Team_ID, 
         Teams.Team_Name
@@ -35,18 +36,18 @@ FROM
 LEFT JOIN
     (SELECT 
         Winner_ID, 
-        COUNT(*) as win_count
+        COUNT(*) AS win_count
     FROM 
         Games_with_winner 
     WHERE 
         Winner_ID != 0
     GROUP BY
         Winner_ID
-    ) AS T2 on T1.Team_ID = T2.Winner_ID
+    ) AS T2 ON T1.Team_ID = T2.Winner_ID
 LEFT JOIN
     (SELECT 
         Team_ID, 
-        COUNT(*) as tie_count
+        COUNT(*) AS tie_count
     FROM 
         (SELECT Home_Team_ID AS Team_ID
         FROM Games_with_winner 
@@ -58,39 +59,32 @@ LEFT JOIN
         ) AS combined
     GROUP BY
         Team_ID
-    ) AS T3 on T1.Team_ID = T3.Team_ID
+    ) AS T3 ON T1.Team_ID = T3.Team_ID
 LEFT JOIN
     (SELECT 
         Goals.Team_ID, 
-        COUNT(*) as total_goals
+        COUNT(*) AS total_goals
     FROM 
         Goals
     GROUP BY 
-        Team_ID
-    ) AS T4 on T1.Team_ID = T4.Team_ID
+        Goals.Team_ID
+    ) AS T4 ON T1.Team_ID = T4.Team_ID
 LEFT JOIN 
     (SELECT 
-        home_team_id as Team_ID, 
-        SUM(away_team_goals) as rivals_goals 
+        home_team_id AS Team_ID, 
+        SUM(away_team_goals) AS rivals_goals 
     FROM 
         games_with_winner 
     GROUP BY 
         home_team_id
-    ) AS T5 on T1.Team_ID = T5.Team_ID
-LEFT JOIN
-    (SELECT 
-        Age, 
-        Team_ID 
-    FROM 
-        Teams
-    ) AS T6 on T1.Team_ID = T6.Team_ID
+    ) AS T5 ON T1.Team_ID = T5.Team_ID
 LEFT JOIN
     (SELECT 
         Team_ID, 
         Photo 
     FROM 
         TeamsLogos
-    ) AS T7 on T1.Team_ID = T7.Team_ID
+    ) AS T7 ON T1.Team_ID = T7.Team_ID
 ORDER BY 
     נקודות DESC;
 `;
@@ -139,42 +133,75 @@ FROM
 LEFT JOIN Users ON Second_Referee_ID = user_ID
 LEFT JOIN TeamsLogos AS TeamsLogos_Home ON T_with_first_referee.Home_Team_ID = TeamsLogos_Home.Team_ID
 LEFT JOIN TeamsLogos AS TeamsLogos_Away ON T_with_first_referee.Away_Team_ID = TeamsLogos_Away.Team_ID
-;`;
+`;
 
+const query_photos = `
+SELECT Photo
+FROM Photos
+`;
 
-const fetchRows = require("./api/fetchRows");
-
-async function dataFetchStatistics() {
-  let teamsData = [];
+// Define your fetch function
+async function fetchData(query) {
   try {
-    teamsData = await fetchRows(() => query_team_statistics);
+    const response = await fetch('/api/fetch', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ query }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    const result = await response.json();
+    return Array.isArray(result) ? result : [];
   } catch (error) {
-    console.error("Error fetching teams:", error);
+    console.error("Error fetching data:", error);
+    return [];
   }
-  return teamsData;
 }
 
-async function dataFetchUpcoming() {
-  let teamsData = [];
-  try {
-    teamsData = await fetchRows(() => query_upcoming_games);
-  } catch (error) {
-    console.error("Error fetching teams:", error);
-  }
-  return teamsData;
-}
+// Define your Home component
+const Home = () => {
+  const [dataStatistics, setDataStatistics] = useState([]);
+  const [dataUpcoming, setDataUpcoming] = useState([]);
+  const [dataPhotos, setDataPhotos] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-export default async function Home() {
-  // Fetch data on the server side
-  const data_statistics = await dataFetchStatistics();
-  const data_upcoming = await dataFetchUpcoming();
+  useEffect(() => {
+    const fetchDataAsync = async () => {
+      const stats = await fetchData(query_team_statistics);
+      const upcoming = await fetchData(query_upcoming_games);
+      const photos = await fetchData(query_photos);
+
+      setDataStatistics(stats);
+      setDataUpcoming(upcoming);
+      setDataPhotos(photos);
+      setLoading(false);
+    };
+
+    fetchDataAsync();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <div style={{ display: "flex", justifyContent: "space-between", padding: "0px" }}>
-      
-      <PremierLeagueTable data={data_statistics} name={"סטטיסטיקות קבוצתיות"} style={{ flex: "12", marginRight: "20px" }} /> {/* Adjust styles as needed */}
-      <CarouselComponent style={{ flex: "2", marginRight: "20px" }} /> {/* Adjust styles as needed */}
-      <MainCardUpcomingGames data={data_upcoming} name={"משחקים קרובים"} style={{ flex: "2" }} /> {/* Adjust styles as needed */}
+    <div style={{ display: 'flex', flexDirection: 'row', padding: '0px', width: '100%' }}>
+      <div style={{ flex: '3', marginRight: '10px' }}>
+        <PremierLeagueTable data={dataStatistics} name={"סטטיסטיקות קבוצתיות"} />
+      </div>
+      <div style={{ flex: '2', marginRight: '0px' }}>
+        <CarouselComponent data={dataPhotos} style={{ height: '100%' }} />
+      </div>
+      <div style={{ flex: '2' }}>
+        <MainCardUpcomingGames data={dataUpcoming} name={"משחקים קרובים"} />
+      </div>
     </div>
   );
-}
+};
+
+export default Home;
