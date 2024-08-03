@@ -1,54 +1,54 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, Typography, Row, Col, Select } from 'antd';
+import { Form, Input, Button, Typography, Row, Col, Select, InputNumber } from 'antd';
 import 'antd/dist/reset.css';
 import "../style.css";
-import { dataFetchLeague, dataFetchTeams } from './fetching';
+import { dataFetchLeague, dataFetchTeams,  } from './fetching';
+
 
 const { Title } = Typography;
 const { Option } = Select;
 
-export default function FormComponent() {
+export default function FormComponent({ data }) {
   const initialFormState = {
-    Age: '',
     Team_ID: '',
+    League_ID: '',
+
   };
 
   const fieldLabels = {
-    Age: 'ליגה-גיל',
-    Team_ID: 'קבוצה',
+    Team_ID: 'שם קבוצה',
+    League_ID: 'ליגה',
   };
 
+  // const teamsOptions = data[0];
+  // const League_ID_options = data[1];
+
+
+  console.log("inside form component");
 
 
   const [formData, setFormData] = useState(initialFormState);
   const [isClient, setIsClient] = useState(false);
   const [form] = Form.useForm();
-  const [Team_IDOptions, setTeamsOptions] =  useState([]);
-  const [Age_options, setAge_options] =  useState([]);
+  const [League_ID_options, setLeagueOptions] = useState([]);
+  const [teamsOptions, setTeamsOptions] = useState([]);
 
 
   useEffect(() => {
     const fetchData = async () => {
       const fetchedLeagues = await dataFetchLeague();
       const fetchedTeams = await dataFetchTeams();
-      const teamOptions = fetchedTeams.map(team => ({
-        key: team.Team_ID,
-        value: {
-          Age: team.Age,
-          Team_Name: team.Team_Name,
-        }
-      }));
-      setAge_options(fetchedLeagues);
-      setTeamsOptions(teamOptions);
+      setLeagueOptions(fetchedLeagues);
+      setTeamsOptions(fetchedTeams);
     };
     fetchData();
   }, []); 
 
   useEffect(() => {
     setIsClient(true);
-    const savedFormData = localStorage.getItem('formDeleteTeam');
+    const savedFormData = localStorage.getItem('formAddTeamToLeague');
     if (savedFormData) {
       setFormData(JSON.parse(savedFormData));
     }
@@ -56,7 +56,7 @@ export default function FormComponent() {
 
   useEffect(() => {
     if (isClient) {
-      localStorage.setItem('formDeleteTeam', JSON.stringify(formData));
+      localStorage.setItem('formAddTeamToLeague', JSON.stringify(formData));
     }
   }, [formData, isClient]);
 
@@ -67,20 +67,32 @@ export default function FormComponent() {
     }));
   };
 
-  const handleSelectChange = (value, field) => {
+  const handleDateChange = (date, dateString) => {
     setFormData((prevData) => ({
       ...prevData,
-      [field]: value,
+      Date_of_Birth: date ? dateString : null,
     }));
   };
 
+  const handleSelectChange = (value, field) => {
+
+      setFormData((prevData) => ({
+        ...prevData,
+        [field]: value,
+      }));
+
+  };
+
   const handleSubmit = async () => {
-    const final_data = { ...formData };
+    const final_data = {
+      ...formData
+    };
+
     alert('Form Data JSON: ' + JSON.stringify(final_data));
 
     try {
-      const response = await fetch('/api/form_manage_team', {
-        method: 'DELETE',
+      const response = await fetch('/api/manage_teams_in_leagues', {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -95,7 +107,7 @@ export default function FormComponent() {
     form.resetFields();
     setFormData(initialFormState);
     if (isClient) {
-      localStorage.removeItem('formDeleteTeam');
+      localStorage.removeItem('formAddTeamToLeague');
     }
   };
 
@@ -107,13 +119,9 @@ export default function FormComponent() {
     }
   }, [formData, form, isClient]);
 
-  const filteredTeams = formData.Age
-    ? Team_IDOptions.filter(option => option.value.Age === formData.Age)
-    : Team_IDOptions;
-
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-      <Title level={3}>טופס מחיקת קבוצת גיל</Title>
+      <Title level={3}>טופס הוספת קבוצה לליגה</Title>
       <Form
         form={form}
         layout="vertical"
@@ -122,30 +130,6 @@ export default function FormComponent() {
         onFinish={handleSubmit}
       >
         <Row gutter={16}>
-          <Col span={24}>
-            <Form.Item
-              label={fieldLabels['Age']}
-              name="Age"
-              rules={[
-                {
-                  required: true,
-                  message: `${fieldLabels['Age']} is required`,
-                },
-              ]}
-            >
-              <Select
-                value={formData['Age']}
-                onChange={(value) => handleSelectChange(value, 'Age')}
-              >
-                {Age_options.map((option) => (
-                  <Option key={option} value={option}>
-                    {option}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
-          </Col>
-
           <Col span={24}>
             <Form.Item
               label={fieldLabels['Team_ID']}
@@ -157,18 +141,46 @@ export default function FormComponent() {
                 },
               ]}
             >
-              <Select
+          <Select
                 value={formData['Team_ID']}
                 onChange={(value) => handleSelectChange(value, 'Team_ID')}
               >
-                {filteredTeams.map((option) => (
+                {teamsOptions.map((option) => (
                   <Option key={option.key} value={option.key}>
-                    {option.value.Team_Name}
+                    {option.value}
                   </Option>
                 ))}
               </Select>
             </Form.Item>
           </Col>
+
+          <Col span={24}>
+          <Form.Item
+              label={fieldLabels['League_ID']}
+              name="League_ID"
+              rules={[
+                {
+                  required: true,
+                  message: `${fieldLabels['League_ID']} is required`,
+                },
+              ]}
+            >
+              <Select
+                value={formData['League_ID']}
+                onChange={(value) => handleSelectChange(value, 'League_ID')}
+                style={{ width: '100%' }}
+              >
+                {League_ID_options.map((option) => (
+                  <Option key={option.key} value={option.key}>
+                    {option.value}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
+
+
+          <Col span={24}></Col>
         </Row>
         <Row gutter={16}>
           <Col span={12}>

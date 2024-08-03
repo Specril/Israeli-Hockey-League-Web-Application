@@ -109,6 +109,25 @@ export default function UploadGameResultForm({ data }) {
     }));
   };
 
+  const handleCardChange = (team, index, key, value) => {
+    const newCard = [...formData[team]];
+    newCard[index][key] = value;
+    setFormData((prevData) => ({
+      ...prevData,
+      [team]: newCard,
+    }));
+  };
+
+
+
+
+  const handleAddCard = (team) => {
+    const card = { User_ID: '', Time_Stamp: null };
+    setFormData((prevData) => ({
+      ...prevData,
+      [team]: [...prevData[team], card],
+    }));
+  };
 
   const handleTimeChange = (team, index, time, timeString) => {
     const newData = [...formData[team]];
@@ -119,18 +138,57 @@ export default function UploadGameResultForm({ data }) {
     }));
   };
 
-  // const handleSubmit = () => {
-  //   alert('Form Data JSON: ' + JSON.stringify(formData));
-  //   console.log('Form Data JSON:', JSON.stringify(formData));
-  // };
 
+
+  const optionsCard = ['blue','red']
 
   const handleSubmit = async () => {
-    const final_data = { ...formData };
+    const final_data = {
+      Game_ID: formData.selectedGameId,
+      Goals: [
+        ...formData.homeTeamGoals.map(goal => ({
+          User_ID: goal.User_ID,
+          Team_ID: selectedGame.value.Home_Team_ID,
+          Time_Stamp: goal.Time_Stamp,
+        })),
+        ...formData.awayTeamGoals.map(goal => ({
+          User_ID: goal.User_ID,
+          Team_ID: selectedGame.value.Away_Team_ID,
+          Time_Stamp: goal.Time_Stamp,
+        }))
+      ],
+      Penalties: [
+        ...formData.homeTeamPenalties.map(penalty => ({
+          User_ID: penalty.User_ID,
+          Team_ID: selectedGame.value.Home_Team_ID,
+          Time_Stamp: penalty.Time_Stamp,
+        })),
+        ...formData.awayTeamPenalties.map(penalty => ({
+          User_ID: penalty.User_ID,
+          Team_ID: selectedGame.value.Away_Team_ID,
+          Time_Stamp: penalty.Time_Stamp,
+        }))
+      ],
+      Cards: [
+        ...formData.homeTeamCards.map(card => ({
+          User_ID: card.User_ID,
+          Team_ID: selectedGame.value.Home_Team_ID,
+          Time_Stamp: card.Time_Stamp,
+          Card_Type: card.Card_Type,
+        })),
+        ...formData.awayTeamCards.map(card => ({
+          User_ID: card.User_ID,
+          Team_ID: selectedGame.value.Away_Team_ID,
+          Time_Stamp: card.Time_Stamp,
+          Card_Type: card.Card_Type,
+        }))
+      ]
+    };
+  
     alert('Form Data JSON: ' + JSON.stringify(final_data));
-
+  
     try {
-      const response = await fetch('/api/form_results_updating', {
+      const response = await fetch('/api/form_results_updating', { // change dir
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -138,9 +196,10 @@ export default function UploadGameResultForm({ data }) {
         body: JSON.stringify(final_data),
       });
     } catch (error) {
-      console.alert('Error updating data');
+      console.error('Error updating data');
     }
   };
+  
 
   const handleClearAll = () => {
     form.resetFields();
@@ -183,7 +242,7 @@ export default function UploadGameResultForm({ data }) {
             >
               <Select
                 showSearch
-                placeholder="Select a game"
+                placeholder="בחר משחק"
                 optionFilterProp="children"
                 filterOption={(input, option) =>
                   option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -357,6 +416,117 @@ export default function UploadGameResultForm({ data }) {
             </Col>
     {/* Cards */}  
 
+    <Col span={12}>
+            <Title level={5}>רישום כרטיסים</Title>
+              {formData.homeTeamCards.map((card, index) => (
+                <Row gutter={8} key={index}>
+                  <Col span={16}>
+                    <Form.Item>
+                      <Select
+                        placeholder="שחקן"
+                        value={card.User_ID}
+                        onChange={(value) => handleCardChange('homeTeamCards', index, 'User_ID', value)}
+                        style={{ width: '100%' }} // Make the Input box take full width
+                      >
+                        {getTeamPlayers(selectedGame.value['Home_Team_ID']).map(User_ID => (
+                          <Option key={User_ID.user_id} value={User_ID.user_id}>
+                            {User_ID.Full_Name}
+                          </Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                  <Col span={8}>
+                    <Form.Item>
+                      <TimePicker
+                        format="HH:mm"
+                        value={card.Time_Stamp ? moment(card.Time_Stamp, "HH:mm") : null}
+                        onChange={(time, timeString) => handleTimeChange('homeTeamCards', index, time, timeString)}
+                        style={{ width: '100%' }} // Make the TimePicker take full width
+                      />
+                    </Form.Item>
+
+
+                    <Form.Item>
+              <Select
+              placeholder="סוג כרטיס"
+                value={card.Card_Type}
+                onChange={(value) => handleCardChange('homeTeamCards', index, 'Card_Type', value)}
+                style={{ width: '100%' }}
+              >
+                {optionsCard.map((option) => (
+                  <Option key={option} value={option}>
+                  {option}
+                </Option>
+                ))}
+              </Select>
+            </Form.Item>
+                    
+                  </Col>
+
+                </Row>
+              ))}
+              <Button onClick={() => handleAddCard('homeTeamCards')} block>
+                הוסף כרטיס
+              </Button>
+            </Col>
+
+
+            <Col span={12}>
+              <Title level={5}>{`רישום כרטיסים`}</Title>
+              {formData.awayTeamCards.map((card, index) => (
+                <Row gutter={8} key={index}>
+                  <Col span={16}>
+                    <Form.Item>
+                      <Select
+                        placeholder="שחקן"
+                        value={card.User_ID}
+                        onChange={(value) => handleCardChange('awayTeamCards', index, 'User_ID', value)}
+                        style={{ width: '100%' }} // Make the Input box take full width
+                      >
+                        {getTeamPlayers(selectedGame.value['Away_Team_ID']).map(User_ID => (
+                          <Option key={User_ID.user_id} value={User_ID.user_id}>
+                            {User_ID.Full_Name}
+                          </Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                  <Col span={8}>
+                    <Form.Item>
+                      <TimePicker
+                        format="HH:mm"
+                        value={card.Time_Stamp ? moment(card.Time_Stamp, "HH:mm") : null}
+                        onChange={(time, timeString) => handleTimeChange('awayTeamCards', index, time, timeString)}
+                        style={{ width: '100%' }} // Make the TimePicker take full width
+                      />
+                    </Form.Item>
+
+                    <Form.Item>
+              <Select
+              placeholder="סוג כרטיס"
+                value={card.Card_Type}
+                onChange={(value) => handleCardChange('awayTeamCards', index, 'Card_Type', value)}
+                style={{ width: '100%' }}
+              >
+                {optionsCard.map((option) => (
+                  <Option key={option} value={option}>
+                  {option}
+                </Option>
+                ))}
+              </Select>
+            </Form.Item>
+                    
+
+                  </Col>
+
+                </Row>
+              ))}
+              <Button onClick={() => handleAddCard('awayTeamCards')} block>
+                הוסף כרטיס
+              </Button>
+            </Col>
+
           </Row>
   
 
@@ -376,9 +546,6 @@ export default function UploadGameResultForm({ data }) {
           </Col>
         </Row>
       </Form>
-
-
-
 
     </div>
   );
