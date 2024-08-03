@@ -177,7 +177,7 @@ const Home = () => {
           >
             {leagues.map((league) => (
               <Option key={league.League_ID} value={league.League_ID}>
-                {`${league.Age} - ${league.League_Type} - ${league.League_ID}`}
+                {`${league.Age} - ${league.League_Type}`}
               </Option>
             ))}
           </Select>
