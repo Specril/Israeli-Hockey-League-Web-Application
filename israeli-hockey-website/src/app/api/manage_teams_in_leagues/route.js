@@ -3,16 +3,14 @@ import { getConnection } from "@/app/lib/db";
 import sql from 'mssql';
 
 export async function POST(req, res) {
-    const {User_ID, Team_ID, Position, Shirt_Number} = await req.json();
+    const {Team_ID, League_ID} = await req.json();
     try {
         const pool = await getConnection();
-        // insert the player to PlayersInTeams table
         await pool.request()
-            .input('User_ID',sql.Int, User_ID)
-            .input('Team_ID', sql.Int, Team_ID)
-            .input('Position', sql.NVarChar, Position)
-            .input('Shirt_Number', sql.Int, Shirt_Number)
-            .query('INSERT INTO PlayersInTeams (User_ID, Team_ID, Position, Shirt_Number) VALUES (@User_ID, @Team_ID, @Position, @Shirt_Number)')
+            .input('Team_ID',sql.Int, Team_ID)
+            .input('League_ID',sql.Int, League_ID)
+            .query('INSERT INTO TeamsInLeagues (Team_ID, League_ID) VALUES (@Team_ID, @League_ID)')
+        
         return NextResponse.json({ success: true});
 
     } catch (error) {
@@ -22,13 +20,13 @@ export async function POST(req, res) {
 }
 
 export async function DELETE(req, res) {
-    const { User_ID , Team_ID } = await req.json();
+    const {Team_ID, League_ID} = await req.json();
     try {
         const pool = await getConnection();
         await pool.request()
-            .input('User_ID', sql.Int, User_ID)
-            .input('Team_ID', sql.Int, Team_ID)
-            .query('DELETE FROM PlayersInTeams WHERE User_ID = @User_ID and Team_ID = @Team_ID;');
+            .input('Team_ID',sql.Int, Team_ID)
+            .input('League_ID',sql.Int, League_ID)
+            .query('DELETE FROM TeamsInLeagues WHERE Team_ID = @Team_ID and League_ID = @League_ID;')
         return NextResponse.json({ success: true });
 
     } catch (error) {

@@ -53,3 +53,21 @@ export async function POST(req, res) {
       return NextResponse.json({ success: false});
     }
 }
+
+
+export async function DELETE(req, res) {
+    const { game_ids } = await req.json();
+    try {
+        const pool = await getConnection();
+        for (const Game_ID of game_ids){
+            await pool.request()
+            .input('Game_ID', sql.Int, Game_ID)
+            .query('DELETE FROM Games WHERE Game_ID = @Game_ID');
+        }
+        return NextResponse.json({ success: true });
+
+    } catch (error) {
+        console.error('Database operation failed: ', error);
+        return NextResponse.json({ success: false });
+    }
+}
