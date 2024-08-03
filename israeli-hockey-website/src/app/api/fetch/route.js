@@ -11,7 +11,6 @@ export async function POST(req, res) {
     const result = await pool.request()
         .query(query);
 
-    console.log(result.recordset)
     return NextResponse.json(result.recordset);
 
   } catch (error) {
