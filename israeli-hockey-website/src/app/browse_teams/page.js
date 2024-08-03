@@ -2,7 +2,7 @@
 
 import "../style.css";
 import { useEffect, useState } from "react";
-import { Select } from "antd";
+import { Select, Spin } from "antd";
 import TeamOverview from "./TeamOverview";
 
 const { Option } = Select;
@@ -40,6 +40,7 @@ SELECT
     Age,
     League_Type
 FROM League
+WHERE League_ID = 1 OR League_ID = 4
 `;
 
 const query_team_statistics = `
@@ -136,7 +137,7 @@ async function fetchData(query) {
     return data;
   } catch (error) {
     console.error("Error fetching data:", error);
-    return [];
+    return null; // Return null to indicate an error
   }
 }
 
@@ -147,13 +148,18 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [leagues, setLeagues] = useState([]);
   const [selectedLeague, setSelectedLeague] = useState(1);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchLeaguesAsync = async () => {
       const leaguesData = await fetchData(query_leagues);
-      setLeagues(leaguesData);
-      if (leaguesData.length > 0) {
-        setSelectedLeague(leaguesData[0].League_ID);
+      if (leaguesData) {
+        setLeagues(leaguesData);
+        if (leaguesData.length > 0) {
+          setSelectedLeague(leaguesData[0].League_ID);
+        }
+      } else {
+        setError("Failed to load leagues data");
       }
     };
 
@@ -166,9 +172,14 @@ const Home = () => {
       const players = await fetchData(query_team_players);
       const statistics = await fetchData(query_team_statistics);
 
-      setDataTeamDetails(details);
-      setDataTeamPlayers(players);
-      setDataTeamStatistics(statistics);
+      if (details && players && statistics) {
+        setDataTeamDetails(details);
+        setDataTeamPlayers(players);
+        setDataTeamStatistics(statistics);
+        setError(null); // Clear any previous error
+      } else {
+        setError("Failed to load team data");
+      }
       setLoading(false);
     };
 
@@ -180,22 +191,29 @@ const Home = () => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Spin tip="Loading..." />;
   }
 
-  console.log('Selected Team Statistics:', JSON.stringify(dataTeamStatistics));
+  if (error) {
+    return <Alert message="Error" description={error} type="error" showIcon />;
+  }
 
   return (
     <>
       <Select
-        style={{ width: 200, alignContent: "center", margin: 20, alignSelf: "center" }}
+        style={{
+          width: 200,
+          alignContent: "center",
+          margin: 20,
+          alignSelf: "center",
+        }}
         placeholder="Select a league"
         onChange={handleLeagueChange}
         value={selectedLeague}
       >
         {leagues.map((league) => (
           <Option key={league.League_ID} value={league.League_ID}>
-            {`${league.Age} - ${league.League_Type}`}
+            {`${league.Age}`}
           </Option>
         ))}
       </Select>
