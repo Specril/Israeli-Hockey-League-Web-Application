@@ -1,5 +1,4 @@
 
-
 import React from 'react';
 import FormComponent from './FormComponent';
 import 'antd/dist/reset.css'; // Import Ant Design CSS reset
@@ -24,7 +23,14 @@ LEFT JOIN Users on Second_Referee_ID = user_ID
 ;`
 
 
-const queryPlayers = `SELECT PlayersInTeams.user_id, Full_Name, Team_ID FROM users inner join PlayersInTeams on PlayersInTeams.user_ID=users.user_ID;`
+const queryGoals = `SELECT Goal_ID, Game_ID, Users.User_ID, Full_Name, Teams.Team_ID, Team_Name, Time_Stamp from Goals INNER JOIN Users On Users.User_ID=Goals.User_ID
+INNER join Teams on Teams.Team_ID=Goals.Team_ID;`
+
+const queryPenalties = `SELECT Penalty_ID, Game_ID, Users.User_ID, Full_Name, Teams.Team_ID, Team_Name, Time_Stamp from Penalties INNER JOIN Users On Users.User_ID=Penalties.User_ID
+INNER join Teams on Teams.Team_ID=Penalties.Team_ID;`
+
+const queryCards = `SELECT Card_ID, Game_ID, Users.User_ID, Full_Name, Teams.Team_ID, Team_Name, Time_Stamp, Card_Type from Cards INNER JOIN Users On Users.User_ID=Cards.User_ID
+INNER join Teams on Teams.Team_ID=Cards.Team_ID;`
 
 async function dataFetchGames() {
   let teamsData = [];
@@ -38,24 +44,52 @@ async function dataFetchGames() {
 }
 
 
-async function dataFetchPlayers() {
-  let playersData = [];
+async function dataFetchGoals() {
+  let goalsData = [];
   try {
-    playersData = await fetchRows(() => queryPlayers);
+    goalsData = await fetchRows(() => queryGoals);
   } catch (error) {
     console.error("Error fetching Games:", error);
   }
 
   // console.log(playersData)
-  return playersData
+  return goalsData
 }
+
+
+async function dataFetchPenalties() {
+    let goalsData = [];
+    try {
+      goalsData = await fetchRows(() => queryPenalties);
+    } catch (error) {
+      console.error("Error fetching Games:", error);
+    }
+  
+    // console.log(playersData)
+    return goalsData
+  }
+
+  async function dataFetchCards() {
+    let goalsData = [];
+    try {
+      goalsData = await fetchRows(() => queryCards);
+    } catch (error) {
+      console.error("Error fetching Games:", error);
+    }
+  
+    // console.log(goalsData)
+    return goalsData
+  }
 
 
 export default async function Page() {
 
   const games = await dataFetchGames();
-  const players = await dataFetchPlayers()
-  const combined_data = [games, players]
+  const goalsData = await dataFetchGoals()
+  const penaltiesData= await dataFetchPenalties();
+  const cardsData = await dataFetchCards();
+
+  const combined_data = [games, goalsData, penaltiesData, cardsData]
   // console.log(combined_data);
 
 

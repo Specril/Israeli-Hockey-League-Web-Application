@@ -14,13 +14,15 @@ export default function FormComponent({ data }) {
     Full_Name: '',
     Phone: '',
     Email: '',
+    Residence: ''
   };
 
   const fieldLabels = {
-    Date_of_Birth: 'תאריך',
+    Date_of_Birth: 'תאריך לידה',
     Full_Name: 'שם מלא',
     Phone: 'טלפון',
     Email: 'מייל',
+    Residence: 'כתובת'
   };
 
   const [formData, setFormData] = useState(initialFormState);
@@ -68,31 +70,27 @@ export default function FormComponent({ data }) {
     }));
   };
 
-  const handleSubmit = () => {
-    alert('Form Data JSON: ' + JSON.stringify(formData));
-    console.log('Form Data JSON:', JSON.stringify(formData));
-    setFormData(initialFormState);
-  };
 
-   // const handleSubmit = async () => {
-  //   // setFormData({...formData, User_ID: data[0]['User_ID']})
-  //   const final_data = {...formData, User_ID: data[0]['User_ID']}
 
-  //   alert('Form Data JSON: ' + JSON.stringify(final_data));
-  //   // onFinish(formData);
-  //   try {
-  //     const response = await fetch('/api/form_personal_details', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify(final_data),
-  //     })
-  //   } catch (error) {
-  //     console.alert('Error updating data');
-  //   }
+   const handleSubmit = async () => {
+    // setFormData({...formData, User_ID: data[0]['User_ID']})
+    const final_data = {...formData, User_ID: data[0]['User_ID']}
+
+    alert('Form Data JSON: ' + JSON.stringify(final_data));
+    // onFinish(formData);
+    try {
+      const response = await fetch('/api/form_personal_details', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(final_data),
+      })
+    } catch (error) {
+      console.alert('Error updating data');
+    }
     
-  // };
+  };
 
 
   const handleClearAll = () => {
@@ -114,7 +112,7 @@ export default function FormComponent({ data }) {
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-      <Title level={3}>טופס פרטים אישיים בדיקה</Title>
+      <Title level={3}>טופס פרטים אישיים </Title>
       <Form
         form={form}
         layout="vertical"
@@ -123,7 +121,7 @@ export default function FormComponent({ data }) {
         onFinish={handleSubmit}
       >
         <Row gutter={16}>
-          <Col span={12}>
+          <Col span={16}>
             <Form.Item
               label={fieldLabels['Full_Name']}
               name="Full_Name"
@@ -142,7 +140,7 @@ export default function FormComponent({ data }) {
             </Form.Item>
           </Col>
 
-          <Col span={12}>
+          <Col span={16}>
             <Form.Item
               label={fieldLabels['Phone']}
               name="Phone"
@@ -161,7 +159,7 @@ export default function FormComponent({ data }) {
             </Form.Item>
           </Col>
 
-          <Col span={12}>
+          <Col span={16}>
             <Form.Item
               label={fieldLabels['Email']}
               name="Email"
@@ -180,7 +178,21 @@ export default function FormComponent({ data }) {
             </Form.Item>
           </Col>
 
-          <Col span={12}>
+          <Col span={16}>
+            <Form.Item
+              label={fieldLabels['Residence']}
+              name="Residence"
+             
+            >
+              <Input
+                name="Residence"
+                value={formData['Residence']}
+                onChange={(e) => handleChange({ Residence: e.target.value })}
+              />
+            </Form.Item>
+          </Col>
+
+          <Col span={16}>
             <Form.Item
               label={fieldLabels['Date_of_Birth']}
               name="Date_of_Birth"
@@ -198,16 +210,16 @@ export default function FormComponent({ data }) {
               />
             </Form.Item>
           </Col>
-          <Col span={24}>
+          <Col span={16}>
           </Col>
         </Row>
         <Row gutter={16}>
-          <Col span={12}>
+          <Col span={8}>
             <Button type="primary" htmlType="submit" block>
               Send
             </Button>
           </Col>
-          <Col span={12}>
+          <Col span={8}>
             <Button type="default" onClick={handleClearAll} block>
               Clear All
             </Button>
