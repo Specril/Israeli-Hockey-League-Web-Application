@@ -180,6 +180,7 @@ nav {
 .close-btn:hover {
   color: #888;
 }
+
 /* Other existing styles */
 
 table {
@@ -314,7 +315,6 @@ footer {
 .ant-card-head {
   padding: 0 !important;
 }
-
 
 /* Ensure the table header is styled with blue background and white text */
 .ant-table-thead > tr > th {
