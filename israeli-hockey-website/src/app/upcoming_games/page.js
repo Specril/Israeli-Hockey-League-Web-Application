@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import "../style.css";
 import DropdownComponent from "./DropdownComponent";
 import Table from "../Table";
+import ProtectedPage from "../ProtectedPage/ProtectedPage";
 
 // Define the queries
 const query_age = "SELECT DISTINCT Age FROM League;";
@@ -83,7 +84,7 @@ export default function Home() {
       <DropdownComponent options={options} data={dataUpcoming} />
     </>
     }
-    allowed_user_types={["admin"]}
+    allowed_user_types={["player"]}
      />
   );
 }

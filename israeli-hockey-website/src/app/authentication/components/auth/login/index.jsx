@@ -22,6 +22,15 @@ const Login = () => {
   const [photoUrlUpdated, setPhotoUrlUpdated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  const isValidJSON = (str) => {
+    try {
+      JSON.parse(str);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  };
+
   useEffect(() => {
     const fetchUserType = async () => {
       setIsLoading(true);
@@ -29,19 +38,40 @@ const Login = () => {
         console.log(currentUser);
         try {
           let userID = '';
-          if (!currentUser.phoneNumber) {
+          const userType = await getUserType(userID);
+          if (currentUser.photoURL && isValidJSON(JSON.parse(currentUser.photoURL))) {
+            const allData = JSON.parse(currentUser.photoURL);
+            if (allData.userID) {
+              userID = allData.userID;
+            } else {
+              const id = await getUserID(currentUser.uid);
+              userID = id.User_ID;
+              allData.userID = userID;
+              await updateProfile(auth.currentUser, {
+                photoURL: JSON.stringify(allData),
+              });
+            }
+          } else {
             const id = await getUserID(currentUser.uid);
             userID = id.User_ID;
+            const allData = {
+              userID: userID,
+              userType: userType.result
+            };
+            await updateProfile(auth.currentUser, {
+              photoURL: JSON.stringify(allData),
+            });
           }
-          else {
-            userID = currentUser.phoneNumber;
-          }
+
           console.log("userID:", userID);
-          const userType = await getUserType(userID);
-          console.log("userType:", userType);
+
+          const all_data = {
+            'userType': userType.result,
+            'userID': userID
+          };
+          console.log("userType111:", userType.result);
           await updateProfile(auth.currentUser, {
-            photoURL: JSON.stringify(userType),
-            phoneNumber: parseInt(userID),
+            photoURL: JSON.stringify(all_data),
           });
           await auth.currentUser.reload();
           setPhotoUrlUpdated(true);

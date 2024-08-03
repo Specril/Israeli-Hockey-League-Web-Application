@@ -1,9 +1,8 @@
 "use client";
 
 import "./style.css";
-import { useState } from "react";
-import { toggleLoginForm } from "./Login";
-import { Menu, Dropdown, Button } from 'antd';
+import { Menu, Dropdown } from 'antd';
+import { DownOutlined } from '@ant-design/icons';
 
 export default function NavBar() {
   const gamesMenu = (
@@ -48,7 +47,7 @@ export default function NavBar() {
 
   return (
     <nav>
-      <ul>
+      <ul className="nav-menu">
         <li>
           <a href="/">ראשי</a>
         </li>
@@ -66,12 +65,16 @@ export default function NavBar() {
         </li>
         <li>
           <Dropdown overlay={gamesMenu}>
-            <a href="#">ניהול משחקים</a>
+            <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
+              ניהול משחקים <DownOutlined />
+            </a>
           </Dropdown>
         </li>
         <li>
           <Dropdown overlay={teamsMenu}>
-            <a href="#">ניהול קבוצות</a>
+            <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
+              ניהול קבוצות <DownOutlined />
+            </a>
           </Dropdown>
         </li>
         <li>
@@ -81,7 +84,7 @@ export default function NavBar() {
           <a href="form_personal_details">עדכון פרטים אישיים</a>
         </li>
         <li>
-          <a href="authentication">התחברות</a>
+          <a href="authentication" className="login-button">התחברות</a>
         </li>
       </ul>
     </nav>

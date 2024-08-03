@@ -17,23 +17,27 @@ const ProtectedPage = ({ content, allowed_user_types = [] }) => {
     const fetchUserType = async () => {
       if (currentUser) {
         const data = JSON.parse(currentUser.photoURL);
-        setUserType(data);
+        setUserType(data['userType']);
 
         // Ensure allowed_user_types always includes "admin"
         const extendedAllowedUserTypes = [...new Set([...allowed_user_types, 'admin'])];
 
         // Check if any allowed type is present in the user type object
-        if (Array.isArray(extendedAllowedUserTypes) && extendedAllowedUserTypes.some(type => data[type] === 1)) {
+        console.log("userType: ", data['userType']);
+        console.log("allowed_user_types: ", extendedAllowedUserTypes);
+        if (Array.isArray(extendedAllowedUserTypes) && extendedAllowedUserTypes.some(type => data['userType'][type] === 1)) {
           setIsAllowed(true);
         } else {
           setIsAllowed(false);
         }
+        console.log("isAllowed: ", isAllowed);
       } else {
         setIsAllowed(!needToBeLoggedIn);
       }
     };
 
     fetchUserType();
+    console.log("user: ", currentUser);
   }, [currentUser, allowed_user_types, needToBeLoggedIn]);
 
   return (

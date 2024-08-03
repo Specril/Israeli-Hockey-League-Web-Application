@@ -5,8 +5,10 @@ import { Navigate, Link, useNavigate } from 'react-router-dom';
 import { Button, Form, Input, Typography, Alert, Layout, Row, Col } from 'antd';
 import { useAuth } from '../../../contexts/authContext';
 import { doCreateUserWithEmailAndPassword } from '../../../firebase/auth';
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../../../firebase/firebase";
+import { onAuthStateChanged, updateProfile, getAuth } from "firebase/auth";
+import { getUserID } from '../login/GetUserData.js';
+
+const auth = getAuth();
 
 const { Title, Text } = Typography;
 const { Content } = Layout;
@@ -57,6 +59,12 @@ const Register = () => {
       try {
         const user = await doCreateUserWithEmailAndPassword(email, name, password, type);
         await addUserToDB(user);
+        const id = await getUserID(user.uid);
+        const userID = id.User_ID;
+        await updateProfile(auth.currentUser, {
+          photoURL: JSON.stringify({ userType: { coach: 0, referee: 0, admin: 0, player: 0, fan: 0 }, userID: userID }),
+        });
+        await auth.currentUser.reload();
         const unsubscribe = onAuthStateChanged(auth, (updatedUser) => {
           if (updatedUser && updatedUser.displayName === name) {
             setCurrentUser(updatedUser);

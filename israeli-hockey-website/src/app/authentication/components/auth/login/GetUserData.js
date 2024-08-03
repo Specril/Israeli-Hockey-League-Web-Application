@@ -15,6 +15,7 @@ const getUserType = async (userID) => {
     }
 
     const data = await response.json();
+    console.log('User type:', data);
     return data; // Return the parsed data
   } catch (error) {
     console.error('Error updating data', error);

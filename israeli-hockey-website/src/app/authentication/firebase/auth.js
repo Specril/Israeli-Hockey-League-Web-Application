@@ -10,14 +10,14 @@ import {
   updateProfile
 } from "firebase/auth";
 
-export const doCreateUserWithEmailAndPassword = async (email, name, password, userID) => {
+export const doCreateUserWithEmailAndPassword = async (email, name, password) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
     console.log("User created:", user);
 
     // Update the user profile with the display name
-    await updateProfile(user, { displayName: name, photoURL: JSON.stringify({ 'coach': 0, 'referee': 0, 'admin': 0, 'player': 0, 'fan': 0 }) });
+    await updateProfile(user, { displayName: name, photoURL: JSON.stringify({userType: {'coach': 0, 'referee': 0, 'admin': 0, 'player': 0, 'fan': 0}, userID: -1 }) });
     // Reload the user to ensure the displayName is updated
     await user.reload();
 
