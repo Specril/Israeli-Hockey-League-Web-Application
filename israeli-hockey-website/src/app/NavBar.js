@@ -15,7 +15,7 @@ export default function NavBar() {
           <a href="upcoming_games">משחקים קרובים</a>
         </li>
         <li>
-          <a href="goal_king">מלך השערים</a>
+          <a href="goal_king">מלכים</a>
         </li>
         <li>
           <a href="league_information">מידע על הליגה</a>
