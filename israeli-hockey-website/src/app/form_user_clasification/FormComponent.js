@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Typography, Row, Col, Select, Checkbox, Descriptions, Input } from 'antd';
+import { Form, Button, Typography, Row, Col, Select, Checkbox, Descriptions, Input, message } from 'antd';
 import 'antd/dist/reset.css';
 import "../style.css";
 
@@ -101,6 +101,11 @@ export default function FormComponent({ data }) {
   };
 
   const handleSubmit = async () => {
+    if (formData.Clasification.length === 0) {
+      message.error('Please pick at least one classification');
+      return;
+    }
+
     // Prepare role data
     const roleData = clasificationOptions.reduce((acc, role) => {
       acc[roleKeys[role.key]] = formData.Clasification.includes(role.key) ? 1 : 0;
@@ -127,10 +132,10 @@ export default function FormComponent({ data }) {
         throw new Error('Network response was not ok');
       }
       
-      alert('Form submitted successfully');
+      message.success('Form submitted successfully');
     } catch (error) {
       console.error('Error submitting form:', error);
-      alert('Error updating data');
+      message.error('Error updating data');
     }
   };
   
