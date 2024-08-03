@@ -32,6 +32,6 @@ async function fetchData() {
 export default async function Page() {
   const initialPhotos = await fetchData();
   return <ProtectedPage content={<UploadPhotosClient initialPhotos={initialPhotos} />}
-    allowed_user_types={[]}
+    allowed_user_types={["admin"]}
   />;
 }

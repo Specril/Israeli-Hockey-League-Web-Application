@@ -60,7 +60,7 @@ export default function Page() {
     <ProtectedPage content={
       <FormComponent data={data} />
     }
-      allowed_user_types={["admin"]}
+      allowed_user_types={[]}
     />
   );
 }

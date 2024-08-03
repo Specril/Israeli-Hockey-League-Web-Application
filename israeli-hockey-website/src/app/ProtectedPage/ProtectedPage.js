@@ -25,12 +25,18 @@ const ProtectedPage = ({ content, allowed_user_types = [] }) => {
         // Check if any allowed type is present in the user type object
         console.log("userType: ", data['userType']);
         console.log("allowed_user_types: ", extendedAllowedUserTypes);
-        if (Array.isArray(extendedAllowedUserTypes) && extendedAllowedUserTypes.some(type => data['userType'][type] === 1)) {
-          setIsAllowed(true);
-        } else {
+        if (!data['userType']) {
+          setUserType({});
           setIsAllowed(false);
+        } else {
+          if (Array.isArray(extendedAllowedUserTypes) && extendedAllowedUserTypes.some(type => data['userType'][type] === 1)) {
+            console.log("User is allowed to access this page????????????????????.");
+            setIsAllowed(true);
+          } else {
+            setIsAllowed(false);
+          }
+          console.log("isAllowed: ", isAllowed);
         }
-        console.log("isAllowed: ", isAllowed);
       } else {
         setIsAllowed(!needToBeLoggedIn);
       }

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Navigate, Link } from 'react-router-dom';
+import { Navigate, Link, useNavigate } from 'react-router-dom';
 import { Button, Form, Input, Typography, Divider, Alert, Layout, Row, Col } from 'antd';
 import { GoogleOutlined } from '@ant-design/icons';
 import { doSignInWithEmailAndPassword, doSignInWithGoogle } from '../../../firebase/auth';
@@ -14,6 +14,7 @@ const { Title, Text } = Typography;
 const { Content } = Layout;
 
 const Login = () => {
+  const navigate = useNavigate();
   const { userLoggedIn, currentUser } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -103,14 +104,28 @@ const Login = () => {
     }
   };
 
-  const onGoogleSignIn = (e) => {
+  const onGoogleSignIn = async (e) => {
     setErrorMessage('');
+    console.log('Google sign in!');
     if (!isSigningIn) {
       setIsSigningIn(true);
-      doSignInWithGoogle().catch(err => {
+      try {
+        const user = await doSignInWithGoogle();
+        console.log('zivpo:', user);
+        if (user.operationType === "") {
+          await addUserToDB(user);
+          const id = await getUserID(user.uid);
+          const userID = id.User_ID;
+          await updateProfile(auth.currentUser, {
+            photoURL: JSON.stringify({ userType: { coach: 0, referee: 0, admin: 0, player: 0, fan: 0 }, userID: userID }),
+          });
+          await auth.currentUser.reload();
+        }
+        console.log('User added to the database:', data);
+      } catch (error) {
         setErrorMessage('אירעה שגיאה במהלך התחברות עם גוגל.');
         setIsSigningIn(false);
-      });
+      }
     }
   };
 
@@ -166,10 +181,10 @@ const Login = () => {
               <div className="text-center">
                 <Text>אין לך חשבון? <Link to="/register">הירשם</Link></Text>
               </div>
-              <Divider>או</Divider>
+              {/* <Divider>או</Divider>
               <Button icon={<GoogleOutlined />} onClick={onGoogleSignIn} loading={isSigningIn} block>
                 {isSigningIn ? 'מתחבר...' : 'התחבר עם גוגל'}
-              </Button>
+              </Button> */}
             </div>
           </Col>
         </Row>

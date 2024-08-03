@@ -45,6 +45,20 @@ export default function NavBar() {
     </Menu>
   );
 
+  const administartionMenu = (
+    <Menu>
+      <Menu.Item key="1">
+        <a href="uploadPhotos">העלאת תמונה</a>
+      </Menu.Item>
+      <Menu.Item key="2">
+        <a href="form_user_clasification">סיווג משתמש</a>
+      </Menu.Item>
+      <Menu.Item key="3">
+        <a href="browse_users">סקירת משתמשים</a>
+      </Menu.Item>
+    </Menu>
+  );
+
   return (
     <nav>
       <ul className="nav-menu">
@@ -61,9 +75,6 @@ export default function NavBar() {
           <a href="league_information">מידע על הליגה</a>
         </li>
         <li>
-          <a href="browse_teams">סקירת קבוצות</a>
-        </li>
-        <li>
           <Dropdown overlay={gamesMenu}>
             <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
               ניהול משחקים <DownOutlined />
@@ -78,7 +89,11 @@ export default function NavBar() {
           </Dropdown>
         </li>
         <li>
-          <a href="form_user_clasification">סיווג יוזר</a>
+          <Dropdown overlay={administartionMenu}>
+            <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
+              ניהול כללי <DownOutlined />
+            </a>
+          </Dropdown>
         </li>
         <li>
           <a href="form_personal_details">עדכון פרטים אישיים</a>

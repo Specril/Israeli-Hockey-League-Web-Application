@@ -153,7 +153,7 @@ export default function FormComponent({ data }) {
         .map(clas => clasificationOptions.find(option => option.key === clas))
         .filter(option => option)
         .map(option => ({ label: option.value, value: option.key }));
-      
+
       setUserClasifications(userClasificationsWithLabels);
     } else {
       setUserTables([]);
@@ -221,23 +221,23 @@ export default function FormComponent({ data }) {
       message.error('בחר משתמש');
       return;
     }
-  
+
     if (selectedClasificationsToDelete.length === 0) {
       message.error('בחר סיווג אחד לפחות');
       return;
     }
-  
+
     // Construct the role data based on selected classifications to delete
     const roleData = clasificationOptions.reduce((acc, role) => {
       acc[roleKeys[role.key]] = selectedClasificationsToDelete.includes(role.key) ? 1 : 0;
       return acc;
     }, {});
-  
+
     const finalData = {
       User_ID: formData.User_ID,
       ...roleData
     };
-  
+
     try {
       const response = await fetch('/api/manage_users_types', {
         method: 'DELETE',
@@ -250,7 +250,7 @@ export default function FormComponent({ data }) {
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-  
+
       message.success('Classifications deleted successfully');
       handleClearAll(); // Clear form after successful deletion
     } catch (error) {
