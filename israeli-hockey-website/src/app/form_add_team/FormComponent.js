@@ -4,36 +4,32 @@ import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Typography, Row, Col, Select, InputNumber } from 'antd';
 import 'antd/dist/reset.css';
 import "../style.css";
+import { dataFetchLeagues, dataFetchLocations } from './fetching';
 
 const { Title } = Typography;
 const { Option } = Select;
 
-export default function FormComponent({ data }) {
+export default function FormComponent() {
   const initialFormState = {
     Team_Name: '',
     Age: '',
     Location_ID: '',
-    Rank: null,
     New_Location: '', // For new location name
   };
 
   const fieldLabels = {
     Team_Name: 'שם קבוצה',
-    Age: 'ליגה-גיל',
+    Age: 'גיל',
     Location_ID: 'מיקום',
-    Rank: 'דירוג',
     New_Location: 'מיקום חדש', // Label for new location
   };
-
-  const AgeOptions = data[0];
-  const LocationsOptions = data[1];
-  console.log("inside form component");
-  console.log(LocationsOptions);
 
   const [formData, setFormData] = useState(initialFormState);
   const [isClient, setIsClient] = useState(false);
   const [form] = Form.useForm();
-  const [isOtherLocation, setIsOtherLocation] = useState(false); // State for other location
+  const [isOtherLocation, setIsOtherLocation] = useState(false); 
+  const [ageOptions, setAgeOptions] = useState([]);
+  const [locationOptions, setLocationOptions] = useState([]);
 
   useEffect(() => {
     setIsClient(true);
@@ -49,17 +45,20 @@ export default function FormComponent({ data }) {
     }
   }, [formData, isClient]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const fetchedLeagues = await dataFetchLeagues();
+      const fetchedLocations = await dataFetchLocations();
+      setAgeOptions(fetchedLeagues.map(obj => obj.Age));
+      setLocationOptions(fetchedLocations);
+    };
+    fetchData();
+  }, []); 
+
   const handleChange = (changedValues) => {
     setFormData((prevData) => ({
       ...prevData,
       ...changedValues,
-    }));
-  };
-
-  const handleDateChange = (date, dateString) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      Date_of_Birth: date ? dateString : null,
     }));
   };
 
@@ -85,7 +84,7 @@ export default function FormComponent({ data }) {
     alert('Form Data JSON: ' + JSON.stringify(final_data));
 
     try {
-      const response = await fetch('/api/form_add_team', {
+      const response = await fetch('/api/form_manage_team', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -93,7 +92,7 @@ export default function FormComponent({ data }) {
         body: JSON.stringify(final_data),
       });
     } catch (error) {
-      console.alert('Error updating data');
+      console.error('Error updating data');
     }
   };
 
@@ -125,16 +124,11 @@ export default function FormComponent({ data }) {
         onFinish={handleSubmit}
       >
         <Row gutter={16}>
-          <Col span={12}>
+          <Col span={24}>
             <Form.Item
               label={fieldLabels['Team_Name']}
               name="Team_Name"
-              rules={[
-                {
-                  required: true,
-                  message: `${fieldLabels['Team_Name']} is required`,
-                },
-              ]}
+              rules={[{ required: true, message: `${fieldLabels['Team_Name']} is required` }]}
             >
               <Input
                 name="Team_Name"
@@ -144,22 +138,17 @@ export default function FormComponent({ data }) {
             </Form.Item>
           </Col>
 
-          <Col span={12}>
+          <Col span={24}>
             <Form.Item
               label={fieldLabels['Age']}
               name="Age"
-              rules={[
-                {
-                  required: true,
-                  message: `${fieldLabels['Age']} is required`,
-                },
-              ]}
+              rules={[{ required: true, message: `${fieldLabels['Age']} is required` }]}
             >
               <Select
                 value={formData['Age']}
                 onChange={(value) => handleSelectChange(value, 'Age')}
               >
-                {AgeOptions.map((option) => (
+                {ageOptions.map((option) => (
                   <Option key={option} value={option}>
                     {option}
                   </Option>
@@ -168,48 +157,38 @@ export default function FormComponent({ data }) {
             </Form.Item>
           </Col>
 
-          <Col span={12}>
+          <Col span={24}>
             <Form.Item
               label={fieldLabels['Location_ID']}
               name="Location_ID"
-              rules={[
-                {
-                  required: true,
-                  message: `${fieldLabels['Location_ID']} is required`,
-                },
-              ]}
+              rules={[{ required: true, message: `${fieldLabels['Location_ID']} is required` }]}
             >
               <Select
                 showSearch
                 value={formData['Location_ID']}
                 onChange={(value) => handleSelectChange(value, 'Location_ID')}
                 filterOption={(input, option) =>
-                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  option.children.toLowerCase().includes(input.toLowerCase())
                 }
               >
-                {LocationsOptions.map((option) => (
+                {locationOptions.map((option) => (
                   <Option key={option.key} value={option.key}>
                     {option.value}
                   </Option>
                 ))}
                 <Option key="other" value="other">
-                  Other
+                  אחר
                 </Option>
               </Select>
             </Form.Item>
           </Col>
 
           {isOtherLocation && (
-            <Col span={12}>
+            <Col span={24}>
               <Form.Item
                 label={fieldLabels['New_Location']}
                 name="New_Location"
-                rules={[
-                  {
-                    required: true,
-                    message: `${fieldLabels['New_Location']} is required`,
-                  },
-                ]}
+                rules={[{ required: true, message: `${fieldLabels['New_Location']} is required` }]}
               >
                 <Input
                   name="New_Location"
@@ -220,36 +199,7 @@ export default function FormComponent({ data }) {
             </Col>
           )}
 
-          <Col span={12}>
-            <Form.Item
-              label={fieldLabels['Rank']}
-              name="Rank"
-              rules={[
-                {
-                  type: 'number',
-                  message: `${fieldLabels['Rank']} must be a number`,
-                },
-                {
-                  validator: (_, value) => {
-                    if (value === null || (Number.isInteger(value) && value >= 0)) {
-                      return Promise.resolve();
-                    }
-                    return Promise.reject(`${fieldLabels['Rank']} must be a non-negative integer`);
-                  },
-                },
-              ]}
-            >
-              <InputNumber
-                style={{ width: '100%' }}
-                min={0}
-                precision={0}
-                value={formData['Rank']}
-                onChange={(value) => handleChange({ Rank: value })}
-              />
-            </Form.Item>
-          </Col>
-
-          <Col span={12}></Col>
+          <Col span={24}></Col>
         </Row>
         <Row gutter={16}>
           <Col span={12}>
