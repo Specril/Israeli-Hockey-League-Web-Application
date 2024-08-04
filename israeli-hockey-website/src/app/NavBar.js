@@ -72,6 +72,9 @@ export default function NavBar() {
           <a href="goal_king">מלכים</a>
         </li>
         <li>
+          <a href="browse_teams">סקירת קבוצות</a>
+        </li>
+        <li>
           <a href="league_information">מידע על הליגה</a>
         </li>
         <li>
