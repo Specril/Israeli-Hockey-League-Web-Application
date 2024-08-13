@@ -104,6 +104,7 @@ export default function FormComponent() {
   const handleClearAll = () => {
     form.resetFields();
     setFormData(initialFormState);
+    setSelectedLeague(null)
     if (isClient) {
       localStorage.removeItem('formDeleteTeam');
     }

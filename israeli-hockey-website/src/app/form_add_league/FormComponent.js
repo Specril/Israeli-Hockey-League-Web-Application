@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Typography, Row, Col, Select, InputNumber } from 'antd';
 import 'antd/dist/reset.css';
 import "../style.css";
-import { dataFetchLeagues } from './fetching';
+
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -17,14 +17,13 @@ export default function FormComponent() {
 
   const fieldLabels = {
     Age: 'גיל',
-    League_Type: 'סוג ליגה',
+    League_Type: 'שם הליגה',
 
   };
 
   const [formData, setFormData] = useState(initialFormState);
   const [isClient, setIsClient] = useState(false);
   const [form] = Form.useForm();
-  const [ageOptions, setAgeOptions] = useState([]);
 
   useEffect(() => {
     setIsClient(true);
@@ -40,13 +39,7 @@ export default function FormComponent() {
     }
   }, [formData, isClient]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const fetchedLeagues = await dataFetchLeagues();
-      setAgeOptions(fetchedLeagues.map(obj => obj.Age));
-    };
-    fetchData();
-  }, []);
+
 
   const handleChange = (changedValues) => {
     setFormData((prevData) => ({
@@ -55,13 +48,6 @@ export default function FormComponent() {
     }));
   };
 
-  const handleSelectChange = (value, field) => {
-      setFormData((prevData) => ({
-        ...prevData,
-        [field]: value,
-
-      }));
-  };
 
   const handleSubmit = async () => {
     const final_data = {
@@ -113,25 +99,6 @@ export default function FormComponent() {
         onFinish={handleSubmit}
       >
         <Row gutter={16}>
-          <Col span={24}>
-
-            <Form.Item
-              label={fieldLabels['Age']}
-              name="Age"
-              rules={[{ required: true, message: `${fieldLabels['Age']} is required` }]}
-            >
-              <Select
-                value={formData['Age']}
-                onChange={(value) => handleSelectChange(value, 'Age')}
-              >
-                {ageOptions.map((option) => (
-                  <Option key={option} value={option}>
-                    {option}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
-          </Col>
 
           <Col span={24}>
             <Form.Item
@@ -139,28 +106,29 @@ export default function FormComponent() {
               name="League_Type"
               rules={[{ required: true, message: `${fieldLabels['League_Type']} is required` }]}
             >
-              <Select
-                showSearch
+              <Input
+                name="League_Type"
                 value={formData['League_Type']}
-                onChange={(value) => handleSelectChange(value, 'League_Type')}
-                filterOption={(input, option) =>
-                  option.children.toLowerCase().includes(input.toLowerCase())
-                }
-              >
-                {LeagueTypeOptions.map((option) => (
-                  <Option key={option.key} value={option.key}>
-                    {option.value}
-                  </Option>
-                ))}
-                <Option key="other" value="other">
-                  אחר
-                </Option>
-              </Select>
+                onChange={(e) => handleChange({ League_Type: e.target.value })}
+              />
             </Form.Item>
           </Col>
 
-
           <Col span={24}></Col>
+          <Col span={24}>
+
+            <Form.Item
+              label={fieldLabels['Age']}
+              name="Age"
+              rules={[{ required: true, message: `${fieldLabels['Age']} is required` }]}
+            >
+              <Input
+                name="Age"
+                value={formData['Age']}
+                onChange={(e) => handleChange({ Age: e.target.value })}
+              />
+            </Form.Item>
+          </Col>
         </Row>
         <Row gutter={16}>
           <Col span={12}>
