@@ -28,6 +28,7 @@ export default function FormComponent({ data }) {
   const [form] = Form.useForm();
   const [teamsOptions, setTeamsOptions] = useState([]);
   const [League_ID_options, setLeagueOptions] = useState([]);
+  const [selectedLeague, setSelectedLeague] = useState(null);
 
 
 
@@ -70,6 +71,9 @@ export default function FormComponent({ data }) {
       ...prevData,
       [field]: value,
     }));
+    if (field === 'League_ID'){
+      setSelectedLeague(value)
+    }
 
   };
 
@@ -92,6 +96,11 @@ export default function FormComponent({ data }) {
     } catch (error) {
       console.error('Error updating data');
     }
+        // for resetting the fields once sent
+    form.resetFields();
+    setFormData(initialFormState);
+    setSelectedLeague(null)
+
   };
 
   const handleClearAll = () => {
@@ -150,8 +159,7 @@ export default function FormComponent({ data }) {
               </Select>
             </Form.Item>
           </Col>
-
-          <Col span={24}>
+            {selectedLeague && <Col span={24}>
             <Form.Item
               label={fieldLabels['Team_ID']}
               name="Team_ID"
@@ -174,7 +182,8 @@ export default function FormComponent({ data }) {
                 ))}
               </Select>
             </Form.Item>
-          </Col>
+          </Col>}
+          
 
           <Col span={24}></Col>
         </Row>

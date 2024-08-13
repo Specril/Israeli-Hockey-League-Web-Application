@@ -86,6 +86,7 @@ export default function EditGameInfo({ data }) {
     } catch (error) {
       console.error('Error updating data:', error);
     }
+
   };
 
   const columns = {
