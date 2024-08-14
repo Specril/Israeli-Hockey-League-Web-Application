@@ -1,9 +1,9 @@
 const { Connection, Request } = require("tedious");
 
 // Database credentials
-const DB_USER = "IsraeliHockeyLeague";
-const DB_PASSWORD = "ZivCool69";
-const DB_SERVER = "hockey-il-server.database.windows.net";
+const DB_USER = "ziv130196";
+const DB_PASSWORD = "HockeyIsGood!";
+const DB_SERVER = "israeli-hockey-league-israel-db.database.windows.net";
 const DB_NAME = "Hockey League DB v2";
 
 // Connection configuration
