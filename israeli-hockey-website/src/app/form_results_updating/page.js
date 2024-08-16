@@ -67,7 +67,7 @@ export default async function Page() {
       <FormComponent data={combined_data} />
 
     }
-      allowed_user_types={["admin"]}
+      allowed_user_types={["admin", "referee"]}
     />
   );
 }
