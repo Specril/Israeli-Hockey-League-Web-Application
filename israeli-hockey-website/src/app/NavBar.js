@@ -59,6 +59,9 @@ export default function NavBar() {
       <Menu.Item key="4">
       <a href="form_add_league">הוספת ליגה חדשה</a>
       </Menu.Item>
+      <Menu.Item key="5">
+      <a href="form_delete_league">מחיקת ליגה </a>
+      </Menu.Item>
     </Menu>
   );
 

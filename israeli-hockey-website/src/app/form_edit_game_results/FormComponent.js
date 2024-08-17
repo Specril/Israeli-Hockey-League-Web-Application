@@ -72,9 +72,9 @@ export default function EditGameInfo({ data }) {
       Penalty_IDs: selectedPenalties,
       Card_IDs: selectedCards,
     };
-
-    alert('Form Data JSON: ' + JSON.stringify(finalData));
-
+  
+    alert('just an alert');
+  
     try {
       const response = await fetch('/api/form_results_updating', {
         method: 'DELETE',
@@ -83,11 +83,17 @@ export default function EditGameInfo({ data }) {
         },
         body: JSON.stringify(finalData),
       });
+  
+      if (response.ok) {
+        window.location.reload(); // Refresh the page after successful submission
+      } else {
+        console.error('Failed to update data');
+      }
     } catch (error) {
       console.error('Error updating data:', error);
     }
-
   };
+  
 
   const columns = {
     goals: [

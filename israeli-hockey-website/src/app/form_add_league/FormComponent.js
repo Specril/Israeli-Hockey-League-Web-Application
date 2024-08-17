@@ -12,12 +12,12 @@ const { Option } = Select;
 export default function FormComponent() {
   const initialFormState = {
     Age: '',
-    League_Type: '',
+    League_type: '',
   };
 
   const fieldLabels = {
     Age: 'גיל',
-    League_Type: 'שם הליגה',
+    League_type: 'שם הליגה',
 
   };
 
@@ -102,14 +102,14 @@ export default function FormComponent() {
 
           <Col span={24}>
             <Form.Item
-              label={fieldLabels['League_Type']}
-              name="League_Type"
-              rules={[{ required: true, message: `${fieldLabels['League_Type']} is required` }]}
+              label={fieldLabels['League_type']}
+              name="League_type"
+              rules={[{ required: true, message: `${fieldLabels['League_type']} is required` }]}
             >
               <Input
-                name="League_Type"
-                value={formData['League_Type']}
-                onChange={(e) => handleChange({ League_Type: e.target.value })}
+                name="League_type"
+                value={formData['League_type']}
+                onChange={(e) => handleChange({ League_type: e.target.value })}
               />
             </Form.Item>
           </Col>
