@@ -36,13 +36,15 @@ export default function DropdownComponent({ options, data }) {
   const [filteredData, setFilteredData] = useState(data);
 
   useEffect(() => {
-    console.log("Selected age:", selectedAge); // Log selected age
+    console.log('Selected Age:', selectedAge);
+    console.log('Data Length:', data.length);
+
     if (selectedAge) {
       const filtered = data.filter(item => {
-        console.log("Item age:", item['גיל']); // Log each item's age
-        return item['גיל'].trim() === selectedAge.trim(); // Trim and compare
+        const itemAge = item['גיל'].toString().trim(); // Convert to string and trim spaces
+        console.log('Filtering - Item Age:', itemAge, 'Selected Age:', selectedAge);
+        return itemAge === selectedAge;
       });
-      console.log("Filtered data:", filtered); // Log filtered data
       setFilteredData(filtered);
     } else {
       setFilteredData(data);
@@ -50,6 +52,7 @@ export default function DropdownComponent({ options, data }) {
   }, [selectedAge, data]);
 
   const handleAgeChange = (value) => {
+    console.log('Age Change:', value);
     setSelectedAge(value);
   };
 
@@ -58,6 +61,7 @@ export default function DropdownComponent({ options, data }) {
       title: 'גיל',
       dataIndex: 'גיל',
       key: 'גיל',
+      render: (text) => text.toString().trim() // Ensure rendering as a string and trim spaces
     },
     {
       title: 'קבוצת בית',
