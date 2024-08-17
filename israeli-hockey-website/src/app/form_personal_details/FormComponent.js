@@ -121,12 +121,6 @@ export default function FormComponent({ data }) {
             <Form.Item
               label={fieldLabels['Phone']}
               name="Phone"
-              rules={[
-                {
-                  required: true,
-                  message: `${fieldLabels['Phone']} is required`,
-                },
-              ]}
             >
               <Input
                 name="Phone"
@@ -172,12 +166,6 @@ export default function FormComponent({ data }) {
             <Form.Item
               label={fieldLabels['Date_of_Birth']}
               name="Date_of_Birth"
-              rules={[
-                {
-                  required: true,
-                  message: `${fieldLabels['Date_of_Birth']} is required`,
-                },
-              ]}
             >
               <DatePicker
                 format="YYYY-MM-DD"
