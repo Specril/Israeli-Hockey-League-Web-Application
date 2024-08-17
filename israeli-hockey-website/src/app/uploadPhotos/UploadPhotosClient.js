@@ -7,14 +7,14 @@ import { UploadOutlined } from '@ant-design/icons';
 const { Header, Content, Footer } = Layout;
 const { Option } = Select;
 
-const uploadToDB = async (base64String) => {
+const uploadToDB = async (base64String, photoName) => {
   try {
     const response = await fetch('/api/form_manage_photo', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ Photo: base64String }),
+      body: JSON.stringify({ Photo: base64String, Photo_Name: photoName }),
     });
 
     const result = await response.json();
@@ -75,11 +75,12 @@ export default function UploadPhotosClient({ initialPhotos }) {
 
   const handleUpload = async () => {
     if (base64String) {
-      const newPhotoId = await uploadToDB(base64String);
+      const newPhotoId = await uploadToDB(base64String, photoName);
       if (newPhotoId) {
         const newPhoto = {
           Photo_ID: newPhotoId,
-          Photo: base64String
+          Photo: base64String,
+          Photo_Name: photoName
         };
         setPhotos([...photos, newPhoto]);
         setBase64String("");
@@ -157,8 +158,8 @@ export default function UploadPhotosClient({ initialPhotos }) {
                 value={selectedPhotoId}
               >
                 {photos.map(photo => (
-                  <Option key={photo.Photo_ID} value={photo.Photo_ID.toString()}>
-                    {`Photo ${photo.Photo_ID}`}
+                  <Option key={photo.Photo_Name} value={photo.Photo_ID.toString()}>
+                    {photo.Photo_Name}
                   </Option>
                 ))}
               </Select>

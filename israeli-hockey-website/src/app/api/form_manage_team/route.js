@@ -61,6 +61,10 @@ export async function DELETE(req, res) {
         await pool.request()
             .input('Team_ID', sql.Int, Team_ID)
             .query('DELETE FROM TeamsLogos WHERE Team_ID = @Team_ID');
+
+        await pool.request()
+            .input('Team_ID',sql.Int, Team_ID)
+            .query('DELETE FROM TeamsInLeagues WHERE Team_ID = @Team_ID;')
         return NextResponse.json({ success: true });
 
     } catch (error) {
