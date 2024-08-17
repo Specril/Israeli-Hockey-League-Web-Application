@@ -1,4 +1,3 @@
-
 "use client"
 import React, { useState, useEffect } from 'react';
 import { Select, Typography, Row, Col, Table } from 'antd';
@@ -8,7 +7,7 @@ import "../style.css"; // Ensure this import is correct
 const { Title } = Typography;
 const { Option } = Select;
 
-// Helper functions to format date and time
+// Helper functions to format date, time, and day
 const formatDate = (dateString) => {
   const date = new Date(dateString);
   const day = date.getDate().toString().padStart(2, '0');
@@ -22,6 +21,14 @@ const formatTime = (timeString) => {
   const hours = time.getUTCHours().toString().padStart(2, '0');
   const minutes = time.getUTCMinutes().toString().padStart(2, '0');
   return `${hours}:${minutes}`;
+};
+
+const formatDay = (dateString) => {
+  const date = new Date(dateString);
+  const daysOfWeek = [
+    'ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'
+  ];
+  return daysOfWeek[date.getDay()];
 };
 
 export default function DropdownComponent({ options, data }) {
@@ -59,8 +66,9 @@ export default function DropdownComponent({ options, data }) {
     },
     {
       title: 'יום',
-      dataIndex: 'יום',
+      dataIndex: 'תאריך', // Use the date field to determine the day
       key: 'יום',
+      render: (text) => formatDay(text), // Format day using helper function
     },
     {
       title: 'תאריך',

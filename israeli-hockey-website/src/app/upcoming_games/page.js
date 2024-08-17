@@ -7,18 +7,56 @@ import Table from "../Table";
 import ProtectedPage from "../ProtectedPage/ProtectedPage";
 
 // Define the queries
+
 const query_age = "SELECT DISTINCT Age FROM League;";
+
 const query_upcoming_games = `
-  SELECT Away_Team_Age AS "גיל", Home_Team_Name AS "קבוצת בית", Away_Team_Name AS "קבוצת חוץ", Day AS "יום", Date AS "תאריך", Start_Time AS "זמן התחלה", Location AS "מיקום", First_referee AS "שופט 1", Users.Full_Name AS "שופט 2"
-  FROM (SELECT Home_Team_ID, Home_Team_Name, Away_Team_ID, Teams.Age AS Away_Team_Age, Teams.Team_Name AS Away_Team_Name, Day, Date, Start_Time, Location, Referee_ID, Users.Full_Name AS first_referee, Second_Referee_ID
-        FROM (SELECT Home_Team_ID, Team_Name AS Home_Team_Name, Away_Team_ID, Day, Date, Start_Time, Location, Referee_ID, Second_Referee_ID
-              FROM Games
-              INNER JOIN Teams ON Home_Team_ID = Team_ID
-              WHERE Date > CURRENT_TIMESTAMP AND Games.League_ID = 1) AS T1
-        LEFT JOIN Teams ON Away_Team_ID = Team_ID
-        LEFT JOIN Users ON Referee_ID = user_ID) AS T_with_first_referee
-  LEFT JOIN Users ON Second_Referee_ID = user_ID;
+  SELECT 
+    Away_Team_Age AS "גיל", 
+    Home_Team_Name AS "קבוצת בית", 
+    Away_Team_Name AS "קבוצת חוץ", 
+    Day AS "יום", 
+    Date AS "תאריך", 
+    Start_Time AS "זמן התחלה", 
+    Location AS "מיקום", 
+    First_referee AS "שופט 1", 
+    Users.Full_Name AS "שופט 2"
+  FROM (
+    SELECT 
+      Home_Team_ID, 
+      Home_Team_Name, 
+      Away_Team_ID, 
+      Teams.Age AS Away_Team_Age, 
+      Teams.Team_Name AS Away_Team_Name, 
+      Day, 
+      Date, 
+      Start_Time, 
+      Location, 
+      Referee_ID, 
+      Users.Full_Name AS first_referee, 
+      Second_Referee_ID
+    FROM (
+      SELECT 
+        Home_Team_ID, 
+        Team_Name AS Home_Team_Name, 
+        Away_Team_ID, 
+        Day, 
+        Date, 
+        Start_Time, 
+        Location, 
+        Referee_ID, 
+        Second_Referee_ID
+      FROM Games
+      INNER JOIN Teams ON Home_Team_ID = Team_ID
+      WHERE Date > CURRENT_TIMESTAMP AND Games.League_ID = 1
+    ) AS T1
+    LEFT JOIN Teams ON Away_Team_ID = Team_ID
+    LEFT JOIN Users ON Referee_ID = user_ID
+  ) AS T_with_first_referee
+  LEFT JOIN Users ON Second_Referee_ID = user_ID
+  ORDER BY Date ASC; -- Order by Date in descending order
 `;
+
 
 // Function to fetch data from the API
 async function fetchData(query) {

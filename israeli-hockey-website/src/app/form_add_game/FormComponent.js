@@ -47,18 +47,16 @@ export default function AddGameForm({ data }) {
   const [Referee_IDOptions, setRefereesOptions] = useState([]);
   const [teams, setTeamsOptions] = useState([]);
 
-
-
   useEffect(() => {
     const fetchData = async () => {
       const fetchedLeagues = await dataFetchLeague();
       const fetchedLocations = await dataFetchLocations();
       const fetchedTeams = await dataFetchTeams();
-      const fetchReferees = await dataFetchReferees();
+      const fetchedReferees = await dataFetchReferees();
       setLeagueOptions(fetchedLeagues);
       setLocationOptions(fetchedLocations);
       setTeamsOptions(fetchedTeams);
-      setRefereesOptions(fetchReferees)
+      setRefereesOptions(fetchedReferees);
     };
     fetchData();
   }, []);
@@ -89,8 +87,6 @@ export default function AddGameForm({ data }) {
   };
 
   const getTeams = (leagueID) => {
-    console.log("after filtering groups")
-    console.log(teams.filter(team => team.League_ID === leagueID))
     return teams.filter(team => team.League_ID === leagueID);
   };
 
@@ -125,9 +121,6 @@ export default function AddGameForm({ data }) {
     }));
   };
 
-
-
-
   const handleSubmit = async () => {
     alert('Form Data JSON: ' + JSON.stringify(formData));
 
@@ -138,33 +131,18 @@ export default function AddGameForm({ data }) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
-      })
+      });
     } catch (error) {
       console.alert('Error updating data');
     }
   }
 
   const handleClearAll = () => {
-    // form.resetFields();
     setFormData(initialFormState);
     setSelectedLeague(null);
     if (isClient) {
       localStorage.removeItem('formDataGames');
     }
-  };
-  const CustomTimePicker = (props) => {
-    return (
-      <TimePicker
-        {...props}
-        panelRender={(panel) => {
-          return (
-            <div className="custom-time-picker-panel">
-              {panel}
-            </div>
-          );
-        }}
-      />
-    );
   };
 
   return (
@@ -190,11 +168,11 @@ export default function AddGameForm({ data }) {
               ]}
             >
               <DatePicker
-              format="YYYY-MM-DD"
-              value={formData['Date'] ? dayjs(formData['Date'], 'YYYY-MM-DD') : null}
-              onChange={handleDateChange}
-              style={{ width: '100%' }}
-            />
+                format="YYYY-MM-DD"
+                value={formData['Date'] ? dayjs(formData['Date'], 'YYYY-MM-DD') : null}
+                onChange={handleDateChange}
+                style={{ width: '100%' }}
+              />
             </Form.Item>
           </Col>
 
@@ -209,15 +187,14 @@ export default function AddGameForm({ data }) {
                 },
               ]}
             >
-            <CustomTimePicker
-              format="HH:mm"
-              value={formData['Start_Time'] ? dayjs(formData['Start_Time'], 'HH:mm') : null}
-              onChange={handleTimeChange}
-              style={{ width: '100%' }}
-              minuteStep={1}
-              hourStep={1}
-            />
-
+              <TimePicker
+                format="HH:mm"
+                value={formData['Start_Time'] ? dayjs(formData['Start_Time'], 'HH:mm') : null}
+                onChange={handleTimeChange}
+                style={{ width: '100%' }}
+                minuteStep={1}
+                hourStep={1}
+              />
             </Form.Item>
           </Col>
 
@@ -304,7 +281,6 @@ export default function AddGameForm({ data }) {
               <Form.Item
                 label={fieldLabels['Location_ID']}
                 name="Location_ID"
-
               >
                 <Select
                   value={formData['Location_ID']}
@@ -324,7 +300,6 @@ export default function AddGameForm({ data }) {
               <Form.Item
                 label={fieldLabels['Referee_ID']}
                 name="Referee_ID"
-
               >
                 <Select
                   showSearch
@@ -350,7 +325,6 @@ export default function AddGameForm({ data }) {
               <Form.Item
                 label={fieldLabels['Second_Referee_ID']}
                 name="Second_Referee_ID"
-
               >
                 <Select
                   showSearch
@@ -371,8 +345,6 @@ export default function AddGameForm({ data }) {
                 </Select>
               </Form.Item>
             </Col>
-
-
           </Row>
         )}
 
