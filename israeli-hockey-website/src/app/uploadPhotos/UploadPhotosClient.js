@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { Layout, Upload, Button, Typography, message, Input, Card, Select } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import ProtectedPage from "../ProtectedPage/ProtectedPage";
 
 const { Header, Content, Footer } = Layout;
 const { Option } = Select;
@@ -112,7 +111,6 @@ export default function UploadPhotosClient({ initialPhotos }) {
   };
 
   return (
-    <ProtectedPage content={
       <Layout style={{ minHeight: '100vh' }}>
         <Header style={{ backgroundColor: '#001529' }}>
           <Typography.Title level={3} style={{ color: 'white', textAlign: 'center', margin: 0 }}>
@@ -178,8 +176,5 @@ export default function UploadPhotosClient({ initialPhotos }) {
         </Content>
         <Footer style={{ textAlign: 'center' }}>©2023 מערכת העלאת תמונות</Footer>
       </Layout>
-    }
-      allowed_user_types={[]}
-    />
   );
 }
