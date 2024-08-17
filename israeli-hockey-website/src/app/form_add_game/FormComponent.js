@@ -37,12 +37,6 @@ export default function AddGameForm({ data }) {
   };
 
   const DayOptions = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
-  // const League_ID_options = data[1];
-  // const locations_options = data[2];
-  // const Referee_IDOptions =data[3];
-  // const teams = data[0]
-
-
 
   const [formData, setFormData] = useState(initialFormState);
   const [isClient, setIsClient] = useState(false);
@@ -105,21 +99,22 @@ export default function AddGameForm({ data }) {
       form.setFieldsValue({
         ...formData,
         Date: formData.Date ? dayjs(formData.Date, 'YYYY-MM-DD') : null,
+        Start_Time: formData.Start_Time ? dayjs(formData.Start_Time, 'HH:mm') : null,
       });
     }
   }, [formData, form, isClient]);
 
   const handleDateChange = (date, dateString) => {
-    setFormData((prevData) => ({
+    setFormData(prevData => ({
       ...prevData,
-      Date: dateString,
+      Date: date ? date.format('YYYY-MM-DD') : '',
     }));
   };
-
+  
   const handleTimeChange = (time, timeString) => {
-    setFormData((prevData) => ({
+    setFormData(prevData => ({
       ...prevData,
-      Start_Time: timeString,
+      Start_Time: time ? time.format('HH:mm') : '',
     }));
   };
 
@@ -157,16 +152,20 @@ export default function AddGameForm({ data }) {
       localStorage.removeItem('formDataGames');
     }
   };
-
-  useEffect(() => {
-    if (isClient) {
-      form.setFieldsValue({
-        ...formData,
-        Date: formData.Date ? moment(formData.Date) : null, // Set date value using moment
-        Start_Time: formData.Start_Time ? moment(formData.Start_Time, 'HH:mm') : null, // Set time value using moment
-      });
-    }
-  }, [formData, form, isClient]);
+  const CustomTimePicker = (props) => {
+    return (
+      <TimePicker
+        {...props}
+        panelRender={(panel) => {
+          return (
+            <div className="custom-time-picker-panel">
+              {panel}
+            </div>
+          );
+        }}
+      />
+    );
+  };
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
@@ -191,36 +190,11 @@ export default function AddGameForm({ data }) {
               ]}
             >
               <DatePicker
-                format="YYYY-MM-DD"
-                value={formData['Date'] ? dayjs(formData['Date'], 'YYYY-MM-DD') : null}
-                onChange={handleDateChange}
-                style={{ width: '100%' }}
-              />
-            </Form.Item>
-          </Col>
-
-          <Col span={12}>
-            <Form.Item
-              label={fieldLabels['Day']}
-              name="Day"
-              rules={[
-                {
-                  required: true,
-                  message: `${fieldLabels['Day']} is required`,
-                },
-              ]}
-            >
-              <Select
-                value={formData['Day']}
-                onChange={(value) => handleSelectChange(value, 'Day')}
-                style={{ width: '100%' }}
-              >
-                {DayOptions.map((option) => (
-                  <Option key={option} value={option}>
-                    {option}
-                  </Option>
-                ))}
-              </Select>
+              format="YYYY-MM-DD"
+              value={formData['Date'] ? dayjs(formData['Date'], 'YYYY-MM-DD') : null}
+              onChange={handleDateChange}
+              style={{ width: '100%' }}
+            />
             </Form.Item>
           </Col>
 
@@ -235,12 +209,15 @@ export default function AddGameForm({ data }) {
                 },
               ]}
             >
-              <TimePicker
-                format="HH:mm"
-                value={formData['Start_Time'] ? moment(formData['Start_Time'], 'HH:mm') : null}
-                onChange={handleTimeChange}
-                style={{ width: '100%' }} // Make the TimePicker take full width
-              />
+            <CustomTimePicker
+              format="HH:mm"
+              value={formData['Start_Time'] ? dayjs(formData['Start_Time'], 'HH:mm') : null}
+              onChange={handleTimeChange}
+              style={{ width: '100%' }}
+              minuteStep={1}
+              hourStep={1}
+            />
+
             </Form.Item>
           </Col>
 
