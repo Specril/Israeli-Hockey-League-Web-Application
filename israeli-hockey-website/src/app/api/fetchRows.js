@@ -1,10 +1,11 @@
 const { Connection, Request } = require("tedious");
 
 // Database credentials
-const DB_USER = "IsraeliHockeyLeague";
-const DB_PASSWORD = "ZivCool69";
-const DB_SERVER = "hockey-il-server.database.windows.net";
-const DB_NAME = "Hockey League DB v2";
+const DB_USER = process.env.AZURE_SQL_USER;
+const DB_PASSWORD = process.env.AZURE_SQL_PASSWORD;
+const DB_SERVER = process.env.AZURE_SQL_SERVER;
+const DB_NAME = process.env.AZURE_SQL_DATABASE;
+
 
 // Connection configuration
 const config = {

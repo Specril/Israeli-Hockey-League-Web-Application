@@ -17,7 +17,7 @@ export default async function Page() {
       <FormComponent />
 
     }
-      allowed_user_types={["admin"]}
+      allowed_user_types={["admin", "coach"]}
     />
   );
 }
