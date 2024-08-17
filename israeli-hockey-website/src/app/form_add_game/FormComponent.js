@@ -1,10 +1,8 @@
-"use client";
-
+"use client"
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, Typography, Row, Col, DatePicker, Select, TimePicker } from 'antd';
+import { Form, Button, Typography, Row, Col, DatePicker, Select, TimePicker } from 'antd';
 import 'antd/dist/reset.css'; // Import Ant Design styles
 import "../style.css"; // Ensure you have the correct path for your CSS
-import moment from 'moment';
 import dayjs from 'dayjs';
 import { dataFetchLeague, dataFetchTeams, dataFetchLocations, dataFetchReferees } from './fetching';
 
@@ -115,10 +113,20 @@ export default function AddGameForm({ data }) {
   };
 
   const handleSelectChange = (value, field) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [field]: value,
-    }));
+    // Find the location name from the selected ID
+    if (field === 'Location_ID') {
+      const location = locations_options.find(option => option.key === value);
+      setFormData(prevData => ({
+        ...prevData,
+        [field]: value,
+        Location: location ? location.value : '',
+      }));
+    } else {
+      setFormData(prevData => ({
+        ...prevData,
+        [field]: value,
+      }));
+    }
   };
 
   const handleSubmit = async () => {
@@ -132,10 +140,23 @@ export default function AddGameForm({ data }) {
         },
         body: JSON.stringify(formData),
       });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Server error:', errorData);
+        alert('Error: ' + (errorData.message || 'Failed to submit form'));
+        return;
+      }
+
+      const result = await response.json();
+      console.log('Success:', result);
+      alert('Form submitted successfully!');
+
     } catch (error) {
-      console.alert('Error updating data');
+      console.error('Error:', error);
+      alert('Error updating data');
     }
-  }
+  };
 
   const handleClearAll = () => {
     setFormData(initialFormState);
@@ -277,6 +298,7 @@ export default function AddGameForm({ data }) {
                 </Select>
               </Form.Item>
             </Col>
+
             <Col span={12}>
               <Form.Item
                 label={fieldLabels['Location_ID']}

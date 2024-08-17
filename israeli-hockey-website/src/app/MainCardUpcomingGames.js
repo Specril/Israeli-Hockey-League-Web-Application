@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React from "react";
 import { Card, Table } from "antd";
@@ -17,8 +17,8 @@ const MainCardUpcomingGames = ({ data, name, cardHeight }) => {
 
   // Helper function to format date with day
   const formatDate = (dateString) => {
-    const daysOfWeek = ['יום ראשון', 'יום שני', 'יום שלישי', 'יום רביעי', 'יום חמישי', 'יום שישי', 'יום שבת'];
     const date = new Date(dateString);
+    const daysOfWeek = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
     const day = daysOfWeek[date.getDay()]; // Get day of week
     const dayOfMonth = date.getDate().toString().padStart(2, '0');
     const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
@@ -29,8 +29,8 @@ const MainCardUpcomingGames = ({ data, name, cardHeight }) => {
   // Helper function to format time
   const formatTime = (timeString) => {
     const time = new Date(timeString);
-    const hours = time.getHours().toString().padStart(2, '0');
-    const minutes = time.getMinutes().toString().padStart(2, '0');
+    const hours = time.getUTCHours().toString().padStart(2, '0');
+    const minutes = time.getUTCMinutes().toString().padStart(2, '0');
     return `${hours}:${minutes}`;
   };
 
@@ -84,8 +84,8 @@ const MainCardUpcomingGames = ({ data, name, cardHeight }) => {
       key={date}
       title={<div style={{ textAlign: 'center', fontWeight: 'bold', margin: 0, padding: '10px 0' }}>{formatDate(date)}</div>}
       bordered={false}
-      style={{ margin: '0 0 10px 0', padding: 0, height: cardHeight || 'auto', overflowY: 'auto' }} // Set fixed height and enable overflowY for scrolling
-      bodyStyle={{ padding: 0 }} // Adjust body padding
+      style={{ margin: '0 0 10px 0', padding: 0, maxHeight: '100%', overflowY: 'auto' }} // Set fixed height and enable overflowY for scrolling
+      bodyStyle={{ padding: '0 10px' }} // Added padding to the body
     >
       <Table
         columns={columns}
@@ -104,11 +104,13 @@ const MainCardUpcomingGames = ({ data, name, cardHeight }) => {
     <Card
       title={<div style={{ textAlign: 'center', fontWeight: 'bold', color: '#ffffff', backgroundColor: '#1e90ff', padding: '10px 0' }}>{name}</div>}
       bordered={false}
-      style={{ width: 350, borderRadius: '2px', marginBottom: '10px', padding: 0 }}
+      style={{ width: 350, borderRadius: '8px', marginBottom: '20px', maxHeight: '600px', overflowY: 'auto', marginLeft: '20px' }} // Added marginLeft
       headStyle={{ backgroundColor: '#1e90ff', borderRadius: '8px 8px 0 0', padding: 0 }}
-      bodyStyle={{ padding: 0 }} // Adjust body padding
+      bodyStyle={{ padding: '10px', height: '100%' }} // Added padding to the body
     >
-      {dateSections}
+      <div style={{ height: '100%', overflowY: 'auto' }}>
+        {dateSections}
+      </div>
     </Card>
   );
 };

@@ -1,13 +1,11 @@
-"use client"
+"use client";
 // Import necessary dependencies
 import React, { useEffect, useState } from "react";
 import "../style.css";
 import DropdownComponent from "./DropdownComponent";
-import Table from "../Table";
 import ProtectedPage from "../ProtectedPage/ProtectedPage";
 
 // Define the queries
-
 const query_age = "SELECT DISTINCT Age FROM League;";
 
 const query_upcoming_games = `
@@ -54,9 +52,8 @@ const query_upcoming_games = `
     LEFT JOIN Users ON Referee_ID = user_ID
   ) AS T_with_first_referee
   LEFT JOIN Users ON Second_Referee_ID = user_ID
-  ORDER BY Date ASC; -- Order by Date in descending order
+  ORDER BY Date ASC; 
 `;
-
 
 // Function to fetch data from the API
 async function fetchData(query) {
@@ -75,7 +72,7 @@ async function fetchData(query) {
     }
 
     const result = await response.json();
-    // Ensure data is an array
+    console.log("API response:", result); // Log the API response
     data = Array.isArray(result) ? result : [];
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -93,6 +90,7 @@ export default function Home() {
     async function fetchUpcoming() {
       try {
         const data = await fetchData(query_upcoming_games);
+        console.log("Upcoming games data:", data); // Log the fetched data
         setDataUpcoming(data);
       } catch (error) {
         console.error("Error fetching upcoming games:", error);
@@ -106,8 +104,9 @@ export default function Home() {
     async function fetchAges() {
       try {
         const data = await fetchData(query_age);
-        const ageArray = data.map(obj => obj.Age);
-        setOptions(ageArray);
+        console.log("Fetched ages:", data); // Log fetched age data
+        const ageArray = data.map(obj => obj.Age.trim()); // Trim spaces
+        setOptions([...new Set(ageArray)]); // Ensure unique options
       } catch (error) {
         console.error("Error fetching ages:", error);
       }

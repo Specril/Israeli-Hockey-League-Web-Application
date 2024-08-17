@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState, useEffect } from 'react';
 import { Select, Typography, Row, Col, Table } from 'antd';
 import 'antd/dist/reset.css';
@@ -36,8 +36,13 @@ export default function DropdownComponent({ options, data }) {
   const [filteredData, setFilteredData] = useState(data);
 
   useEffect(() => {
+    console.log("Selected age:", selectedAge); // Log selected age
     if (selectedAge) {
-      const filtered = data.filter(item => item['גיל'] === selectedAge);
+      const filtered = data.filter(item => {
+        console.log("Item age:", item['גיל']); // Log each item's age
+        return item['גיל'].trim() === selectedAge.trim(); // Trim and compare
+      });
+      console.log("Filtered data:", filtered); // Log filtered data
       setFilteredData(filtered);
     } else {
       setFilteredData(data);
