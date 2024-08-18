@@ -164,6 +164,8 @@ export default function Home() {
   ];
 
   return (
+    <ProtectedPage
+      content={
     <div style={{ maxWidth: '100%', margin: '0 auto', padding: '20px' }}>
       <Title level={3}>משחקים קרובים</Title>
       <Row gutter={16}>
@@ -179,5 +181,8 @@ export default function Home() {
         </Col>
       </Row>
     </div>
+    }
+    allowed_user_types={[]}
+  />
   );
 }
