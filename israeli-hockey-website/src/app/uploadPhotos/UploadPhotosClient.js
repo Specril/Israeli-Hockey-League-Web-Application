@@ -123,8 +123,6 @@ export default function UploadPhotosClient({ initialPhotos }) {
   };
 
   return (
-    <ProtectedPage
-      content={
         <Layout style={{ minHeight: "100vh" }}>
           <Content
             style={{
@@ -239,9 +237,7 @@ export default function UploadPhotosClient({ initialPhotos }) {
             </div>
           </Content>
         </Layout>
-      }
-      allowed_user_types={["admin"]}
       
-    />
+      
   );
 }
