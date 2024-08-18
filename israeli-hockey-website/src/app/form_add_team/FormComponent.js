@@ -9,7 +9,7 @@ import {
   Row,
   Col,
   Select,
-  Upload, message,
+  Upload,
   message,
 } from "antd";
 import { UploadOutlined } from '@ant-design/icons';
