@@ -19,13 +19,13 @@ FROM Users
 INNER JOIN (
     SELECT Goals.User_ID, COUNT(*) AS "כמות גולים"
     FROM Goals
+    INNER JOIN Games ON Goals.Game_ID = Games.Game_ID
+    WHERE Games.League_ID = ${leagueId}
     GROUP BY Goals.User_ID
 ) AS T1 ON Users.User_ID = T1.User_ID
 INNER JOIN PlayersInTeams ON Users.User_ID = PlayersInTeams.User_ID
 LEFT JOIN TeamsLogos ON PlayersInTeams.Team_ID = TeamsLogos.Team_ID
 LEFT JOIN Teams ON PlayersInTeams.Team_ID = Teams.Team_ID
-INNER JOIN TeamsInLeagues ON Teams.Team_ID = TeamsInLeagues.Team_ID
-WHERE TeamsInLeagues.League_ID = ${leagueId}
 ORDER BY "כמות גולים" DESC;
 `;
 
