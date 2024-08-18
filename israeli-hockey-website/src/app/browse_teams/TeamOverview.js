@@ -1,6 +1,6 @@
 "use client";
 import { Carousel, List, Row, Col, Card, Spin, Alert } from "antd";
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 export default function TeamOverview({
   details,
@@ -10,23 +10,21 @@ export default function TeamOverview({
 }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [filteredTeamDetails, setFilteredTeamDetails] = useState([]);
+  const [selectedTeamId, setSelectedTeamId] = useState(null);
 
-  // Memoize filtered team details to avoid recalculating on every render
-  const filteredTeamDetails = useMemo(
-    () => details.filter((team) => team["League ID"] === league),
-    [details, league]
-  );
-
-  const [selectedTeamId, setSelectedTeamId] = useState(
-    filteredTeamDetails.length > 0 ? filteredTeamDetails[0]["Team ID"] : null
-  );
-
+  // Update filtered team details whenever `details` or `league` changes
   useEffect(() => {
-    if (filteredTeamDetails.length > 0) {
-      setSelectedTeamId(filteredTeamDetails[0]["Team ID"]);
+    const filteredTeams = details.filter(
+      (team) => team["League ID"] === league
+    );
+    setFilteredTeamDetails(filteredTeams);
+    if (filteredTeams.length > 0) {
+      setSelectedTeamId(filteredTeams[0]["Team ID"]);
     }
-  }, [filteredTeamDetails]);
+  }, [details, league]);
 
+  // Update loading state based on available data
   useEffect(() => {
     if (details.length > 0 && players.length > 0 && statistics.length > 0) {
       setLoading(false);
@@ -40,23 +38,16 @@ export default function TeamOverview({
     setSelectedTeamId(filteredTeamDetails[current]["Team ID"]);
   };
 
-  // Memoize selected team details and players to avoid recalculating on every render
-  const selectedTeamDetails = useMemo(
-    () =>
-      filteredTeamDetails.find((team) => team["Team ID"] === selectedTeamId) ||
-      {},
-    [filteredTeamDetails, selectedTeamId]
+  const selectedTeamDetails =
+    filteredTeamDetails.find((team) => team["Team ID"] === selectedTeamId) ||
+    {};
+
+  const selectedTeamPlayers = players.filter(
+    (player) => player["Team ID"] === selectedTeamId
   );
 
-  const selectedTeamPlayers = useMemo(
-    () => players.filter((player) => player["Team ID"] === selectedTeamId),
-    [players, selectedTeamId]
-  );
-
-  const selectedTeamStatistics = useMemo(
-    () => statistics.find((stat) => stat.Team_ID === selectedTeamId) || {},
-    [statistics, selectedTeamId]
-  );
+  const selectedTeamStatistics =
+    statistics.find((stat) => stat.Team_ID === selectedTeamId) || {};
 
   if (loading) {
     return <Spin tip="טוען עמוד..." />;
@@ -110,12 +101,16 @@ export default function TeamOverview({
               alignSelf: "center",
             }}
           >
-            <h2>{selectedTeamDetails["Team Name"]}</h2>
+            <h2>
+              {selectedTeamDetails["Team Name"] || "Team Name Not Available"}
+            </h2>
             <p>
-              <strong>מאמן:</strong> {selectedTeamDetails["Team Coach"]}
+              <strong>מאמן:</strong>{" "}
+              {selectedTeamDetails["Team Coach"] || "No Coach Assigned"}
             </p>
             <p>
-              <strong>ליגה:</strong> {selectedTeamDetails["League Name"]}
+              <strong>ליגה:</strong>{" "}
+              {selectedTeamDetails["League Name"] || "No League Assigned"}
             </p>
           </div>
         )}

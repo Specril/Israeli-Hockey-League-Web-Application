@@ -1,40 +1,45 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, Typography, Row, Col, Select, InputNumber } from 'antd';
-import 'antd/dist/reset.css';
+import React, { useState, useEffect } from "react";
+import {
+  Form,
+  Input,
+  Button,
+  Typography,
+  Row,
+  Col,
+  Select,
+  InputNumber,
+  message,
+} from "antd";
+import "antd/dist/reset.css";
 import "../style.css";
-import { dataFetchLeague, dataFetchTeams, } from './fetching';
-
+import { dataFetchLeague, dataFetchTeams } from "./fetching";
 
 const { Title } = Typography;
 const { Option } = Select;
 
 export default function FormComponent({ data }) {
   const initialFormState = {
-    Team_ID: '',
-    League_ID: '',
-
+    Team_ID: "",
+    League_ID: "",
   };
 
   const fieldLabels = {
-    Team_ID: 'שם קבוצה',
-    League_ID: 'ליגה',
+    Team_ID: "שם קבוצה",
+    League_ID: "ליגה",
   };
 
   // const teamsOptions = data[0];
   // const League_ID_options = data[1];
 
-
   console.log("inside form component");
-
 
   const [formData, setFormData] = useState(initialFormState);
   const [isClient, setIsClient] = useState(false);
   const [form] = Form.useForm();
   const [League_ID_options, setLeagueOptions] = useState([]);
   const [teamsOptions, setTeamsOptions] = useState([]);
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,7 +53,7 @@ export default function FormComponent({ data }) {
 
   useEffect(() => {
     setIsClient(true);
-    const savedFormData = localStorage.getItem('formAddTeamToLeague');
+    const savedFormData = localStorage.getItem("formAddTeamToLeague");
     if (savedFormData) {
       setFormData(JSON.parse(savedFormData));
     }
@@ -56,7 +61,7 @@ export default function FormComponent({ data }) {
 
   useEffect(() => {
     if (isClient) {
-      localStorage.setItem('formAddTeamToLeague', JSON.stringify(formData));
+      localStorage.setItem("formAddTeamToLeague", JSON.stringify(formData));
     }
   }, [formData, isClient]);
 
@@ -75,42 +80,39 @@ export default function FormComponent({ data }) {
   };
 
   const handleSelectChange = (value, field) => {
-
     setFormData((prevData) => ({
       ...prevData,
       [field]: value,
     }));
-
   };
 
   const handleSubmit = async () => {
     const final_data = {
-      ...formData
+      ...formData,
     };
 
-    alert('Form Data JSON: ' + JSON.stringify(final_data));
-
     try {
-      const response = await fetch('/api/manage_teams_in_leagues', {
-        method: 'POST',
+      const response = await fetch("/api/manage_teams_in_leagues", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(final_data),
       });
     } catch (error) {
-      console.alert('Error updating data');
+      console.alert("Error updating data");
     }
         // for resetting the fields once sent
     form.resetFields();
     setFormData(initialFormState);
+    message.success("Team added to league successfully");
   };
 
   const handleClearAll = () => {
     form.resetFields();
     setFormData(initialFormState);
     if (isClient) {
-      localStorage.removeItem('formAddTeamToLeague');
+      localStorage.removeItem("formAddTeamToLeague");
     }
   };
 
@@ -123,7 +125,7 @@ export default function FormComponent({ data }) {
   }, [formData, form, isClient]);
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
+    <div style={{ maxWidth: "800px", margin: "0 auto", padding: "20px" }}>
       <Title level={3}>טופס הוספת קבוצה לליגה</Title>
       <Form
         form={form}
@@ -135,18 +137,20 @@ export default function FormComponent({ data }) {
         <Row gutter={16}>
           <Col span={24}>
             <Form.Item
-              label={fieldLabels['Team_ID']}
+              label={fieldLabels["Team_ID"]}
               name="Team_ID"
               rules={[
                 {
                   required: true,
-                  message: `${fieldLabels['Team_ID']} is required`,
+                  message: `${fieldLabels["Team_ID"]} is required`,
                 },
               ]}
             >
               <Select
-                value={formData['Team_ID']}
-                onChange={(value) => handleSelectChange(value, 'Team_ID')}
+                value={formData["Team_ID"]}
+                onChange={(value) => handleSelectChange(value, "Team_ID")}
+                showSearch
+                optionFilterProp="children"
               >
                 {teamsOptions.map((option) => (
                   <Option key={option.key} value={option.key}>
@@ -159,19 +163,21 @@ export default function FormComponent({ data }) {
 
           <Col span={24}>
             <Form.Item
-              label={fieldLabels['League_ID']}
+              label={fieldLabels["League_ID"]}
               name="League_ID"
               rules={[
                 {
                   required: true,
-                  message: `${fieldLabels['League_ID']} is required`,
+                  message: `${fieldLabels["League_ID"]} is required`,
                 },
               ]}
             >
               <Select
-                value={formData['League_ID']}
-                onChange={(value) => handleSelectChange(value, 'League_ID')}
-                style={{ width: '100%' }}
+                value={formData["League_ID"]}
+                onChange={(value) => handleSelectChange(value, "League_ID")}
+                style={{ width: "100%" }}
+                showSearch
+                optionFilterProp="children"
               >
                 {League_ID_options.map((option) => (
                   <Option key={option.key} value={option.key}>
@@ -181,7 +187,6 @@ export default function FormComponent({ data }) {
               </Select>
             </Form.Item>
           </Col>
-
 
           <Col span={24}></Col>
         </Row>

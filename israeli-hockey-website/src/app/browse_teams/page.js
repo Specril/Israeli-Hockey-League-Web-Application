@@ -9,7 +9,8 @@ import ProtectedPage from "../ProtectedPage/ProtectedPage";
 
 const { Option } = Select;
 
-const query_team_details = `SELECT 
+const query_team_details = `
+SELECT 
     Teams.Team_ID AS "Team ID",
     Users.Full_Name AS "Team Coach",
     TeamsLogos.Photo AS "Team Logo",
@@ -17,12 +18,12 @@ const query_team_details = `SELECT
     League.League_ID AS "League ID",
     League.Age AS "League Name"
 FROM Teams
-INNER JOIN CoachesOfTeams ON Teams.Team_ID = CoachesOfTeams.Team_ID
-INNER JOIN UsersCoaches ON CoachesOfTeams.User_ID = UsersCoaches.User_ID
-INNER JOIN Users ON UsersCoaches.User_ID = Users.User_ID
+LEFT JOIN CoachesOfTeams ON Teams.Team_ID = CoachesOfTeams.Team_ID
+LEFT JOIN UsersCoaches ON CoachesOfTeams.User_ID = UsersCoaches.User_ID
+LEFT JOIN Users ON UsersCoaches.User_ID = Users.User_ID
 LEFT JOIN TeamsLogos ON Teams.Team_ID = TeamsLogos.Team_ID
-INNER JOIN TeamsInLeagues ON Teams.Team_ID = TeamsInLeagues.Team_ID
-INNER JOIN League ON TeamsInLeagues.League_ID = League.League_ID
+LEFT JOIN TeamsInLeagues ON Teams.Team_ID = TeamsInLeagues.Team_ID
+LEFT JOIN League ON TeamsInLeagues.League_ID = League.League_ID
 ORDER BY Teams.Team_Name;
 `;
 
@@ -121,7 +122,6 @@ ORDER BY
 
 // Function to fetch data from the API
 async function fetchData(query) {
-  let data = [];
   try {
     const response = await fetch(`/api/fetch`, {
       method: "POST",
@@ -135,7 +135,7 @@ async function fetchData(query) {
       throw new Error("Network response was not ok");
     }
 
-    data = await response.json();
+    const data = await response.json();
     return data;
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -148,20 +148,21 @@ const Home = () => {
   const [dataTeamPlayers, setDataTeamPlayers] = useState([]);
   const [dataTeamStatistics, setDataTeamStatistics] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [leagues, setLeagues] = useState([]);
-  const [selectedLeague, setSelectedLeague] = useState(1);
+  const [leagues, setLeagues] = useState(null); // Initialize with null to check if data is fetched
+  const [selectedLeague, setSelectedLeague] = useState(null); // Start with null
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchLeaguesAsync = async () => {
       const leaguesData = await fetchData(query_leagues);
-      if (leaguesData) {
+      if (leaguesData && Array.isArray(leaguesData)) {
         setLeagues(leaguesData);
         if (leaguesData.length > 0) {
           setSelectedLeague(leaguesData[0].League_ID);
         }
       } else {
         setError("Failed to load leagues data");
+        setLeagues([]); // Set an empty array to prevent further errors
       }
     };
 
@@ -173,6 +174,16 @@ const Home = () => {
       const details = await fetchData(query_team_details);
       const players = await fetchData(query_team_players);
       const statistics = await fetchData(query_team_statistics);
+
+      // Log team details excluding the "Team Logo"
+      const detailsWithoutLogo = details.map((team) => {
+        const { "Team Logo": _, ...rest } = team;
+        return rest;
+      });
+
+      console.log("Fetched team details (without logo):", detailsWithoutLogo);
+      console.log("Fetched team players:", players);
+      console.log("Fetched team statistics:", statistics);
 
       if (details && players && statistics) {
         setDataTeamDetails(details);
@@ -213,19 +224,26 @@ const Home = () => {
         placeholder="Select a league"
         onChange={handleLeagueChange}
         value={selectedLeague}
+        disabled={!leagues || leagues.length === 0} // Disable if leagues are not loaded
       >
-        {leagues.map((league) => (
-          <Option key={league.League_ID} value={league.League_ID}>
-            {`${league.Age}`}
-          </Option>
-        ))}
+        {leagues && leagues.length > 0 ? (
+          leagues.map((league) => (
+            <Option key={league.League_ID} value={league.League_ID}>
+              {`${league.Age}`}
+            </Option>
+          ))
+        ) : (
+          <Option disabled>No leagues available</Option> // Fallback option
+        )}
       </Select>
-      <TeamOverview
-        details={dataTeamDetails}
-        players={dataTeamPlayers}
-        statistics={dataTeamStatistics}
-        league={selectedLeague}
-      />
+      {selectedLeague && (
+        <TeamOverview
+          details={dataTeamDetails}
+          players={dataTeamPlayers}
+          statistics={dataTeamStatistics}
+          league={selectedLeague}
+        />
+      )}
     </>
     }
     allowed_user_types={[]}

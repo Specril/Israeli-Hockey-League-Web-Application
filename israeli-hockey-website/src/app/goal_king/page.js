@@ -1,11 +1,10 @@
 "use client";
 
 import "../style.css";
-import { Flex, Select } from "antd";
+import { Flex, Select, Spin, Alert } from "antd";
 import King from "./King";
 import { useEffect, useState } from "react";
 import ProtectedPage from "../ProtectedPage/ProtectedPage";
-
 
 const { Option } = Select;
 
@@ -20,13 +19,13 @@ FROM Users
 INNER JOIN (
     SELECT Goals.User_ID, COUNT(*) AS "כמות גולים"
     FROM Goals
+    INNER JOIN Games ON Goals.Game_ID = Games.Game_ID
+    WHERE Games.League_ID = ${leagueId}
     GROUP BY Goals.User_ID
 ) AS T1 ON Users.User_ID = T1.User_ID
 INNER JOIN PlayersInTeams ON Users.User_ID = PlayersInTeams.User_ID
 LEFT JOIN TeamsLogos ON PlayersInTeams.Team_ID = TeamsLogos.Team_ID
 LEFT JOIN Teams ON PlayersInTeams.Team_ID = Teams.Team_ID
-INNER JOIN TeamsInLeagues ON Teams.Team_ID = TeamsInLeagues.Team_ID
-WHERE TeamsInLeagues.League_ID = ${leagueId}
 ORDER BY "כמות גולים" DESC;
 `;
 
@@ -62,6 +61,7 @@ FROM League
 async function fetchData(query) {
   let data = [];
   try {
+    console.log("Fetching data with query:", query); // Log the query
     const response = await fetch(`/api/fetch`, {
       method: "POST",
       headers: {
@@ -75,6 +75,7 @@ async function fetchData(query) {
     }
 
     const result = await response.json();
+    console.log("Data received:", result); // Log the result
     data = Array.isArray(result) ? result : [];
     return data;
   } catch (error) {
@@ -131,6 +132,7 @@ const Home = () => {
     if (selectedLeague) {
       const fetchDataAsync = async () => {
         try {
+          console.log("Selected league changed to:", selectedLeague); // Log the selected league
           setLoading(true);
           const data_goals = await fetchData(query_goal_king(selectedLeague));
           const data_penalty = await fetchData(
@@ -155,52 +157,57 @@ const Home = () => {
 
   if (loading) {
     return (
-      <div style={{ textAlign: "center", padding: "20px" }}>טוען עמוד...</div>
+      <div style={{ textAlign: "center", padding: "20px" }}>
+        <Spin tip="טוען עמוד..." />
+      </div>
     );
   }
 
   if (error) {
     return (
       <div style={{ textAlign: "center", color: "red", padding: "20px" }}>
-        {error}
+        <Alert message="Error" description={error} type="error" showIcon />
       </div>
     );
   }
 
   return (
-    <ProtectedPage content={
-      <section>
-        <Flex gap="large" align="start" justify="space-evenly">
-          <Select
-            style={{ width: 200 }}
-            placeholder="Select a league"
-            onChange={handleLeagueChange}
-            value={selectedLeague}
-          >
-            {leagues.map((league) => (
-              <Option key={league.League_ID} value={league.League_ID}>
-                {`${league.Age} - ${league.League_Type}`}
-              </Option>
-            ))}
-          </Select>
-          {selectedLeague && (
-            <>
-              <King
-                data={dataGoalKing}
-                header={"מלך השערים"}
-                backgroundColorFirst={"blue"}
-              />
-              <King
-                data={dataPenaltyKing}
-                header={"מלך העונשים"}
-                backgroundColorFirst={"red"}
-              />
-            </>
-          )}
-        </Flex>
-      </section>
-    }
-      allowed_user_types={[]}
+    <ProtectedPage
+      content={
+        <section>
+          <Flex gap="large" align="start" justify="space-evenly">
+            <Select
+              style={{ width: 200 }}
+              placeholder="Select a league"
+              onChange={handleLeagueChange}
+              value={selectedLeague}
+              showSearch
+              optionFilterProp="children"
+            >
+              {leagues.map((league) => (
+                <Option key={league.League_ID} value={league.League_ID}>
+                  {`${league.Age} - ${league.League_Type}`}
+                </Option>
+              ))}
+            </Select>
+            {selectedLeague && (
+              <>
+                <King
+                  data={dataGoalKing}
+                  header={"מלך השערים"}
+                  backgroundColorFirst={"blue"}
+                />
+                <King
+                  data={dataPenaltyKing}
+                  header={"מלך העונשים"}
+                  backgroundColorFirst={"red"}
+                />
+              </>
+            )}
+          </Flex>
+        </section>
+      }
+      allowed_user_types={["player"]}
     />
   );
 };
