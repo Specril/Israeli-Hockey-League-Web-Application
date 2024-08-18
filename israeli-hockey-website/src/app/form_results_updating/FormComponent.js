@@ -145,7 +145,11 @@ export default function UploadGameResultForm({ data }) {
     }));
   };
 
-  const optionsCard = ["blue", "red"];
+
+
+  // const optionsCard = ['blue', 'red']
+  const optionsCard =[{key:'blue', value: 'כחול'},
+    {key:'red', value:'אדום'}];
 
   const handleSubmit = async () => {
     const final_data = {
@@ -202,6 +206,10 @@ export default function UploadGameResultForm({ data }) {
     } catch (error) {
       console.error("Error updating data");
     }
+    // for resetting the fields once sent
+    form.resetFields();
+    setFormData(initialFormState);
+    setSelectedGame(null);
     message.success("Results updated successfully");
   };
 
@@ -603,8 +611,8 @@ export default function UploadGameResultForm({ data }) {
                         optionFilterProp="children"
                       >
                         {optionsCard.map((option) => (
-                          <Option key={option} value={option}>
-                            {option}
+                          <Option key={option.key} value={option.key}>
+                            {option.value}
                           </Option>
                         ))}
                       </Select>
@@ -689,8 +697,8 @@ export default function UploadGameResultForm({ data }) {
                         optionFilterProp="children"
                       >
                         {optionsCard.map((option) => (
-                          <Option key={option} value={option}>
-                            {option}
+                          <Option key={option.key} value={option.key}>
+                            {option.value}
                           </Option>
                         ))}
                       </Select>

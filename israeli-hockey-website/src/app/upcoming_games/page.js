@@ -14,7 +14,7 @@ const query_upcoming_games = `
         FROM (SELECT Home_Team_ID, Team_Name AS Home_Team_Name, Away_Team_ID, Day, Date, Start_Time, Location, Referee_ID, Second_Referee_ID
               FROM Games
               INNER JOIN Teams ON Home_Team_ID = Team_ID
-              WHERE Date > CURRENT_TIMESTAMP AND Games.League_ID = 1) AS T1
+              WHERE Date > CURRENT_TIMESTAMP) AS T1
         LEFT JOIN Teams ON Away_Team_ID = Team_ID
         LEFT JOIN Users ON Referee_ID = user_ID) AS T_with_first_referee
   LEFT JOIN Users ON Second_Referee_ID = user_ID;

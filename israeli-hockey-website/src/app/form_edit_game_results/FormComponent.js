@@ -90,11 +90,18 @@ export default function EditGameInfo({ data }) {
         },
         body: JSON.stringify(finalData),
       });
+  
+      if (response.ok) {
+        window.location.reload(); // Refresh the page after successful submission
+      } else {
+        console.error('Failed to update data');
+      }
     } catch (error) {
       console.error("Error updating data:", error);
     }
     message.success("Game results changed successfully");
   };
+  
 
   const columns = {
     goals: [

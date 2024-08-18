@@ -17,14 +17,14 @@ import ProtectedPage from "../ProtectedPage/ProtectedPage";
 const { Header, Content, Footer } = Layout;
 const { Option } = Select;
 
-const uploadToDB = async (base64String) => {
+const uploadToDB = async (base64String, photoName) => {
   try {
     const response = await fetch("/api/form_manage_photo", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ Photo: base64String }),
+      body: JSON.stringify({ Photo: base64String, Photo_Name: photoName }),
     });
 
     const result = await response.json();
@@ -85,11 +85,12 @@ export default function UploadPhotosClient({ initialPhotos }) {
 
   const handleUpload = async () => {
     if (base64String) {
-      const newPhotoId = await uploadToDB(base64String);
+      const newPhotoId = await uploadToDB(base64String, photoName);
       if (newPhotoId) {
         const newPhoto = {
           Photo_ID: newPhotoId,
           Photo: base64String,
+          Photo_Name: photoName
         };
         setPhotos([...photos, newPhoto]);
         setBase64String("");

@@ -63,6 +63,18 @@ export async function DELETE(req, res) {
             await pool.request()
             .input('Game_ID', sql.Int, Game_ID)
             .query('DELETE FROM Games WHERE Game_ID = @Game_ID');
+
+            await pool.request()
+            .input('Game_ID', sql.Int, Game_ID)
+            .query('DELETE FROM Goals WHERE Game_ID = @Game_ID');
+
+            await pool.request()
+            .input('Game_ID', sql.Int, Game_ID)
+            .query('DELETE FROM Penalties WHERE Game_ID = @Game_ID');
+
+            await pool.request()
+            .input('Game_ID', sql.Int, Game_ID)
+            .query('DELETE FROM Cards WHERE Game_ID = @Game_ID');
         }
         return NextResponse.json({ success: true });
 

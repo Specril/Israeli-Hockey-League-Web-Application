@@ -84,10 +84,11 @@ export default function FormComponent({ data }) {
     }
     message.success("Personal details changed successfully");
   };
-
-  const handleClearAll = () => {
-    setFormData(initialFormState);
-  };
+  
+//   DELETED IT SINCE IT CAN ANNOY THE USER
+  // const handleClearAll = () => {
+  //   setFormData(initialFormState);
+  // };
 
   useEffect(() => {
     if (isClient) {
@@ -111,7 +112,7 @@ export default function FormComponent({ data }) {
         onFinish={handleSubmit}
       >
         <Row gutter={16} align={"center"}>
-          <Col span={16}>
+          <Col span={24}>
             <Form.Item
               label={fieldLabels["Full_Name"]}
               name="Full_Name"
@@ -130,16 +131,10 @@ export default function FormComponent({ data }) {
             </Form.Item>
           </Col>
 
-          <Col span={16}>
+          <Col span={24}>
             <Form.Item
               label={fieldLabels["Phone"]}
               name="Phone"
-              rules={[
-                {
-                  required: true,
-                  message: `${fieldLabels["Phone"]} is required`,
-                },
-              ]}
             >
               <Input
                 name="Phone"
@@ -149,7 +144,7 @@ export default function FormComponent({ data }) {
             </Form.Item>
           </Col>
 
-          <Col span={16}>
+          <Col span={24}>
             <Form.Item
               label={fieldLabels["Email"]}
               name="Email"
@@ -168,8 +163,11 @@ export default function FormComponent({ data }) {
             </Form.Item>
           </Col>
 
-          <Col span={16}>
-            <Form.Item label={fieldLabels["Residence"]} name="Residence">
+          <Col span={24}>
+            <Form.Item
+              label={fieldLabels['Residence']}
+              name="Residence"
+            >
               <Input
                 name="Residence"
                 value={formData["Residence"]}
@@ -178,16 +176,10 @@ export default function FormComponent({ data }) {
             </Form.Item>
           </Col>
 
-          <Col span={16}>
+          <Col span={24}>
             <Form.Item
               label={fieldLabels["Date_of_Birth"]}
               name="Date_of_Birth"
-              rules={[
-                {
-                  required: true,
-                  message: `${fieldLabels["Date_of_Birth"]} is required`,
-                },
-              ]}
             >
               <DatePicker
                 format="YYYY-MM-DD"
@@ -200,18 +192,18 @@ export default function FormComponent({ data }) {
               />
             </Form.Item>
           </Col>
-          <Col span={16}></Col>
+
         </Row>
-        <Row gutter={16} align={"center"} justify={"center"}>
-          <Col span={8}>
+        <Row gutter={16}>
+          <Col span={24}>
             <Button type="primary" htmlType="submit" block>
               Send
             </Button>
           </Col>
-          <Col span={8}>
-            <Button type="default" onClick={handleClearAll} block>
+          <Col span={24}>
+            {/* <Button type="default" onClick={handleClearAll} block>
               Clear All
-            </Button>
+            </Button> */}
           </Col>
         </Row>
       </Form>
