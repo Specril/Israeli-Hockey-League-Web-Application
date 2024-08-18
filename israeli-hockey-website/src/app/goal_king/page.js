@@ -207,7 +207,7 @@ const Home = () => {
           </Flex>
         </section>
       }
-      allowed_user_types={["player"]}
+      allowed_user_types={[]}
     />
   );
 };
