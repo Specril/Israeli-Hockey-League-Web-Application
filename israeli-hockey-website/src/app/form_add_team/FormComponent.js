@@ -115,6 +115,9 @@ export default function FormComponent() {
       console.error('Error updating data', error);
       message.error('שגיאה בשליחת הטופס.');
     }
+        // for resetting the fields once sent
+    form.resetFields();
+    setFormData(initialFormState);
   };
 
   const handleClearAll = () => {

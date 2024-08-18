@@ -27,6 +27,7 @@ export default function FormComponent() {
   const [form] = Form.useForm();
   const [Team_IDOptions, setTeamsOptions] = useState([]);
   const [Age_options, setAge_options] = useState([]);
+  const [selectedLeague, setSelectedLeague] = useState(null);
 
 
   useEffect(() => {
@@ -72,6 +73,9 @@ export default function FormComponent() {
       ...prevData,
       [field]: value,
     }));
+    if (field === 'Age'){
+      setSelectedLeague(value)
+    }
   };
 
   const handleSubmit = async () => {
@@ -89,11 +93,18 @@ export default function FormComponent() {
     } catch (error) {
       console.alert('Error updating data');
     }
+        // for resetting the fields once sent
+    form.resetFields();
+    setFormData(initialFormState);
+    setSelectedLeague(null)
+    
+    
   };
 
   const handleClearAll = () => {
     form.resetFields();
     setFormData(initialFormState);
+    setSelectedLeague(null)
     if (isClient) {
       localStorage.removeItem('formDeleteTeam');
     }
@@ -145,8 +156,7 @@ export default function FormComponent() {
               </Select>
             </Form.Item>
           </Col>
-
-          <Col span={24}>
+                {selectedLeague && <Col span={24}>
             <Form.Item
               label={fieldLabels['Team_ID']}
               name="Team_ID"
@@ -168,7 +178,8 @@ export default function FormComponent() {
                 ))}
               </Select>
             </Form.Item>
-          </Col>
+          </Col>}
+          
         </Row>
         <Row gutter={16}>
           <Col span={12}>

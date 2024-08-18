@@ -147,6 +147,9 @@ export default function AddGameForm({ data }) {
     } catch (error) {
       console.alert('Error updating data');
     }
+    // for resetting the fields once sent
+    setFormData(initialFormState);
+    setSelectedLeague(null);
   }
 
   const handleClearAll = () => {

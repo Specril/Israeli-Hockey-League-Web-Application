@@ -56,6 +56,12 @@ export default function NavBar() {
       <Menu.Item key="3">
         <a href="browse_users">סקירת משתמשים</a>
       </Menu.Item>
+      <Menu.Item key="4">
+      <a href="form_add_league">הוספת ליגה חדשה</a>
+      </Menu.Item>
+      <Menu.Item key="5">
+      <a href="form_delete_league">מחיקת ליגה </a>
+      </Menu.Item>
     </Menu>
   );
 
@@ -101,6 +107,7 @@ export default function NavBar() {
         <li>
           <a href="form_personal_details">עדכון פרטים אישיים</a>
         </li>
+
         <li>
           <a href="authentication" className="login-button">התחברות</a>
         </li>

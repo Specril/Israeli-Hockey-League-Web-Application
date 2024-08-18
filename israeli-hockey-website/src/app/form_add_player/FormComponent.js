@@ -97,6 +97,9 @@ export default function FormComponent() {
     } catch (error) {
       console.alert('Error updating data');
     }
+        // for resetting the fields once sent
+    form.resetFields();
+    setFormData(initialFormState);
   };
 
   const handleClearAll = () => {

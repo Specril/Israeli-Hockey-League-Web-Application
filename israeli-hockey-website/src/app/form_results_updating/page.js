@@ -16,7 +16,7 @@ const queryGames = `select Game_ID, T_with_first_referee.League_ID, Age ,Home_Te
 
 (SELECT Games.League_ID, Game_ID, Home_Team_ID, Team_Name As Home_Team_Name, Away_Team_ID, Day,Date,Start_Time,Location, Referee_ID, Second_Referee_ID from Games 
 INNER JOIN Teams ON Home_Team_ID = Team_ID
-WHERE Games.League_ID = 1) AS T1
+) AS T1
 LEFT JOIN 
 Teams ON Away_Team_ID = Team_ID
 LEFT JOIN Users 
