@@ -53,7 +53,13 @@ export default function Page() {
   }, [userId]);
 
   if (!currentUser) {
-    return <div>טוען עמוד...</div>;
+    return (
+      <ProtectedPage content={
+      <div>טוען עמוד...</div>
+    }
+    allowed_user_types={["player", "coach", "fan", "admin", "referee"]}
+  />
+    )
   }
 
   return (
