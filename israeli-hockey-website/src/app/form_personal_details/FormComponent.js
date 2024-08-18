@@ -1,28 +1,28 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, Typography, Row, Col, DatePicker } from 'antd';
-import 'antd/dist/reset.css'; // Import Ant Design styles
+import React, { useState, useEffect } from "react";
+import { Form, Input, Button, Typography, Row, Col, DatePicker } from "antd";
+import "antd/dist/reset.css"; // Import Ant Design styles
 import "../style.css";
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
 
 const { Title } = Typography;
 
 export default function FormComponent({ data }) {
   const initialFormState = {
     Date_of_Birth: null,
-    Full_Name: '',
-    Phone: '',
-    Email: '',
-    Residence: ''
+    Full_Name: "",
+    Phone: "",
+    Email: "",
+    Residence: "",
   };
 
   const fieldLabels = {
-    Date_of_Birth: 'תאריך לידה',
-    Full_Name: 'שם מלא',
-    Phone: 'טלפון',
-    Email: 'מייל',
-    Residence: 'כתובת'
+    Date_of_Birth: "תאריך לידה",
+    Full_Name: "שם מלא",
+    Phone: "טלפון",
+    Email: "מייל",
+    Residence: "כתובת",
   };
 
   const [formData, setFormData] = useState(initialFormState);
@@ -34,11 +34,13 @@ export default function FormComponent({ data }) {
     // Initial load from props
     if (data && data.length > 0) {
       setFormData({
-        Date_of_Birth: data[0].Date_of_Birth ? dayjs(data[0].Date_of_Birth).format('YYYY-MM-DD') : null,
-        Full_Name: data[0].Full_Name || '',
-        Phone: data[0].Phone || '',
-        Email: data[0].Email || '',
-        Residence: data[0].Residence || ''
+        Date_of_Birth: data[0].Date_of_Birth
+          ? dayjs(data[0].Date_of_Birth).format("YYYY-MM-DD")
+          : null,
+        Full_Name: data[0].Full_Name || "",
+        Phone: data[0].Phone || "",
+        Email: data[0].Email || "",
+        Residence: data[0].Residence || "",
       });
     }
   }, [data]);
@@ -58,19 +60,19 @@ export default function FormComponent({ data }) {
   };
 
   const handleSubmit = async () => {
-    const final_data = { ...formData, User_ID: data[0]['User_ID'] };
+    const final_data = { ...formData, User_ID: data[0]["User_ID"] };
 
-    alert('Form Data JSON: ' + JSON.stringify(final_data));
+    alert("Form Data JSON: " + JSON.stringify(final_data));
     try {
-      await fetch('/api/form_personal_details', {
-        method: 'POST',
+      await fetch("/api/form_personal_details", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(final_data),
       });
     } catch (error) {
-      console.error('Error updating data', error);
+      console.error("Error updating data", error);
     }
   };
 
@@ -82,13 +84,15 @@ export default function FormComponent({ data }) {
     if (isClient) {
       form.setFieldsValue({
         ...formData,
-        Date_of_Birth: formData.Date_of_Birth ? dayjs(formData.Date_of_Birth, 'YYYY-MM-DD') : null,
+        Date_of_Birth: formData.Date_of_Birth
+          ? dayjs(formData.Date_of_Birth, "YYYY-MM-DD")
+          : null,
       });
     }
   }, [formData, form, isClient]);
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
+    <div style={{ maxWidth: "800px", margin: "0 auto", padding: "20px" }}>
       <Title level={3}>טופס פרטים אישיים </Title>
       <Form
         form={form}
@@ -97,21 +101,21 @@ export default function FormComponent({ data }) {
         onValuesChange={handleChange}
         onFinish={handleSubmit}
       >
-        <Row gutter={16}>
+        <Row gutter={16} align={"center"}>
           <Col span={16}>
             <Form.Item
-              label={fieldLabels['Full_Name']}
+              label={fieldLabels["Full_Name"]}
               name="Full_Name"
               rules={[
                 {
                   required: true,
-                  message: `${fieldLabels['Full_Name']} is required`,
+                  message: `${fieldLabels["Full_Name"]} is required`,
                 },
               ]}
             >
               <Input
                 name="Full_Name"
-                value={formData['Full_Name']}
+                value={formData["Full_Name"]}
                 onChange={(e) => handleChange({ Full_Name: e.target.value })}
               />
             </Form.Item>
@@ -119,18 +123,18 @@ export default function FormComponent({ data }) {
 
           <Col span={16}>
             <Form.Item
-              label={fieldLabels['Phone']}
+              label={fieldLabels["Phone"]}
               name="Phone"
               rules={[
                 {
                   required: true,
-                  message: `${fieldLabels['Phone']} is required`,
+                  message: `${fieldLabels["Phone"]} is required`,
                 },
               ]}
             >
               <Input
                 name="Phone"
-                value={formData['Phone']}
+                value={formData["Phone"]}
                 onChange={(e) => handleChange({ Phone: e.target.value })}
               />
             </Form.Item>
@@ -138,31 +142,28 @@ export default function FormComponent({ data }) {
 
           <Col span={16}>
             <Form.Item
-              label={fieldLabels['Email']}
+              label={fieldLabels["Email"]}
               name="Email"
               rules={[
                 {
                   required: true,
-                  message: `${fieldLabels['Email']} is required`,
+                  message: `${fieldLabels["Email"]} is required`,
                 },
               ]}
             >
               <Input
                 name="Email"
-                value={formData['Email']}
+                value={formData["Email"]}
                 onChange={(e) => handleChange({ Email: e.target.value })}
               />
             </Form.Item>
           </Col>
 
           <Col span={16}>
-            <Form.Item
-              label={fieldLabels['Residence']}
-              name="Residence"
-            >
+            <Form.Item label={fieldLabels["Residence"]} name="Residence">
               <Input
                 name="Residence"
-                value={formData['Residence']}
+                value={formData["Residence"]}
                 onChange={(e) => handleChange({ Residence: e.target.value })}
               />
             </Form.Item>
@@ -170,26 +171,29 @@ export default function FormComponent({ data }) {
 
           <Col span={16}>
             <Form.Item
-              label={fieldLabels['Date_of_Birth']}
+              label={fieldLabels["Date_of_Birth"]}
               name="Date_of_Birth"
               rules={[
                 {
                   required: true,
-                  message: `${fieldLabels['Date_of_Birth']} is required`,
+                  message: `${fieldLabels["Date_of_Birth"]} is required`,
                 },
               ]}
             >
               <DatePicker
                 format="YYYY-MM-DD"
-                value={formData['Date_of_Birth'] ? dayjs(formData['Date_of_Birth'], 'YYYY-MM-DD') : null}
+                value={
+                  formData["Date_of_Birth"]
+                    ? dayjs(formData["Date_of_Birth"], "YYYY-MM-DD")
+                    : null
+                }
                 onChange={handleDateChange}
               />
             </Form.Item>
           </Col>
-          <Col span={16}>
-          </Col>
+          <Col span={16}></Col>
         </Row>
-        <Row gutter={16}>
+        <Row gutter={16} align={"center"} justify={"center"}>
           <Col span={8}>
             <Button type="primary" htmlType="submit" block>
               Send
