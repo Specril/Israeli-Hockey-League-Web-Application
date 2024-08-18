@@ -10,6 +10,7 @@ import {
   Col,
   Select,
   InputNumber,
+  message,
 } from "antd";
 import "antd/dist/reset.css";
 import "../style.css";
@@ -89,8 +90,6 @@ export default function FormComponent() {
   const handleSubmit = async () => {
     const final_data = { ...formData };
 
-    alert("Form Data JSON: " + JSON.stringify(final_data));
-
     try {
       await fetch("/api/form_manage_player", {
         method: "POST",
@@ -102,6 +101,7 @@ export default function FormComponent() {
     } catch (error) {
       console.alert("Error updating data");
     }
+    message.success("Player added successfully");
   };
 
   const handleClearAll = () => {

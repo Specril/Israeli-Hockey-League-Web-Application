@@ -1,7 +1,16 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Form, Input, Button, Typography, Row, Col, DatePicker } from "antd";
+import {
+  Form,
+  Input,
+  Button,
+  Typography,
+  Row,
+  Col,
+  DatePicker,
+  message,
+} from "antd";
 import "antd/dist/reset.css"; // Import Ant Design styles
 import "../style.css";
 import dayjs from "dayjs";
@@ -62,7 +71,6 @@ export default function FormComponent({ data }) {
   const handleSubmit = async () => {
     const final_data = { ...formData, User_ID: data[0]["User_ID"] };
 
-    alert("Form Data JSON: " + JSON.stringify(final_data));
     try {
       await fetch("/api/form_personal_details", {
         method: "POST",
@@ -74,6 +82,7 @@ export default function FormComponent({ data }) {
     } catch (error) {
       console.error("Error updating data", error);
     }
+    message.success("Personal details changed successfully");
   };
 
   const handleClearAll = () => {

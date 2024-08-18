@@ -10,6 +10,7 @@ import {
   Col,
   Select,
   InputNumber,
+  message,
 } from "antd";
 import "antd/dist/reset.css";
 import "../style.css";
@@ -86,8 +87,6 @@ export default function FormComponent({ data }) {
         : formData.Team_ID,
     };
 
-    alert("Form Data JSON: " + JSON.stringify(final_data));
-
     try {
       await fetch("/api/manage_teams_in_leagues", {
         method: "DELETE",
@@ -99,6 +98,7 @@ export default function FormComponent({ data }) {
     } catch (error) {
       console.error("Error updating data");
     }
+    message.success("Team deleted from league successfully");
   };
 
   const handleClearAll = () => {

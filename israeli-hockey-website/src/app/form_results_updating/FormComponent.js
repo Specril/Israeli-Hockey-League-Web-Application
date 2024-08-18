@@ -10,6 +10,7 @@ import {
   Col,
   Select,
   TimePicker,
+  message,
 } from "antd";
 import "antd/dist/reset.css"; // Import Ant Design styles
 import "../style.css";
@@ -189,8 +190,6 @@ export default function UploadGameResultForm({ data }) {
       ],
     };
 
-    alert("Form Data JSON: " + JSON.stringify(final_data));
-
     try {
       const response = await fetch("/api/form_results_updating", {
         // change dir
@@ -203,6 +202,7 @@ export default function UploadGameResultForm({ data }) {
     } catch (error) {
       console.error("Error updating data");
     }
+    message.success("Results updated successfully");
   };
 
   const handleClearAll = () => {

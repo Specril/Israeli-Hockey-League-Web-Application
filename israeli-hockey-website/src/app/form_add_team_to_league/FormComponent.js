@@ -10,6 +10,7 @@ import {
   Col,
   Select,
   InputNumber,
+  message,
 } from "antd";
 import "antd/dist/reset.css";
 import "../style.css";
@@ -90,8 +91,6 @@ export default function FormComponent({ data }) {
       ...formData,
     };
 
-    alert("Form Data JSON: " + JSON.stringify(final_data));
-
     try {
       const response = await fetch("/api/manage_teams_in_leagues", {
         method: "POST",
@@ -103,6 +102,7 @@ export default function FormComponent({ data }) {
     } catch (error) {
       console.alert("Error updating data");
     }
+    message.success("Team added to league successfully");
   };
 
   const handleClearAll = () => {

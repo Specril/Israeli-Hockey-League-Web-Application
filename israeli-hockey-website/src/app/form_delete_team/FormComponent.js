@@ -1,7 +1,16 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Form, Input, Button, Typography, Row, Col, Select } from "antd";
+import {
+  Form,
+  Input,
+  Button,
+  Typography,
+  Row,
+  Col,
+  Select,
+  message,
+} from "antd";
 import "antd/dist/reset.css";
 import "../style.css";
 import { dataFetchLeague, dataFetchTeams } from "./fetching";
@@ -73,7 +82,6 @@ export default function FormComponent() {
 
   const handleSubmit = async () => {
     const final_data = { ...formData };
-    alert("Form Data JSON: " + JSON.stringify(final_data));
 
     try {
       const response = await fetch("/api/form_manage_team", {
@@ -86,6 +94,7 @@ export default function FormComponent() {
     } catch (error) {
       console.alert("Error updating data");
     }
+    message.success("Team deleted successfully");
   };
 
   const handleClearAll = () => {

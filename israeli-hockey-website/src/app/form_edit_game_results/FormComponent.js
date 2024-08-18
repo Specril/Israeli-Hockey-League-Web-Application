@@ -1,7 +1,16 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Form, Button, Typography, Row, Col, Select, Table } from "antd";
+import {
+  Form,
+  Button,
+  Typography,
+  Row,
+  Col,
+  Select,
+  Table,
+  message,
+} from "antd";
 import "antd/dist/reset.css";
 import "../style.css";
 import moment from "moment";
@@ -73,8 +82,6 @@ export default function EditGameInfo({ data }) {
       Card_IDs: selectedCards,
     };
 
-    alert("Form Data JSON: " + JSON.stringify(finalData));
-
     try {
       const response = await fetch("/api/form_results_updating", {
         method: "DELETE",
@@ -86,6 +93,7 @@ export default function EditGameInfo({ data }) {
     } catch (error) {
       console.error("Error updating data:", error);
     }
+    message.success("Game results changed successfully");
   };
 
   const columns = {

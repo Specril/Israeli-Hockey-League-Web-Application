@@ -11,6 +11,7 @@ import {
   DatePicker,
   Select,
   TimePicker,
+  message,
 } from "antd";
 import "antd/dist/reset.css"; // Import Ant Design styles
 import "../style.css"; // Ensure you have the correct path for your CSS
@@ -142,8 +143,6 @@ export default function AddGameForm({ data }) {
   };
 
   const handleSubmit = async () => {
-    alert("Form Data JSON: " + JSON.stringify(formData));
-
     try {
       const response = await fetch("/api/form_manage_game", {
         method: "POST",
@@ -155,6 +154,7 @@ export default function AddGameForm({ data }) {
     } catch (error) {
       console.alert("Error updating data");
     }
+    message.success("Game added successfully");
   };
 
   const handleClearAll = () => {

@@ -10,6 +10,7 @@ import {
   Col,
   Select,
   InputNumber,
+  message,
 } from "antd";
 import "antd/dist/reset.css";
 import "../style.css";
@@ -92,8 +93,6 @@ export default function FormComponent() {
         : formData.Location_ID,
     };
 
-    alert("Form Data JSON: " + JSON.stringify(final_data));
-
     try {
       const response = await fetch("/api/form_manage_team", {
         method: "POST",
@@ -105,6 +104,7 @@ export default function FormComponent() {
     } catch (error) {
       console.error("Error updating data");
     }
+    message.success("Team added successfully");
   };
 
   const handleClearAll = () => {
