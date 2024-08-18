@@ -1,27 +1,36 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, Typography, Row, Col, Select, InputNumber } from 'antd';
-import 'antd/dist/reset.css';
+import React, { useState, useEffect } from "react";
+import {
+  Form,
+  Input,
+  Button,
+  Typography,
+  Row,
+  Col,
+  Select,
+  InputNumber,
+} from "antd";
+import "antd/dist/reset.css";
 import "../style.css";
-import { dataFetchLeagues, dataFetchLocations } from './fetching';
+import { dataFetchLeagues, dataFetchLocations } from "./fetching";
 
 const { Title } = Typography;
 const { Option } = Select;
 
 export default function FormComponent() {
   const initialFormState = {
-    Team_Name: '',
-    Age: '',
-    Location_ID: '',
-    New_Location: '', // For new location name
+    Team_Name: "",
+    Age: "",
+    Location_ID: "",
+    New_Location: "", // For new location name
   };
 
   const fieldLabels = {
-    Team_Name: 'שם קבוצה',
-    Age: 'גיל',
-    Location_ID: 'מיקום',
-    New_Location: 'מיקום חדש', // Label for new location
+    Team_Name: "שם קבוצה",
+    Age: "גיל",
+    Location_ID: "מיקום",
+    New_Location: "מיקום חדש", // Label for new location
   };
 
   const [formData, setFormData] = useState(initialFormState);
@@ -33,7 +42,7 @@ export default function FormComponent() {
 
   useEffect(() => {
     setIsClient(true);
-    const savedFormData = localStorage.getItem('formAddTeam');
+    const savedFormData = localStorage.getItem("formAddTeam");
     if (savedFormData) {
       setFormData(JSON.parse(savedFormData));
     }
@@ -41,7 +50,7 @@ export default function FormComponent() {
 
   useEffect(() => {
     if (isClient) {
-      localStorage.setItem('formAddTeam', JSON.stringify(formData));
+      localStorage.setItem("formAddTeam", JSON.stringify(formData));
     }
   }, [formData, isClient]);
 
@@ -49,7 +58,7 @@ export default function FormComponent() {
     const fetchData = async () => {
       const fetchedLeagues = await dataFetchLeagues();
       const fetchedLocations = await dataFetchLocations();
-      setAgeOptions(fetchedLeagues.map(obj => obj.Age));
+      setAgeOptions(fetchedLeagues.map((obj) => obj.Age));
       setLocationOptions(fetchedLocations);
     };
     fetchData();
@@ -70,7 +79,7 @@ export default function FormComponent() {
       setFormData((prevData) => ({
         ...prevData,
         [field]: value,
-        New_Location: '',
+        New_Location: "",
       }));
     }
   };
@@ -78,21 +87,23 @@ export default function FormComponent() {
   const handleSubmit = async () => {
     const final_data = {
       ...formData,
-      Location_ID: isOtherLocation ? formData.New_Location : formData.Location_ID,
+      Location_ID: isOtherLocation
+        ? formData.New_Location
+        : formData.Location_ID,
     };
 
-    alert('Form Data JSON: ' + JSON.stringify(final_data));
+    alert("Form Data JSON: " + JSON.stringify(final_data));
 
     try {
-      const response = await fetch('/api/form_manage_team', {
-        method: 'POST',
+      const response = await fetch("/api/form_manage_team", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(final_data),
       });
     } catch (error) {
-      console.error('Error updating data');
+      console.error("Error updating data");
     }
   };
 
@@ -101,7 +112,7 @@ export default function FormComponent() {
     setFormData(initialFormState);
     setIsOtherLocation(false);
     if (isClient) {
-      localStorage.removeItem('formAddTeam');
+      localStorage.removeItem("formAddTeam");
     }
   };
 
@@ -114,7 +125,7 @@ export default function FormComponent() {
   }, [formData, form, isClient]);
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
+    <div style={{ maxWidth: "800px", margin: "0 auto", padding: "20px" }}>
       <Title level={3}>טופס הוספת קבוצה חדשה</Title>
       <Form
         form={form}
@@ -126,13 +137,18 @@ export default function FormComponent() {
         <Row gutter={16}>
           <Col span={24}>
             <Form.Item
-              label={fieldLabels['Team_Name']}
+              label={fieldLabels["Team_Name"]}
               name="Team_Name"
-              rules={[{ required: true, message: `${fieldLabels['Team_Name']} is required` }]}
+              rules={[
+                {
+                  required: true,
+                  message: `${fieldLabels["Team_Name"]} is required`,
+                },
+              ]}
             >
               <Input
                 name="Team_Name"
-                value={formData['Team_Name']}
+                value={formData["Team_Name"]}
                 onChange={(e) => handleChange({ Team_Name: e.target.value })}
               />
             </Form.Item>
@@ -140,13 +156,20 @@ export default function FormComponent() {
 
           <Col span={24}>
             <Form.Item
-              label={fieldLabels['Age']}
+              label={fieldLabels["Age"]}
               name="Age"
-              rules={[{ required: true, message: `${fieldLabels['Age']} is required` }]}
+              rules={[
+                {
+                  required: true,
+                  message: `${fieldLabels["Age"]} is required`,
+                },
+              ]}
             >
               <Select
-                value={formData['Age']}
-                onChange={(value) => handleSelectChange(value, 'Age')}
+                value={formData["Age"]}
+                onChange={(value) => handleSelectChange(value, "Age")}
+                showSearch
+                optionFilterProp="children"
               >
                 {ageOptions.map((option) => (
                   <Option key={option} value={option}>
@@ -159,14 +182,19 @@ export default function FormComponent() {
 
           <Col span={24}>
             <Form.Item
-              label={fieldLabels['Location_ID']}
+              label={fieldLabels["Location_ID"]}
               name="Location_ID"
-              rules={[{ required: true, message: `${fieldLabels['Location_ID']} is required` }]}
+              rules={[
+                {
+                  required: true,
+                  message: `${fieldLabels["Location_ID"]} is required`,
+                },
+              ]}
             >
               <Select
                 showSearch
-                value={formData['Location_ID']}
-                onChange={(value) => handleSelectChange(value, 'Location_ID')}
+                value={formData["Location_ID"]}
+                onChange={(value) => handleSelectChange(value, "Location_ID")}
                 filterOption={(input, option) =>
                   option.children.toLowerCase().includes(input.toLowerCase())
                 }
@@ -186,14 +214,21 @@ export default function FormComponent() {
           {isOtherLocation && (
             <Col span={24}>
               <Form.Item
-                label={fieldLabels['New_Location']}
+                label={fieldLabels["New_Location"]}
                 name="New_Location"
-                rules={[{ required: true, message: `${fieldLabels['New_Location']} is required` }]}
+                rules={[
+                  {
+                    required: true,
+                    message: `${fieldLabels["New_Location"]} is required`,
+                  },
+                ]}
               >
                 <Input
                   name="New_Location"
-                  value={formData['New_Location']}
-                  onChange={(e) => handleChange({ New_Location: e.target.value })}
+                  value={formData["New_Location"]}
+                  onChange={(e) =>
+                    handleChange({ New_Location: e.target.value })
+                  }
                 />
               </Form.Item>
             </Col>

@@ -181,6 +181,8 @@ const Home = () => {
               placeholder="Select a league"
               onChange={handleLeagueChange}
               value={selectedLeague}
+              showSearch
+              optionFilterProp="children"
             >
               {leagues.map((league) => (
                 <Option key={league.League_ID} value={league.League_ID}>

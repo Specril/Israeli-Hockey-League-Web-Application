@@ -1,35 +1,39 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, Typography, Row, Col, Select, InputNumber } from 'antd';
-import 'antd/dist/reset.css';
+import React, { useState, useEffect } from "react";
+import {
+  Form,
+  Input,
+  Button,
+  Typography,
+  Row,
+  Col,
+  Select,
+  InputNumber,
+} from "antd";
+import "antd/dist/reset.css";
 import "../style.css";
-import { dataFetchLeague, dataFetchTeams } from './fetching';
-
+import { dataFetchLeague, dataFetchTeams } from "./fetching";
 
 const { Title } = Typography;
 const { Option } = Select;
 
 export default function FormComponent({ data }) {
   const initialFormState = {
-    Team_ID: '',
-    League_ID: '',
+    Team_ID: "",
+    League_ID: "",
   };
 
   const fieldLabels = {
-    Team_ID: 'שם קבוצה',
-    League_ID: 'ליגה',
+    Team_ID: "שם קבוצה",
+    League_ID: "ליגה",
   };
-
-
 
   const [formData, setFormData] = useState(initialFormState);
   const [isClient, setIsClient] = useState(false);
   const [form] = Form.useForm();
   const [teamsOptions, setTeamsOptions] = useState([]);
   const [League_ID_options, setLeagueOptions] = useState([]);
-
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,10 +45,9 @@ export default function FormComponent({ data }) {
     fetchData();
   }, []);
 
-
   useEffect(() => {
     setIsClient(true);
-    const savedFormData = localStorage.getItem('formDeleteTeamFromLeague');
+    const savedFormData = localStorage.getItem("formDeleteTeamFromLeague");
     if (savedFormData) {
       setFormData(JSON.parse(savedFormData));
     }
@@ -52,12 +55,15 @@ export default function FormComponent({ data }) {
 
   useEffect(() => {
     if (isClient) {
-      localStorage.setItem('formDeleteTeamFromLeague', JSON.stringify(formData));
+      localStorage.setItem(
+        "formDeleteTeamFromLeague",
+        JSON.stringify(formData)
+      );
     }
   }, [formData, isClient]);
 
   const handleChange = (changedValues) => {
-    console.log('inside handle change')
+    console.log("inside handle change");
     setFormData((prevData) => ({
       ...prevData,
       ...changedValues,
@@ -65,32 +71,33 @@ export default function FormComponent({ data }) {
   };
 
   const handleSelectChange = (value, field) => {
-    console.log('inside handle select change')
+    console.log("inside handle select change");
     setFormData((prevData) => ({
       ...prevData,
       [field]: value,
     }));
-
   };
 
   const handleSubmit = async () => {
     const final_data = {
       ...formData,
-      Team_ID: formData.Team_ID.includes('-') ? formData.Team_ID.split('-')[0] : formData.Team_ID,
+      Team_ID: formData.Team_ID.includes("-")
+        ? formData.Team_ID.split("-")[0]
+        : formData.Team_ID,
     };
 
-    alert('Form Data JSON: ' + JSON.stringify(final_data));
+    alert("Form Data JSON: " + JSON.stringify(final_data));
 
     try {
-      await fetch('/api/manage_teams_in_leagues', {
-        method: 'DELETE',
+      await fetch("/api/manage_teams_in_leagues", {
+        method: "DELETE",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(final_data),
       });
     } catch (error) {
-      console.error('Error updating data');
+      console.error("Error updating data");
     }
   };
 
@@ -98,7 +105,7 @@ export default function FormComponent({ data }) {
     form.resetFields();
     setFormData(initialFormState);
     if (isClient) {
-      localStorage.removeItem('formDeleteTeamFromLeague');
+      localStorage.removeItem("formDeleteTeamFromLeague");
     }
   };
 
@@ -111,12 +118,13 @@ export default function FormComponent({ data }) {
   }, [formData, form, isClient]);
 
   const filteredTeams = formData.League_ID
-    ? teamsOptions.filter(option => option.value.League_ID === formData.League_ID)
+    ? teamsOptions.filter(
+        (option) => option.value.League_ID === formData.League_ID
+      )
     : teamsOptions;
 
-
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
+    <div style={{ maxWidth: "800px", margin: "0 auto", padding: "20px" }}>
       <Title level={3}>טופס מחיקת קבוצה מליגה</Title>
       <Form
         form={form}
@@ -128,19 +136,21 @@ export default function FormComponent({ data }) {
         <Row gutter={16}>
           <Col span={24}>
             <Form.Item
-              label={fieldLabels['League_ID']}
+              label={fieldLabels["League_ID"]}
               name="League_ID"
               rules={[
                 {
                   required: true,
-                  message: `${fieldLabels['League_ID']} is required`,
+                  message: `${fieldLabels["League_ID"]} is required`,
                 },
               ]}
             >
               <Select
-                value={formData['League_ID']}
-                onChange={(value) => handleSelectChange(value, 'League_ID')}
-                style={{ width: '100%' }}
+                value={formData["League_ID"]}
+                onChange={(value) => handleSelectChange(value, "League_ID")}
+                style={{ width: "100%" }}
+                showSearch
+                optionFilterProp="children"
               >
                 {League_ID_options.map((option) => (
                   <Option key={option.key} value={option.key}>
@@ -153,19 +163,21 @@ export default function FormComponent({ data }) {
 
           <Col span={24}>
             <Form.Item
-              label={fieldLabels['Team_ID']}
+              label={fieldLabels["Team_ID"]}
               name="Team_ID"
               rules={[
                 {
                   required: true,
-                  message: `${fieldLabels['Team_ID']} is required`,
+                  message: `${fieldLabels["Team_ID"]} is required`,
                 },
               ]}
             >
               <Select
-                value={formData['Team_ID']}
-                onChange={(value) => handleSelectChange(value, 'Team_ID')}
-                style={{ width: '100%' }}
+                value={formData["Team_ID"]}
+                onChange={(value) => handleSelectChange(value, "Team_ID")}
+                style={{ width: "100%" }}
+                showSearch
+                optionFilterProp="children"
               >
                 {filteredTeams.map((option) => (
                   <Option key={option.key} value={option.key}>

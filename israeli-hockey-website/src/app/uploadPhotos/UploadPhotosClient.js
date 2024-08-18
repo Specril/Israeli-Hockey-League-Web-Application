@@ -205,6 +205,8 @@ export default function UploadPhotosClient({ initialPhotos }) {
                   placeholder="בחר תמונה"
                   onChange={handlePhotoSelect}
                   value={selectedPhotoId}
+                  showSearch
+                  optionFilterProp="children"
                 >
                   {photos.map((photo) => (
                     <Option
