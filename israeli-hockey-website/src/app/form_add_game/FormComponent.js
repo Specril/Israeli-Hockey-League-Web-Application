@@ -17,6 +17,7 @@ import "antd/dist/reset.css"; // Import Ant Design styles
 import "../style.css"; // Ensure you have the correct path for your CSS
 import moment from "moment";
 import dayjs from "dayjs";
+import 'dayjs/locale/he'; // Import Hebrew locale
 import {
   dataFetchLeague,
   dataFetchTeams,
@@ -53,10 +54,6 @@ export default function AddGameForm({ data }) {
   };
 
   const DayOptions = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
-  // const League_ID_options = data[1];
-  // const locations_options = data[2];
-  // const Referee_IDOptions =data[3];
-  // const teams = data[0]
 
   const [formData, setFormData] = useState(initialFormState);
   const [isClient, setIsClient] = useState(false);
@@ -114,19 +111,22 @@ export default function AddGameForm({ data }) {
     if (isClient) {
       form.setFieldsValue({
         ...formData,
-        Date: formData.Date ? dayjs(formData.Date, 'YYYY-MM-DD') : null,
+        Date: formData.Date ? dayjs(formData.Date, 'YYYY-MM-DD').locale('he') : null,
         Start_Time: formData.Start_Time ? dayjs(formData.Start_Time, 'HH:mm') : null,
+        Day: formData.Day, // Ensure 'Day' is correctly set
       });
     }
   }, [formData, form, isClient]);
 
   const handleDateChange = (date, dateString) => {
+    const dayName = date ? dayjs(date).locale('he').format('dddd') : ''; // Get the day name in Hebrew
     setFormData(prevData => ({
       ...prevData,
       Date: date ? date.format('YYYY-MM-DD') : '',
+      Day: dayName, // Update the day in formData
     }));
   };
-  
+
   const handleTimeChange = (time, timeString) => {
     setFormData(prevData => ({
       ...prevData,
@@ -216,7 +216,7 @@ export default function AddGameForm({ data }) {
                 format="YYYY-MM-DD"
                 value={
                   formData["Date"]
-                    ? dayjs(formData["Date"], "YYYY-MM-DD")
+                    ? dayjs(formData["Date"], "YYYY-MM-DD").locale('he')
                     : null
                 }
                 onChange={handleDateChange}
