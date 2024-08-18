@@ -1,44 +1,52 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, Typography, Row, Col, Select } from 'antd';
-import 'antd/dist/reset.css';
+import React, { useState, useEffect } from "react";
+import {
+  Form,
+  Input,
+  Button,
+  Typography,
+  Row,
+  Col,
+  Select,
+  message,
+} from "antd";
+import "antd/dist/reset.css";
 import "../style.css";
-import { dataFetchLeague, dataFetchTeams } from './fetching';
+import { dataFetchLeague, dataFetchTeams } from "./fetching";
 
 const { Title } = Typography;
 const { Option } = Select;
 
 export default function FormComponent() {
   const initialFormState = {
-    Age: '',
-    Team_ID: '',
+    Age: "",
+    Team_ID: "",
   };
 
   const fieldLabels = {
-    Age: 'ליגה-גיל',
-    Team_ID: 'קבוצה',
+    Age: "ליגה-גיל",
+    Team_ID: "קבוצה",
   };
-
-
 
   const [formData, setFormData] = useState(initialFormState);
   const [isClient, setIsClient] = useState(false);
   const [form] = Form.useForm();
   const [Team_IDOptions, setTeamsOptions] = useState([]);
   const [Age_options, setAge_options] = useState([]);
+  const [selectedLeague, setSelectedLeague] = useState(null);
 
 
   useEffect(() => {
     const fetchData = async () => {
       const fetchedLeagues = await dataFetchLeague();
       const fetchedTeams = await dataFetchTeams();
-      const teamOptions = fetchedTeams.map(team => ({
+      const teamOptions = fetchedTeams.map((team) => ({
         key: team.Team_ID,
         value: {
           Age: team.Age,
           Team_Name: team.Team_Name,
-        }
+        },
       }));
       setAge_options(fetchedLeagues);
       setTeamsOptions(teamOptions);
@@ -48,7 +56,7 @@ export default function FormComponent() {
 
   useEffect(() => {
     setIsClient(true);
-    const savedFormData = localStorage.getItem('formDeleteTeam');
+    const savedFormData = localStorage.getItem("formDeleteTeam");
     if (savedFormData) {
       setFormData(JSON.parse(savedFormData));
     }
@@ -56,7 +64,7 @@ export default function FormComponent() {
 
   useEffect(() => {
     if (isClient) {
-      localStorage.setItem('formDeleteTeam', JSON.stringify(formData));
+      localStorage.setItem("formDeleteTeam", JSON.stringify(formData));
     }
   }, [formData, isClient]);
 
@@ -72,30 +80,40 @@ export default function FormComponent() {
       ...prevData,
       [field]: value,
     }));
+    if (field === 'Age'){
+      setSelectedLeague(value)
+    }
   };
 
   const handleSubmit = async () => {
     const final_data = { ...formData };
-    alert('Form Data JSON: ' + JSON.stringify(final_data));
 
     try {
-      const response = await fetch('/api/form_manage_team', {
-        method: 'DELETE',
+      const response = await fetch("/api/form_manage_team", {
+        method: "DELETE",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(final_data),
       });
     } catch (error) {
-      console.alert('Error updating data');
+      console.alert("Error updating data");
     }
+        // for resetting the fields once sent
+    form.resetFields();
+    setFormData(initialFormState);
+    setSelectedLeague(null)
+    
+    
+    message.success("Team deleted successfully");
   };
 
   const handleClearAll = () => {
     form.resetFields();
     setFormData(initialFormState);
+    setSelectedLeague(null)
     if (isClient) {
-      localStorage.removeItem('formDeleteTeam');
+      localStorage.removeItem("formDeleteTeam");
     }
   };
 
@@ -108,11 +126,11 @@ export default function FormComponent() {
   }, [formData, form, isClient]);
 
   const filteredTeams = formData.Age
-    ? Team_IDOptions.filter(option => option.value.Age === formData.Age)
+    ? Team_IDOptions.filter((option) => option.value.Age === formData.Age)
     : Team_IDOptions;
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
+    <div style={{ maxWidth: "800px", margin: "0 auto", padding: "20px" }}>
       <Title level={3}>טופס מחיקת קבוצת גיל</Title>
       <Form
         form={form}
@@ -124,18 +142,20 @@ export default function FormComponent() {
         <Row gutter={16}>
           <Col span={24}>
             <Form.Item
-              label={fieldLabels['Age']}
+              label={fieldLabels["Age"]}
               name="Age"
               rules={[
                 {
                   required: true,
-                  message: `${fieldLabels['Age']} is required`,
+                  message: `${fieldLabels["Age"]} is required`,
                 },
               ]}
             >
               <Select
-                value={formData['Age']}
-                onChange={(value) => handleSelectChange(value, 'Age')}
+                value={formData["Age"]}
+                onChange={(value) => handleSelectChange(value, "Age")}
+                showSearch
+                optionFilterProp="children"
               >
                 {Age_options.map((option) => (
                   <Option key={option} value={option}>
@@ -145,21 +165,22 @@ export default function FormComponent() {
               </Select>
             </Form.Item>
           </Col>
-
-          <Col span={24}>
+                {selectedLeague && <Col span={24}>
             <Form.Item
-              label={fieldLabels['Team_ID']}
+              label={fieldLabels["Team_ID"]}
               name="Team_ID"
               rules={[
                 {
                   required: true,
-                  message: `${fieldLabels['Team_ID']} is required`,
+                  message: `${fieldLabels["Team_ID"]} is required`,
                 },
               ]}
             >
               <Select
-                value={formData['Team_ID']}
-                onChange={(value) => handleSelectChange(value, 'Team_ID')}
+                value={formData["Team_ID"]}
+                onChange={(value) => handleSelectChange(value, "Team_ID")}
+                showSearch
+                optionFilterProp="children"
               >
                 {filteredTeams.map((option) => (
                   <Option key={option.key} value={option.key}>
@@ -168,7 +189,8 @@ export default function FormComponent() {
                 ))}
               </Select>
             </Form.Item>
-          </Col>
+          </Col>}
+          
         </Row>
         <Row gutter={16}>
           <Col span={12}>

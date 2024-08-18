@@ -3,7 +3,7 @@ import { getConnection } from "@/app/lib/db";
 import sql from 'mssql';
 
 export async function POST(req, res) {
-    let {Team_Name, Location_ID, Age, New_Location} = await req.json();
+    let {Team_Name, Location_ID, Age, New_Location, Photo} = await req.json();
     try {
         const pool = await getConnection();
         if (New_Location){
@@ -35,6 +35,13 @@ export async function POST(req, res) {
             .input('Location_ID', sql.Int, Location_ID)
             .input('Age', sql.NVarChar, Age)
             .query('INSERT INTO Teams (Team_ID, Team_Name, Location_ID, Age) VALUES (@Team_ID, @Team_Name, @Location_ID, @Age)')
+        
+        // insert new team photo to TeamsLogos table
+        await pool.request()
+            .input('Team_ID',sql.Int, newTeamId)
+            .input('Photo', sql.Text, Photo)
+            .query('INSERT INTO TeamsLogos (Team_ID, Photo) VALUES (@Team_ID, @Photo)')
+            
         return NextResponse.json({ success: true});
 
     } catch (error) {
@@ -50,6 +57,14 @@ export async function DELETE(req, res) {
         await pool.request()
             .input('Team_ID', sql.Int, Team_ID)
             .query('DELETE FROM Teams WHERE Team_ID = @Team_ID');
+
+        await pool.request()
+            .input('Team_ID', sql.Int, Team_ID)
+            .query('DELETE FROM TeamsLogos WHERE Team_ID = @Team_ID');
+
+        await pool.request()
+            .input('Team_ID',sql.Int, Team_ID)
+            .query('DELETE FROM TeamsInLeagues WHERE Team_ID = @Team_ID;')
         return NextResponse.json({ success: true });
 
     } catch (error) {
