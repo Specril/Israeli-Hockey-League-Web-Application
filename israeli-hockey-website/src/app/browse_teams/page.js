@@ -2,8 +2,10 @@
 
 import "../style.css";
 import { useEffect, useState } from "react";
-import { Select, Spin } from "antd";
+import { Select, Spin, Alert } from "antd";
 import TeamOverview from "./TeamOverview";
+import ProtectedPage from "../ProtectedPage/ProtectedPage";
+
 
 const { Option } = Select;
 
@@ -199,6 +201,7 @@ const Home = () => {
   }
 
   return (
+    <ProtectedPage content={
     <>
       <Select
         style={{
@@ -224,6 +227,9 @@ const Home = () => {
         league={selectedLeague}
       />
     </>
+    }
+    allowed_user_types={[]}
+  />
   );
 };
 

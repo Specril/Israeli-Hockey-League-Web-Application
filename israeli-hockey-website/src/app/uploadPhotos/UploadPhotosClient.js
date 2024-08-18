@@ -3,19 +3,18 @@
 import React, { useState } from 'react';
 import { Layout, Upload, Button, Typography, message, Input, Card, Select } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import ProtectedPage from "../ProtectedPage/ProtectedPage";
 
 const { Header, Content, Footer } = Layout;
 const { Option } = Select;
 
-const uploadToDB = async (base64String) => {
+const uploadToDB = async (base64String, photoName) => {
   try {
     const response = await fetch('/api/form_manage_photo', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ Photo: base64String }),
+      body: JSON.stringify({ Photo: base64String, Photo_Name: photoName }),
     });
 
     const result = await response.json();
@@ -76,11 +75,12 @@ export default function UploadPhotosClient({ initialPhotos }) {
 
   const handleUpload = async () => {
     if (base64String) {
-      const newPhotoId = await uploadToDB(base64String);
+      const newPhotoId = await uploadToDB(base64String, photoName);
       if (newPhotoId) {
         const newPhoto = {
           Photo_ID: newPhotoId,
-          Photo: base64String
+          Photo: base64String,
+          Photo_Name: photoName
         };
         setPhotos([...photos, newPhoto]);
         setBase64String("");
@@ -111,7 +111,6 @@ export default function UploadPhotosClient({ initialPhotos }) {
   };
 
   return (
-    <ProtectedPage content={
       <Layout style={{ minHeight: '100vh' }}>
         <Header style={{ backgroundColor: '#001529' }}>
           <Typography.Title level={3} style={{ color: 'white', textAlign: 'center', margin: 0 }}>
@@ -159,8 +158,8 @@ export default function UploadPhotosClient({ initialPhotos }) {
                 value={selectedPhotoId}
               >
                 {photos.map(photo => (
-                  <Option key={photo.Photo_ID} value={photo.Photo_ID.toString()}>
-                    {`Photo ${photo.Photo_ID}`}
+                  <Option key={photo.Photo_Name} value={photo.Photo_ID.toString()}>
+                    {photo.Photo_Name}
                   </Option>
                 ))}
               </Select>
@@ -177,8 +176,5 @@ export default function UploadPhotosClient({ initialPhotos }) {
         </Content>
         <Footer style={{ textAlign: 'center' }}>©2023 מערכת העלאת תמונות</Footer>
       </Layout>
-    }
-      allowed_user_types={[]}
-    />
   );
 }

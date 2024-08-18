@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, Typography, Row, Col, Select, InputNumber } from 'antd';
+import { Form, Input, Button, Typography, Row, Col, Select, Upload, message } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
 import 'antd/dist/reset.css';
 import "../style.css";
 import { dataFetchLeagues, dataFetchLocations } from './fetching';
@@ -15,6 +16,7 @@ export default function FormComponent() {
     Age: '',
     Location_ID: '',
     New_Location: '', // For new location name
+    Photo: '', // For base64 image string
   };
 
   const fieldLabels = {
@@ -22,6 +24,7 @@ export default function FormComponent() {
     Age: 'גיל',
     Location_ID: 'מיקום',
     New_Location: 'מיקום חדש', // Label for new location
+    Photo: 'לוגו קבוצה', // Label for the image
   };
 
   const [formData, setFormData] = useState(initialFormState);
@@ -30,6 +33,7 @@ export default function FormComponent() {
   const [isOtherLocation, setIsOtherLocation] = useState(false);
   const [ageOptions, setAgeOptions] = useState([]);
   const [locationOptions, setLocationOptions] = useState([]);
+  const [base64String, setBase64String] = useState('');
 
   useEffect(() => {
     setIsClient(true);
@@ -75,6 +79,15 @@ export default function FormComponent() {
     }
   };
 
+  const handleFileChange = ({ file }) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setBase64String(reader.result);
+      handleChange({ Photo: reader.result });
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleSubmit = async () => {
     const final_data = {
       ...formData,
@@ -82,6 +95,7 @@ export default function FormComponent() {
     };
 
     alert('Form Data JSON: ' + JSON.stringify(final_data));
+    console.log('Form Data JSON: ' + JSON.stringify(final_data));
 
     try {
       const response = await fetch('/api/form_manage_team', {
@@ -91,8 +105,15 @@ export default function FormComponent() {
         },
         body: JSON.stringify(final_data),
       });
+      const result = await response.json();
+      if (result.success) {
+        message.success('הטופס נשלח בהצלחה!');
+      } else {
+        message.error('שגיאה בשליחת הטופס.');
+      }
     } catch (error) {
-      console.error('Error updating data');
+      console.error('Error updating data', error);
+      message.error('שגיאה בשליחת הטופס.');
     }
         // for resetting the fields once sent
     form.resetFields();
@@ -103,6 +124,7 @@ export default function FormComponent() {
     form.resetFields();
     setFormData(initialFormState);
     setIsOtherLocation(false);
+    setBase64String('');
     if (isClient) {
       localStorage.removeItem('formAddTeam');
     }
@@ -201,6 +223,31 @@ export default function FormComponent() {
               </Form.Item>
             </Col>
           )}
+
+          <Col span={24}>
+            <Form.Item
+              label={fieldLabels['Photo']}
+              name="Photo"
+              rules={[{ required: false }]}
+            >
+              <Upload
+                accept="image/*"
+                showUploadList={false}
+                beforeUpload={(file) => {
+                  handleFileChange({ file });
+                  return false; // Prevent automatic upload
+                }}
+              >
+                <Button icon={<UploadOutlined />}>בחר לוגו</Button>
+              </Upload>
+              {base64String && (
+                <div style={{ marginTop: '20px' }}>
+                  <Typography.Text>לוגו שנבחר:</Typography.Text>
+                  <img src={base64String} alt="Uploaded" style={{ maxWidth: '100%', height: 'auto', marginTop: '10px' }} />
+                </div>
+              )}
+            </Form.Item>
+          </Col>
 
           <Col span={24}></Col>
         </Row>

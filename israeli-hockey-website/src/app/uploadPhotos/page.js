@@ -4,7 +4,7 @@ import UploadPhotosClient from './UploadPhotosClient';
 import ProtectedPage from "../ProtectedPage/ProtectedPage";
 
 
-const query_photos = `SELECT Photo_ID, Photo FROM Photos;`;
+const query_photos = `SELECT Photo_ID, Photo, Photo_Name FROM Photos;`;
 
 async function fetchData() {
   let photosData = [];
