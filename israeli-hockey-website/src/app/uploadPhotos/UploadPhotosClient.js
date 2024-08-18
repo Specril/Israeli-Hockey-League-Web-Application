@@ -240,7 +240,7 @@ export default function UploadPhotosClient({ initialPhotos }) {
           </Content>
         </Layout>
       }
-      allowed_user_types={[]}
+      allowed_user_types={["admin"]}
     />
   );
 }
