@@ -4,12 +4,11 @@ import React, { useState, useEffect } from "react";
 import { Table, Button, Typography, message } from "antd";
 import "antd/dist/reset.css";
 import "../style.css";
-import moment from "moment";
 import { dataFetchGames } from "./fetching";
 
 const { Title } = Typography;
 
-// Helper functions to format date and time
+// Helper function to format date
 const formatDate = (dateString) => {
   const date = new Date(dateString);
   const day = date.getDate().toString().padStart(2, '0');
@@ -18,11 +17,19 @@ const formatDate = (dateString) => {
   return `${day}-${month}-${year}`;
 };
 
+// Helper function to format time
 const formatTime = (timeString) => {
-  const time = new Date(timeString);
-  const hours = time.getUTCHours().toString().padStart(2, '0');
-  const minutes = time.getUTCMinutes().toString().padStart(2, '0');
-  return `${hours}:${minutes}`;
+  if (typeof timeString === 'string') {
+    // Extract the time part from ISO 8601 format or other formats
+    const timePart = timeString.split('T')[1];
+    if (timePart) {
+      const parts = timePart.split(':');
+      const hours = parts[0].padStart(2, '0');
+      const minutes = (parts[1] || '00').padStart(2, '0'); // Default to '00' if minutes are missing
+      return `${hours}:${minutes}`;
+    }
+  }
+  return '';
 };
 
 export default function DeleteGamePage() {
@@ -58,15 +65,14 @@ export default function DeleteGamePage() {
       if (response.ok) {
         setGames(games.filter(game => !selectedGameIds.includes(game.Game_ID)));
         setSelectedGameIds([]);
+        message.success("Game deleted successfully");
       }
     } catch (error) {
       console.error("Error deleting games:", error);
     }
-    message.success("Game deleted successfully");
   };
 
   const columns = [
-    // { title: 'Game ID', dataIndex: 'Game_ID', key: 'Game_ID' },
     { title: "גיל", dataIndex: "Age", key: "Age" },
     { title: "קבוצת בית", dataIndex: "Home_Team_Name", key: "Home_Team_Name" },
     { title: "קבוצת חוץ", dataIndex: "Away_Team_Name", key: "Away_Team_Name" },
@@ -75,13 +81,13 @@ export default function DeleteGamePage() {
       title: "תאריך",
       dataIndex: "Date",
       key: "Date",
-      render: (text) => moment(text).format("YYYY-MM-DD"),
+      render: (text) => formatDate(text),
     },
     {
       title: "זמן התחלה",
       dataIndex: "Start_Time",
       key: "Start_Time",
-      render: (text) => moment(text, "HH:mm").format("HH:mm"),
+      render: (text) => formatTime(text),
     },
   ];
 
@@ -112,12 +118,3 @@ export default function DeleteGamePage() {
     </div>
   );
 }
-
-// Helper function to format day
-const formatDay = (dateString) => {
-  const date = new Date(dateString);
-  const daysOfWeek = [
-    'ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'
-  ];
-  return daysOfWeek[date.getDay()];
-};
