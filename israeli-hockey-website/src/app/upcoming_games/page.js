@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from "react";
 import { Table, Typography, Row, Col } from "antd";
 import "../style.css";
+import ProtectedPage from "../ProtectedPage/ProtectedPage";
+
 
 const { Title } = Typography;
 
