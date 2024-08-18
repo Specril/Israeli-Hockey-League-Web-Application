@@ -241,6 +241,7 @@ export default function UploadPhotosClient({ initialPhotos }) {
         </Layout>
       }
       allowed_user_types={["admin"]}
+      
     />
   );
 }
