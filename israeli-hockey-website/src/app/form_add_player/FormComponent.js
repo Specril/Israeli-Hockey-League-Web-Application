@@ -208,6 +208,8 @@ export default function FormComponent() {
                 {
                   type: "number",
                   message: `${fieldLabels["Shirt_Number"]} must be a number`,
+                  min: 1,
+                  max: 100,
                 },
                 {
                   validator: (_, value) => {
@@ -227,6 +229,7 @@ export default function FormComponent() {
               <InputNumber
                 style={{ width: "100%" }}
                 min={0}
+                max={100}
                 precision={0}
                 value={formData["Shirt_Number"]}
                 onChange={(value) => handleChange({ Shirt_Number: value })}
