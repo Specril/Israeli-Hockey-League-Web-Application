@@ -60,7 +60,7 @@ export default function Page() {
     <ProtectedPage content={
       <FormComponent data={data} />
     }
-      allowed_user_types={[]}
+      allowed_user_types={["player", "coach", "fan", "admin", "referee"]}
     />
   );
 }

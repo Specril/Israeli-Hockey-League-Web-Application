@@ -9,6 +9,22 @@ import { dataFetchGames } from "./fetching";
 
 const { Title } = Typography;
 
+// Helper functions to format date and time
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
+  const year = date.getFullYear();
+  return `${day}-${month}-${year}`;
+};
+
+const formatTime = (timeString) => {
+  const time = new Date(timeString);
+  const hours = time.getUTCHours().toString().padStart(2, '0');
+  const minutes = time.getUTCMinutes().toString().padStart(2, '0');
+  return `${hours}:${minutes}`;
+};
+
 export default function DeleteGamePage() {
   const [games, setGames] = useState([]);
   const [selectedGameIds, setSelectedGameIds] = useState([]);
@@ -16,7 +32,6 @@ export default function DeleteGamePage() {
   useEffect(() => {
     const fetchData = async () => {
       const fetchedGames = await dataFetchGames();
-
       setGames(fetchedGames);
     };
     fetchData();
@@ -41,11 +56,8 @@ export default function DeleteGamePage() {
       });
 
       if (response.ok) {
-        // Optionally, update the table by removing the deleted games
-        setGames(
-          games.filter((game) => !selectedGameIds.includes(game.Game_ID))
-        );
-        setSelectedGameIds([]); // Clear the selected games
+        setGames(games.filter(game => !selectedGameIds.includes(game.Game_ID)));
+        setSelectedGameIds([]);
       }
     } catch (error) {
       console.error("Error deleting games:", error);
@@ -100,3 +112,12 @@ export default function DeleteGamePage() {
     </div>
   );
 }
+
+// Helper function to format day
+const formatDay = (dateString) => {
+  const date = new Date(dateString);
+  const daysOfWeek = [
+    'ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'
+  ];
+  return daysOfWeek[date.getDay()];
+};

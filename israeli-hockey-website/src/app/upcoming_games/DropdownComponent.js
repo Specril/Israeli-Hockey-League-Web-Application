@@ -7,7 +7,7 @@ import "../style.css"; // Ensure this import is correct
 const { Title } = Typography;
 const { Option } = Select;
 
-// Helper functions to format date and time
+// Helper functions to format date, time, and day
 const formatDate = (dateString) => {
   const date = new Date(dateString);
   const day = date.getDate().toString().padStart(2, "0");
@@ -23,13 +23,28 @@ const formatTime = (timeString) => {
   return `${hours}:${minutes}`;
 };
 
+const formatDay = (dateString) => {
+  const date = new Date(dateString);
+  const daysOfWeek = [
+    'ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'
+  ];
+  return daysOfWeek[date.getDay()];
+};
+
 export default function DropdownComponent({ options, data }) {
   const [selectedAge, setSelectedAge] = useState(null);
   const [filteredData, setFilteredData] = useState(data);
 
   useEffect(() => {
+    console.log('Selected Age:', selectedAge);
+    console.log('Data Length:', data.length);
+
     if (selectedAge) {
-      const filtered = data.filter((item) => item["גיל"] === selectedAge);
+      const filtered = data.filter(item => {
+        const itemAge = item['גיל'].toString().trim(); // Convert to string and trim spaces
+        console.log('Filtering - Item Age:', itemAge, 'Selected Age:', selectedAge);
+        return itemAge === selectedAge;
+      });
       setFilteredData(filtered);
     } else {
       setFilteredData(data);
@@ -37,14 +52,16 @@ export default function DropdownComponent({ options, data }) {
   }, [selectedAge, data]);
 
   const handleAgeChange = (value) => {
+    console.log('Age Change:', value);
     setSelectedAge(value);
   };
 
   const columns = [
     {
-      title: "גיל",
-      dataIndex: "גיל",
-      key: "גיל",
+      title: 'גיל',
+      dataIndex: 'גיל',
+      key: 'גיל',
+      render: (text) => text.toString().trim() // Ensure rendering as a string and trim spaces
     },
     {
       title: "קבוצת בית",
@@ -57,9 +74,10 @@ export default function DropdownComponent({ options, data }) {
       key: "קבוצת חוץ",
     },
     {
-      title: "יום",
-      dataIndex: "יום",
-      key: "יום",
+      title: 'יום',
+      dataIndex: 'תאריך', // Use the date field to determine the day
+      key: 'יום',
+      render: (text) => formatDay(text), // Format day using helper function
     },
     {
       title: "תאריך",

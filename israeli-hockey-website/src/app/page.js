@@ -138,6 +138,7 @@ FROM
 LEFT JOIN Users ON Second_Referee_ID = user_ID
 LEFT JOIN TeamsLogos AS TeamsLogos_Home ON T_with_first_referee.Home_Team_ID = TeamsLogos_Home.Team_ID
 LEFT JOIN TeamsLogos AS TeamsLogos_Away ON T_with_first_referee.Away_Team_ID = TeamsLogos_Away.Team_ID
+ORDER BY Date ASC; 
 `;
 
 const query_photos = `

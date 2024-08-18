@@ -72,11 +72,11 @@ export default function AddGameForm({ data }) {
       const fetchedLeagues = await dataFetchLeague();
       const fetchedLocations = await dataFetchLocations();
       const fetchedTeams = await dataFetchTeams();
-      const fetchReferees = await dataFetchReferees();
+      const fetchedReferees = await dataFetchReferees();
       setLeagueOptions(fetchedLeagues);
       setLocationOptions(fetchedLocations);
       setTeamsOptions(fetchedTeams);
-      setRefereesOptions(fetchReferees);
+      setRefereesOptions(fetchedReferees);
     };
     fetchData();
   }, []);
@@ -107,39 +107,48 @@ export default function AddGameForm({ data }) {
   };
 
   const getTeams = (leagueID) => {
-    console.log("after filtering groups");
-    console.log(teams.filter((team) => team.League_ID === leagueID));
-    return teams.filter((team) => team.League_ID === leagueID);
+    return teams.filter(team => team.League_ID === leagueID);
   };
 
   useEffect(() => {
     if (isClient) {
       form.setFieldsValue({
         ...formData,
-        Date: formData.Date ? dayjs(formData.Date, "YYYY-MM-DD") : null,
+        Date: formData.Date ? dayjs(formData.Date, 'YYYY-MM-DD') : null,
+        Start_Time: formData.Start_Time ? dayjs(formData.Start_Time, 'HH:mm') : null,
       });
     }
   }, [formData, form, isClient]);
 
   const handleDateChange = (date, dateString) => {
-    setFormData((prevData) => ({
+    setFormData(prevData => ({
       ...prevData,
-      Date: dateString,
+      Date: date ? date.format('YYYY-MM-DD') : '',
     }));
   };
-
+  
   const handleTimeChange = (time, timeString) => {
-    setFormData((prevData) => ({
+    setFormData(prevData => ({
       ...prevData,
-      Start_Time: timeString,
+      Start_Time: time ? time.format('HH:mm') : '',
     }));
   };
 
   const handleSelectChange = (value, field) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [field]: value,
-    }));
+    // Find the location name from the selected ID
+    if (field === 'Location_ID') {
+      const location = locations_options.find(option => option.key === value);
+      setFormData(prevData => ({
+        ...prevData,
+        [field]: value,
+        Location: location ? location.value : '',
+      }));
+    } else {
+      setFormData(prevData => ({
+        ...prevData,
+        [field]: value,
+      }));
+    }
   };
 
   const handleSubmit = async () => {
@@ -151,8 +160,21 @@ export default function AddGameForm({ data }) {
         },
         body: JSON.stringify(formData),
       });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Server error:', errorData);
+        alert('Error: ' + (errorData.message || 'Failed to submit form'));
+        return;
+      }
+
+      const result = await response.json();
+      console.log('Success:', result);
+      alert('Form submitted successfully!');
+
     } catch (error) {
-      console.alert("Error updating data");
+      console.error('Error:', error);
+      alert('Error updating data');
     }
     // for resetting the fields once sent
     setFormData(initialFormState);
@@ -161,25 +183,12 @@ export default function AddGameForm({ data }) {
   };
 
   const handleClearAll = () => {
-    // form.resetFields();
     setFormData(initialFormState);
     setSelectedLeague(null);
     if (isClient) {
       localStorage.removeItem("formDataGames");
     }
   };
-
-  useEffect(() => {
-    if (isClient) {
-      form.setFieldsValue({
-        ...formData,
-        Date: formData.Date ? moment(formData.Date) : null, // Set date value using moment
-        Start_Time: formData.Start_Time
-          ? moment(formData.Start_Time, "HH:mm")
-          : null, // Set time value using moment
-      });
-    }
-  }, [formData, form, isClient]);
 
   return (
     <div style={{ maxWidth: "800px", margin: "0 auto", padding: "20px" }}>
@@ -218,31 +227,6 @@ export default function AddGameForm({ data }) {
 
           <Col span={12}>
             <Form.Item
-              label={fieldLabels["Day"]}
-              name="Day"
-              rules={[
-                {
-                  required: true,
-                  message: `${fieldLabels["Day"]} is required`,
-                },
-              ]}
-            >
-              <Select
-                value={formData["Day"]}
-                onChange={(value) => handleSelectChange(value, "Day")}
-                style={{ width: "100%" }}
-              >
-                {DayOptions.map((option) => (
-                  <Option key={option} value={option}>
-                    {option}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
-          </Col>
-
-          <Col span={12}>
-            <Form.Item
               label={fieldLabels["Start_Time"]}
               name="Start_Time"
               rules={[
@@ -254,13 +238,11 @@ export default function AddGameForm({ data }) {
             >
               <TimePicker
                 format="HH:mm"
-                value={
-                  formData["Start_Time"]
-                    ? moment(formData["Start_Time"], "HH:mm")
-                    : null
-                }
+                value={formData['Start_Time'] ? dayjs(formData['Start_Time'], 'HH:mm') : null}
                 onChange={handleTimeChange}
-                style={{ width: "100%" }} // Make the TimePicker take full width
+                style={{ width: '100%' }}
+                minuteStep={1}
+                hourStep={1}
               />
             </Form.Item>
           </Col>
@@ -350,8 +332,12 @@ export default function AddGameForm({ data }) {
                 </Select>
               </Form.Item>
             </Col>
+
             <Col span={12}>
-              <Form.Item label={fieldLabels["Location_ID"]} name="Location_ID">
+              <Form.Item
+                label={fieldLabels['Location_ID']}
+                name="Location_ID"
+              >
                 <Select
                   value={formData["Location_ID"]}
                   onChange={(value) => handleSelectChange(value, "Location_ID")}
@@ -367,7 +353,10 @@ export default function AddGameForm({ data }) {
             </Col>
 
             <Col span={12}>
-              <Form.Item label={fieldLabels["Referee_ID"]} name="Referee_ID">
+              <Form.Item
+                label={fieldLabels['Referee_ID']}
+                name="Referee_ID"
+              >
                 <Select
                   showSearch
                   value={formData["Referee_ID"]}
