@@ -6,36 +6,7 @@ import { Select, Spin, Alert } from "antd";
 import TeamOverview from "./TeamOverview";
 import ProtectedPage from "../ProtectedPage/ProtectedPage";
 
-
 const { Option } = Select;
-
-const query_team_details = `
-SELECT 
-    Teams.Team_ID AS "Team ID",
-    Users.Full_Name AS "Team Coach",
-    TeamsLogos.Photo AS "Team Logo",
-    Teams.Team_Name AS "Team Name",
-    League.League_ID AS "League ID",
-    League.Age AS "League Name"
-FROM Teams
-LEFT JOIN CoachesOfTeams ON Teams.Team_ID = CoachesOfTeams.Team_ID
-LEFT JOIN UsersCoaches ON CoachesOfTeams.User_ID = UsersCoaches.User_ID
-LEFT JOIN Users ON UsersCoaches.User_ID = Users.User_ID
-LEFT JOIN TeamsLogos ON Teams.Team_ID = TeamsLogos.Team_ID
-LEFT JOIN TeamsInLeagues ON Teams.Team_ID = TeamsInLeagues.Team_ID
-LEFT JOIN League ON TeamsInLeagues.League_ID = League.League_ID
-ORDER BY Teams.Team_Name;
-`;
-
-const query_team_players = `SELECT 
-    Teams.Team_Name AS "Team Name",
-    Teams.Team_ID AS "Team ID",
-    PlayerUsers.Full_Name AS "Player Name"
-FROM Teams
-INNER JOIN PlayersInTeams ON Teams.Team_ID = PlayersInTeams.Team_ID
-INNER JOIN Users AS PlayerUsers ON PlayersInTeams.User_ID = PlayerUsers.User_ID
-ORDER BY Teams.Team_Name, PlayerUsers.Full_Name;
-`;
 
 const query_leagues = `
 SELECT 
@@ -43,81 +14,6 @@ SELECT
     Age,
     League_Type
 FROM League
-WHERE League_ID = 1 OR League_ID = 4
-`;
-
-const query_team_statistics = `
-SELECT 
-    T1.Team_ID AS 'Team_ID', 
-    T1.Team_Name AS 'Team_Name', 
-    COALESCE(T1.Total_Games, 0) AS Games, 
-    (3 * COALESCE(win_count, 0) + COALESCE(tie_count, 0)) AS Points, 
-    (COALESCE(total_goals, 0) - COALESCE(rivals_goals, 0)) AS Goal_Difference
-FROM 
-    (SELECT 
-        Teams.Team_ID,
-        Teams.Team_Name,
-        COUNT(Games.Game_ID) AS Total_Games
-    FROM 
-        Teams
-        LEFT JOIN (
-            SELECT Home_Team_ID AS Team_ID, Game_ID
-            FROM Games
-            UNION ALL
-            SELECT Away_Team_ID AS Team_ID, Game_ID
-            FROM Games
-        ) AS Games ON Teams.Team_ID = Games.Team_ID
-    GROUP BY 
-        Teams.Team_ID, 
-        Teams.Team_Name
-    ) AS T1
-LEFT JOIN
-    (SELECT 
-        Winner_ID AS Team_ID, 
-        COUNT(*) as win_count
-    FROM 
-        Games_with_winner 
-    WHERE 
-        Winner_ID != 0
-    GROUP BY
-        Winner_ID
-    ) AS T2 ON T1.Team_ID = T2.Team_ID
-LEFT JOIN
-    (SELECT 
-        Team_ID, 
-        COUNT(*) as tie_count
-    FROM 
-        (SELECT Home_Team_ID AS Team_ID
-        FROM Games_with_winner 
-        WHERE Winner_ID = 0
-        UNION ALL
-        SELECT Away_Team_ID AS Team_ID
-        FROM Games_with_winner 
-        WHERE Winner_ID = 0
-        ) AS combined
-    GROUP BY
-        Team_ID
-    ) AS T3 ON T1.Team_ID = T3.Team_ID
-LEFT JOIN
-    (SELECT 
-        Team_ID, 
-        COUNT(*) as total_goals
-    FROM 
-        Goals
-    GROUP BY 
-        Team_ID
-    ) AS T4 ON T1.Team_ID = T4.Team_ID
-LEFT JOIN 
-    (SELECT 
-        home_team_id AS Team_ID, 
-        SUM(away_team_goals) AS rivals_goals 
-    FROM 
-        games_with_winner 
-    GROUP BY 
-        home_team_id
-    ) AS T5 ON T1.Team_ID = T5.Team_ID
-ORDER BY 
-    Points DESC;
 `;
 
 // Function to fetch data from the API
@@ -152,6 +48,7 @@ const Home = () => {
   const [selectedLeague, setSelectedLeague] = useState(null); // Start with null
   const [error, setError] = useState(null);
 
+  // Fetch leagues data on initial load
   useEffect(() => {
     const fetchLeaguesAsync = async () => {
       const leaguesData = await fetchData(query_leagues);
@@ -171,20 +68,128 @@ const Home = () => {
 
   useEffect(() => {
     const fetchDataAsync = async () => {
-      const details = await fetchData(query_team_details);
-      const players = await fetchData(query_team_players);
-      const statistics = await fetchData(query_team_statistics);
-
-      // Log team details excluding the "Team Logo"
-      const detailsWithoutLogo = details.map((team) => {
-        const { "Team Logo": _, ...rest } = team;
-        return rest;
-      });
-
-      console.log("Fetched team details (without logo):", detailsWithoutLogo);
-      console.log("Fetched team players:", players);
-      console.log("Fetched team statistics:", statistics);
-
+      if (!selectedLeague) return; // Avoid fetching if no league is selected
+      
+      // Modify queries to include the selectedLeague
+      const teamDetailsQuery = `
+        SELECT 
+            Teams.Team_ID AS "Team ID",
+            Users.Full_Name AS "Team Coach",
+            TeamsLogos.Photo AS "Team Logo",
+            Teams.Team_Name AS "Team Name",
+            League.League_ID AS "League ID",
+            League.Age AS "League Name"
+        FROM Teams
+        LEFT JOIN CoachesOfTeams ON Teams.Team_ID = CoachesOfTeams.Team_ID
+        LEFT JOIN UsersCoaches ON CoachesOfTeams.User_ID = UsersCoaches.User_ID
+        LEFT JOIN Users ON UsersCoaches.User_ID = Users.User_ID
+        LEFT JOIN TeamsLogos ON Teams.Team_ID = TeamsLogos.Team_ID
+        LEFT JOIN TeamsInLeagues ON Teams.Team_ID = TeamsInLeagues.Team_ID
+        LEFT JOIN League ON TeamsInLeagues.League_ID = League.League_ID
+        WHERE League.League_ID = ${selectedLeague}
+        ORDER BY Teams.Team_Name;
+      `;
+      
+      const playersQuery = `
+        SELECT 
+            Teams.Team_Name AS "Team Name",
+            Teams.Team_ID AS "Team ID",
+            PlayerUsers.Full_Name AS "Player Name"
+        FROM Teams
+        INNER JOIN PlayersInTeams ON Teams.Team_ID = PlayersInTeams.Team_ID
+        INNER JOIN Users AS PlayerUsers ON PlayersInTeams.User_ID = PlayerUsers.User_ID
+        WHERE Teams.Team_ID IN (SELECT Team_ID FROM TeamsInLeagues WHERE League_ID = ${selectedLeague})
+        ORDER BY Teams.Team_Name, PlayerUsers.Full_Name;
+      `;
+  
+      const statisticsQuery = `
+        SELECT 
+            T1.Team_ID AS 'Team_ID', 
+            T1.Team_Name AS 'Team_Name', 
+            COALESCE(T1.Total_Games, 0) AS Games, 
+            (3 * COALESCE(win_count, 0) + COALESCE(tie_count, 0)) AS Points, 
+            (COALESCE(total_goals, 0) - COALESCE(rivals_goals, 0)) AS Goal_Difference
+        FROM 
+            (SELECT 
+                Teams.Team_ID,
+                Teams.Team_Name,
+                COUNT(DISTINCT Games.Game_ID) AS Total_Games
+            FROM 
+                Teams
+                LEFT JOIN (
+                    SELECT Home_Team_ID AS Team_ID, Game_ID
+                    FROM Games
+                    WHERE League_ID = ${selectedLeague}
+                    UNION ALL
+                    SELECT Away_Team_ID AS Team_ID, Game_ID
+                    FROM Games
+                    WHERE League_ID = ${selectedLeague}
+                ) AS Games ON Teams.Team_ID = Games.Team_ID
+            WHERE Teams.Team_ID IN (SELECT Team_ID FROM TeamsInLeagues WHERE League_ID = ${selectedLeague})
+            GROUP BY 
+                Teams.Team_ID, 
+                Teams.Team_Name
+            ) AS T1
+        LEFT JOIN
+            (SELECT 
+                Winner_ID AS Team_ID, 
+                COUNT(*) as win_count
+            FROM 
+                Games_with_winner 
+            WHERE 
+                Winner_ID != 0
+                AND Game_ID IN (SELECT Game_ID FROM Games WHERE League_ID = ${selectedLeague})
+            GROUP BY
+                Winner_ID
+            ) AS T2 ON T1.Team_ID = T2.Team_ID
+        LEFT JOIN
+            (SELECT 
+                Team_ID, 
+                COUNT(*) as tie_count
+            FROM 
+                (SELECT Home_Team_ID AS Team_ID
+                FROM Games_with_winner 
+                WHERE Winner_ID = 0
+                AND Game_ID IN (SELECT Game_ID FROM Games WHERE League_ID = ${selectedLeague})
+                UNION ALL
+                SELECT Away_Team_ID AS Team_ID
+                FROM Games_with_winner 
+                WHERE Winner_ID = 0
+                AND Game_ID IN (SELECT Game_ID FROM Games WHERE League_ID = ${selectedLeague})
+                ) AS combined
+            GROUP BY
+                Team_ID
+            ) AS T3 ON T1.Team_ID = T3.Team_ID
+        LEFT JOIN
+            (SELECT 
+                Team_ID, 
+                COUNT(*) as total_goals
+            FROM 
+                Goals
+            WHERE 
+                Game_ID IN (SELECT Game_ID FROM Games WHERE League_ID = ${selectedLeague})
+            GROUP BY 
+                Team_ID
+            ) AS T4 ON T1.Team_ID = T4.Team_ID
+        LEFT JOIN 
+            (SELECT 
+                home_team_id AS Team_ID, 
+                SUM(away_team_goals) AS rivals_goals 
+            FROM 
+                Games_with_winner 
+            WHERE 
+                Game_ID IN (SELECT Game_ID FROM Games WHERE League_ID = ${selectedLeague})
+            GROUP BY 
+                home_team_id
+            ) AS T5 ON T1.Team_ID = T5.Team_ID
+        ORDER BY 
+            Points DESC;
+      `;
+  
+      const details = await fetchData(teamDetailsQuery);
+      const players = await fetchData(playersQuery);
+      const statistics = await fetchData(statisticsQuery);
+  
       if (details && players && statistics) {
         setDataTeamDetails(details);
         setDataTeamPlayers(players);
@@ -195,9 +200,10 @@ const Home = () => {
       }
       setLoading(false);
     };
-
+  
     fetchDataAsync();
-  }, []);
+  }, [selectedLeague]); // Re-run when selectedLeague changes
+  
 
   const handleLeagueChange = (value) => {
     setSelectedLeague(value);
@@ -229,7 +235,7 @@ const Home = () => {
         {leagues && leagues.length > 0 ? (
           leagues.map((league) => (
             <Option key={league.League_ID} value={league.League_ID}>
-              {`${league.Age}`}
+              {`${league.Age} - ${league.League_Type}`}
             </Option>
           ))
         ) : (

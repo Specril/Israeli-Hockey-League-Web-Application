@@ -34,8 +34,14 @@ export default function TeamOverview({
     }
   }, [details, players, statistics]);
 
+  // Handle carousel change
   const handleCarouselChange = (current) => {
-    setSelectedTeamId(filteredTeamDetails[current]["Team ID"]);
+    if (filteredTeamDetails[current]) {
+      setSelectedTeamId(filteredTeamDetails[current]["Team ID"]);
+    } else {
+      console.warn("Selected team is undefined at index:", current);
+      setSelectedTeamId(null); // Reset selected team if undefined
+    }
   };
 
   const selectedTeamDetails =
@@ -53,8 +59,18 @@ export default function TeamOverview({
     return <Spin tip="טוען עמוד..." />;
   }
 
-  if (error) {
-    return <Alert message="Error" description={error} type="error" showIcon />;
+  // Check if the selected team has details, otherwise show a fallback message
+  const hasValidTeamDetails = selectedTeamDetails && selectedTeamDetails["Team ID"];
+
+  if (!hasValidTeamDetails) {
+    return (
+      <Alert
+        message="No Details Available"
+        description="The selected team does not have available details."
+        type="warning"
+        showIcon
+      />
+    );
   }
 
   return (
