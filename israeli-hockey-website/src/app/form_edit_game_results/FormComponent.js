@@ -81,59 +81,79 @@ export default function EditGameInfo({ data }) {
       Penalty_IDs: selectedPenalties,
       Card_IDs: selectedCards,
     };
-
+    message.success("Game results changed successfully");
+  
     try {
-      const response = await fetch("/api/form_results_updating", {
-        method: "DELETE",
+      const response = await fetch('/api/form_results_updating', {
+        method: 'DELETE',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(finalData),
       });
   
       if (response.ok) {
+        
         window.location.reload(); // Refresh the page after successful submission
       } else {
         console.error('Failed to update data');
       }
     } catch (error) {
-      console.error("Error updating data:", error);
+      console.error('Error updating data:', error);
     }
-    message.success("Game results changed successfully");
   };
   
 
-  const columns = {
-    goals: [
-      { title: "שם מלא", dataIndex: "Full_Name", key: "Full_Name" },
-      { title: "קבוצה", dataIndex: "Team_Name", key: "Team_Name" },
-      {
-        title: "זמן",
-        dataIndex: "Time_Stamp",
-        key: "Time_Stamp",
-        render: (text) => moment(text, "HH:mm").format("HH:mm"),
-      },
-    ],
-    penalties: [
-      { title: "שם מלא", dataIndex: "Full_Name", key: "Full_Name" },
-      { title: "קבוצה", dataIndex: "Team_Name", key: "Team_Name" },
-      {
-        title: "זמן",
-        dataIndex: "Time_Stamp",
-        key: "Time_Stamp",
-        render: (text) => moment(text, "HH:mm").format("HH:mm"),
-      },
-    ],
-    cards: [
-      { title: "שם מלא", dataIndex: "Full_Name", key: "Full_Name" },
-      { title: "קבוצה", dataIndex: "Team_Name", key: "Team_Name" },
-      {
-        title: "זמן",
-        dataIndex: "Time_Stamp",
-        key: "Time_Stamp",
-        render: (text) => moment(text, "HH:mm").format("HH:mm"),
-      },
-      { title: "כרטיס", dataIndex: "Card_Type", key: "Card_Type" },
+  
+const columns = {
+  goals: [
+
+
+    { title: 'שם מלא', dataIndex: 'Full_Name', key: 'Full_Name' },
+    { title: 'קבוצה', dataIndex: 'Team_Name', key: 'Team_Name' },
+    { title: 'זמן', dataIndex: 'Time_Stamp', key: 'Time_Stamp', render: (text) => {
+      if (!text) {
+        return "אין מידע";
+      }
+      const time = new Date(text);
+      const hours = time.getUTCHours().toString().padStart(2, '0');
+      const minutes = time.getUTCMinutes().toString().padStart(2, '0');
+      return `${hours}:${minutes}`;
+    }, },
+  ],
+  penalties: [
+
+    { title: 'שם מלא', dataIndex: 'Full_Name', key: 'Full_Name' },
+    { title: 'קבוצה', dataIndex: 'Team_Name', key: 'Team_Name' },
+    { title: 'זמן', dataIndex: 'Time_Stamp', key: 'Time_Stamp', render: (text) => {
+      if (!text) {
+        return "אין מידע";
+      }
+      const time = new Date(text);
+      const hours = time.getUTCHours().toString().padStart(2, '0');
+      const minutes = time.getUTCMinutes().toString().padStart(2, '0');
+      return `${hours}:${minutes}`;
+    }, },
+  ],
+  cards: [
+
+    { title: 'שם מלא', dataIndex: 'Full_Name', key: 'Full_Name' },
+    { title: 'קבוצה', dataIndex: 'Team_Name', key: 'Team_Name' },
+    { title: 'זמן', dataIndex: 'Time_Stamp', key: 'Time_Stamp', render: (text) => {
+      if (!text) {
+        return "אין מידע";
+      }
+      const time = new Date(text);
+      const hours = time.getUTCHours().toString().padStart(2, '0');
+      const minutes = time.getUTCMinutes().toString().padStart(2, '0');
+      return `${hours}:${minutes}`;
+    }, },
+    { 
+      title: 'כרטיס', 
+      dataIndex: 'Card_Type', 
+      key: 'Card_Type',
+      render: (text) => text === 'blue' ? 'כחול' : text === 'red' ? 'אדום' : text,
+    },
     ],
   };
 
